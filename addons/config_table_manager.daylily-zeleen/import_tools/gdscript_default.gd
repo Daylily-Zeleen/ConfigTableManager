@@ -95,9 +95,10 @@ func _import(
 		idx += 1
 
 	# _make_data
+	instantiation = instantiation.strip_edges()
 	var args := (
 		Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String): return a.strip_edges().trim_prefix("{").trim_suffix("}")) as PackedStringArray
-	)
+	) if not instantiation.ends_with("()") else PackedStringArray()
 	var fields_with_type = fields.duplicate()
 	for i in range(fields_with_type.size()):
 		fields_with_type[i] = "%s: %s" % [fields_with_type[i], type_string(types[i])]

@@ -63,7 +63,7 @@ func generate_table() -> Error:
 
 	instantiation = instantiation.strip_edges()
 	var instantiation_method := "new" if instantiation.is_empty() else instantiation.split("(")[0]
-	var instantiation_args := Array([] if instantiation.is_empty() else Array(instantiation.trim_suffix(")").split("(")).back().split(",", false)).map(
+	var instantiation_args := Array([] if instantiation.is_empty() or instantiation.ends_with("()") else Array(instantiation.trim_suffix(")").split("(")).back().split(",", false)).map(
 		func(a: String): return a.strip_edges().trim_prefix("{").trim_suffix("}")
 	)
 	var script: Script
