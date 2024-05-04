@@ -1,0 +1,429 @@
+[gd_scene load_steps=3 format=3 uid="uid://cl4vm3gw0ltsi"]
+
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd" id="1_bsud7"]
+[ext_resource type="PackedScene" uid="uid://bepjlsptadkrq" path="res://addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn" id="2_sf0g2"]
+
+[node name="MainScreen" type="PanelContainer"]
+custom_minimum_size = Vector2(500, 300)
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_bsud7")
+
+[node name="TabContainer" type="TabContainer" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+drag_to_rearrange_enabled = true
+
+[node name="预设管理" type="PanelContainer" parent="TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="MarginContainer" type="MarginContainer" parent="TabContainer/预设管理"]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_top = 5
+theme_override_constants/margin_right = 5
+theme_override_constants/margin_bottom = 5
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer"]
+layout_mode = 2
+theme_override_constants/separation = 23
+
+[node name="GridContainer" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 0
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "预设:"
+
+[node name="PresetOption" type="OptionButton" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 1
+selected = 0
+popup/item_0/text = "- None -"
+popup/item_0/id = 0
+
+[node name="PresetNameLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "要保存的预设名称"
+
+[node name="SaveButton" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "保存"
+
+[node name="DeleteButton" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "删除"
+
+[node name="ScrollContainer2" type="ScrollContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+text = "数据类名："
+
+[node name="ClassNameLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "原生类名或脚本的内部类名，留空时脚本不能为空"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "数据类脚本："
+
+[node name="ScriptLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "可选项"
+
+[node name="ScriptSelectBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择"
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer6"]
+layout_mode = 2
+text = "表格名："
+
+[node name="TableNameLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/HBoxContainer6"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "建议使用大驼峰命名"
+
+[node name="PanelContainer" type="PanelContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="TabContainer" type="TabContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+tab_alignment = 2
+
+[node name="表格选项" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
+layout_mode = 2
+metadata/_tab_index = 0
+
+[node name="HBoxContainer5" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer5"]
+layout_mode = 2
+text = "优先字段："
+
+[node name="PriorityLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer5"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "用\",\"分隔，未列入的字段将排在其后。例:id, name, description"
+
+[node name="HBoxContainer6" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer6"]
+layout_mode = 2
+text = "需要元字段的字段: "
+
+[node name="MetaPriorityLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer6"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "用\",\"分隔，生成的元字段列不会被导入，仅用于表格编辑。"
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+
+[node name="SkipPrefixUnderscoreCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "即含有PROPERTY_USAGE_STORAGE的属性"
+button_pressed = true
+text = "跳过\"_\"开头的属性"
+
+[node name="OnlyStorageCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "即含有PROPERTY_USAGE_STORAGE的属性"
+text = "仅需要存储的属性"
+
+[node name="NoInheritanceCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "即含有PROPERTY_USAGE_STORAGE的属性"
+button_pressed = true
+text = "不含父类属性"
+
+[node name="AscendingCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "按字母升序"
+
+[node name="BackupCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "如果表格生成路径已存在文件，则将生成备份（于同目录下的.backup文件夹中），备份文件名称将加上备份时间作为前缀。"
+text = "覆盖前备份"
+
+[node name="MergeCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+tooltip_text = "如果生成路径已存在目标文件，将对数据行的兼容字段进行合并"
+button_pressed = true
+text = "自动合并"
+
+[node name="GridContainer2" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+size_flags_vertical = 10
+columns = 3
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer2"]
+layout_mode = 2
+text = "表格生成路径:"
+
+[node name="OutputLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "res://tables/{table_name}.csv"
+
+[node name="OutputSeletBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择"
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer7"]
+layout_mode = 2
+text = "表格选项参数："
+
+[node name="TableOptionsLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer7"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "特定于表格工具的选项参数，用\",\"分隔。"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer"]
+layout_mode = 2
+text = "表格工具："
+
+[node name="TableToolOptions" type="OptionButton" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 1
+selected = 0
+popup/item_0/text = "CSV(,分隔): res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
+popup/item_0/id = 0
+
+[node name="导入选项" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 1
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/HBoxContainer4"]
+layout_mode = 2
+text = "数据对象实例化："
+
+[node name="InstantiationLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "例：create({id}, {name}), 作为参数的属性将在赋值阶段时被跳过。默认无参构造"
+
+[node name="GridContainer2" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]
+layout_mode = 2
+size_flags_vertical = 10
+columns = 3
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer2"]
+layout_mode = 2
+text = "导入路径:"
+
+[node name="TableImportLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "res://tables/imported/{table_name}.gd"
+
+[node name="TableImportSelectBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择"
+
+[node name="HBoxContainer7" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]
+layout_mode = 2
+size_flags_vertical = 8
+alignment = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/HBoxContainer7"]
+layout_mode = 2
+text = "导入选项参数："
+
+[node name="ImportOptionsLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/HBoxContainer7"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+tooltip_text = "特定于导入工具的选项参数，用\",\"分隔。
+例如默认GDScript导入可提供generate_class_name参数来为生成的脚本添加全局类名（如果表格名是合法的标识符）。"
+placeholder_text = "特定于导入工具的选项参数，用\",\"分隔。如默认GDScript导入可使用generate_class_name"
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]
+layout_mode = 2
+
+[node name="Label2" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/HBoxContainer2"]
+layout_mode = 2
+text = "导入工具："
+
+[node name="ImportToolOptions" type="OptionButton" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+item_count = 1
+selected = 0
+popup/item_0/text = "默认GDScript导入: res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+popup/item_0/id = 0
+
+[node name="附加字段" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 2
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/附加字段"]
+layout_mode = 2
+alignment = 2
+
+[node name="AddAPBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/附加字段/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/附加字段"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="APContaner" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/附加字段/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="字段描述" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 3
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/字段描述"]
+layout_mode = 2
+alignment = 2
+
+[node name="AddDescBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/字段描述/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/字段描述"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="DescContaner" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/字段描述/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="自定义元数据" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
+visible = false
+layout_mode = 2
+metadata/_tab_index = 4
+
+[node name="HBoxContainer4" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/自定义元数据"]
+layout_mode = 2
+alignment = 2
+
+[node name="AddMetaBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/自定义元数据/HBoxContainer4"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "+"
+
+[node name="ScrollContainer" type="ScrollContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/自定义元数据"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="MetaContaner" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/自定义元数据/ScrollContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="生成与导入" type="MarginContainer" parent="TabContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_bottom = 10
+metadata/_tab_index = 1
+
+[node name="HBoxContainer" type="HSplitContainer" parent="TabContainer/生成与导入"]
+layout_mode = 2
+
+[node name="GenerateTables" parent="TabContainer/生成与导入/HBoxContainer" instance=ExtResource("2_sf0g2")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "表格生成"
+
+[node name="ImportTables" parent="TabContainer/生成与导入/HBoxContainer" instance=ExtResource("2_sf0g2")]
+unique_name_in_owner = true
+layout_mode = 2
+title = "表格导入"
+mode = 1
+
+[node name="FileDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+size = Vector2i(384, 210)
+root_subfolder = "res://"
+
+[node name="ConfirmationDialog" type="ConfirmationDialog" parent="."]
+unique_name_in_owner = true
+size = Vector2i(200, 106)
+dialog_text = "确认操作？"

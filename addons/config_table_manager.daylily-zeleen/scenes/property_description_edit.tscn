@@ -1,0 +1,29 @@
+[gd_scene load_steps=2 format=3 uid="uid://itkw7iwcegvd"]
+
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.gd" id="1_16vph"]
+
+[node name="PropertyDescriptionEdit" type="PanelContainer"]
+offset_right = 1130.0
+offset_bottom = 44.0
+script = ExtResource("1_16vph")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="NameLineEdit" type="LineEdit" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.25
+placeholder_text = "字段名称"
+
+[node name="DescriptionLineEdit" type="LineEdit" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "描述"
+
+[node name="DeleteBtn" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = " - "

@@ -1,0 +1,51 @@
+[gd_scene load_steps=2 format=3 uid="uid://bepjlsptadkrq"]
+
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd" id="1_o1jft"]
+
+[node name="GenAndImport" type="VBoxContainer"]
+offset_right = 500.0
+offset_bottom = 647.0
+size_flags_horizontal = 3
+script = ExtResource("1_o1jft")
+
+[node name="TitleLabel" type="Label" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+text = "表格生成"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SelectAllBtn" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "全选"
+
+[node name="DeselectAllBtn" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "全部取消勾选"
+
+[node name="InverseSelectBtn" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "反选"
+
+[node name="Tree" type="Tree" parent="."]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+hide_root = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="SelectOnlyBtn" type="Button" parent="HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "生成选中的预设"
+
+[node name="AllBtn" type="Button" parent="HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "对所有预设进行生成"

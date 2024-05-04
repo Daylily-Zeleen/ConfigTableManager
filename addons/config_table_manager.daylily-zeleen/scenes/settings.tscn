@@ -1,0 +1,85 @@
+[gd_scene load_steps=2 format=3 uid="uid://bwb7n8a3xx0bu"]
+
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scenes/settings.gd" id="1_klie4"]
+
+[node name="设置" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource("1_klie4")
+table_tools = {
+"CSV(,分隔)": "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
+}
+import_tools = {
+"默认GDScript导入": "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+}
+metadata/_tab_index = 1
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 20
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer"]
+layout_mode = 2
+
+[node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+columns = 3
+
+[node name="Label" type="Label" parent="MarginContainer/VBoxContainer/GridContainer"]
+layout_mode = 2
+text = "预设保存路径："
+
+[node name="PresetSaveDirLineEdit" type="LineEdit" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+text = "res://tables/presets/"
+caret_blink = true
+caret_blink_interval = 0.5
+
+[node name="PresetDirSelectBtn" type="Button" parent="MarginContainer/VBoxContainer/GridContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择"
+
+[node name="TableToolsTree" type="Tree" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3
+column_titles_visible = true
+hide_root = true
+
+[node name="ImportToolsTree" type="Tree" parent="MarginContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_vertical = 3
+columns = 3
+column_titles_visible = true
+hide_root = true
+
+[node name="BoxContainer" type="HBoxContainer" parent="MarginContainer/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 10
+alignment = 1
+
+[node name="SaveBtn" type="Button" parent="MarginContainer/VBoxContainer/BoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "保存设置"
+
+[node name="FileDialog" type="FileDialog" parent="."]
+unique_name_in_owner = true
+title = "Open a Directory"
+position = Vector2i(384, 216)
+size = Vector2i(1152, 648)
+ok_button_text = "选择当前文件夹"
+file_mode = 2

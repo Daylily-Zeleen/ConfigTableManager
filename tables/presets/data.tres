@@ -1,0 +1,40 @@
+[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cm0xsl28k7g5b"]
+
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scripts/preset.gd" id="1_hbjie"]
+
+[resource]
+script = ExtResource("1_hbjie")
+trigger_generate_table = false
+trigger_import_table = false
+name = "data"
+data_class = ""
+script_path = "res://data_classes/data.gd"
+table_name = "DataTable"
+skip_prefix_underscore_properties = true
+only_strage_properties = false
+no_inheritance = true
+ascending_order = true
+auto_backup = false
+auto_merge = true
+priority_properties = PackedStringArray("id", "name")
+table_tool_options = PackedStringArray()
+table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
+table_ouput_path = "res://tables/{table_name}.csv"
+instantiation = "new({id})"
+import_tool_options = PackedStringArray("generate_class_name")
+import_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+import_path = "res://tables/imported/{table_name}.gd"
+additional_properties = Array[Dictionary]([{
+"name": "id",
+"setter": "",
+"type": 2
+}, {
+"name": "arr",
+"setter": "set_arr",
+"type": 28
+}])
+descriptions = {
+"id": "ID 字段"
+}
+metas = PackedStringArray("测试元数据")
+need_meta_properties = PackedStringArray("arr")

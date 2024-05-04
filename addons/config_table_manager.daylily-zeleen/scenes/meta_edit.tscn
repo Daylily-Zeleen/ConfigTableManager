@@ -1,0 +1,22 @@
+[gd_scene load_steps=2 format=3 uid="uid://dnjoxwe0301f6"]
+
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scenes/meta_edit.gd" id="1_w8oww"]
+
+[node name="MetaEdit" type="PanelContainer"]
+offset_right = 1130.0
+offset_bottom = 44.0
+script = ExtResource("1_w8oww")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="MetaLineEdit" type="LineEdit" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "Meta"
+
+[node name="DeleteBtn" type="Button" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "X"
