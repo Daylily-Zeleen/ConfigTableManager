@@ -347,7 +347,7 @@ func _get_custom_setter(prop_name: String) -> String:
 func _exclude_unsupport_type_filter(p: Dictionary, support_types: PackedByteArray) -> bool:
 	var t := p["type"] as int
 	if not t in support_types:
-		_Log.info([name, " - ", tr("不支持的属性类型将被跳过:"), p["name"], " - ", type_string(t)])
+		_Log.warning([name, " - ", tr("不支持的属性类型将被跳过:"), p["name"], " - ", type_string(t), " ", tr("如果是脚本类型可以安全忽略。")])
 		return false
 	return true
 
