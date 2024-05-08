@@ -1,5 +1,5 @@
-PlaceHolder Metas,,,
+PlaceHolder Metas
 ,,,
 id,name,str_arr,desc
 int,String,PackedStringArray,String
-0,test,"""asd"", ""qweqwe""",啊吧啊吧
+0,test,"""asd"",""qweqwe""",啊吧啊吧

@@ -198,6 +198,7 @@ func _load_preset(preset: _Preset) -> void:
 	_ascending_check_box.set_pressed_no_signal(preset.ascending_order)
 	_instantiation_line_edit.text = preset.instantiation
 	_priority_line_edit.text = ", ".join(preset.priority_properties)
+	%IgnoreLineEdit.text = ", ".join(preset.ignored_properties)
 	%MetaPriorityLineEdit.text = ", ".join(preset.need_meta_properties)
 	_output_line_edit.text = preset.table_ouput_path
 	%BackupCheckBox.set_pressed_no_signal(preset.auto_backup)
@@ -249,6 +250,7 @@ func _set_to_preset(preset: _Preset) -> void:
 	preset.ascending_order = _ascending_check_box.button_pressed
 	preset.instantiation = _instantiation_line_edit.text
 	preset.priority_properties = Array(_priority_line_edit.text.split(",", false)).map(func(text: String): return text.strip_edges())
+	preset.ignored_properties = Array(%IgnoreLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
 	preset.table_ouput_path = _output_line_edit.text
 	preset.need_meta_properties = Array(%MetaPriorityLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
 	preset.auto_backup = %BackupCheckBox.button_pressed

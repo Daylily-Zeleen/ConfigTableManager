@@ -30,12 +30,15 @@ const _Log = preload("log.gd")
 @export var ascending_order: bool = false
 @export var auto_backup: bool = false  #
 @export var auto_merge: bool = true  #
-@export var priority_properties: PackedStringArray
+@export var priority_properties: PackedStringArray:
+	get:
+		return _strip_str_arr_elements_edges(priority_properties)
+@export var ignored_properties: PackedStringArray:
+	get:
+		return _strip_str_arr_elements_edges(ignored_properties)
 @export var table_tool_options: PackedStringArray:
 	get:
-		for i in range(table_tool_options.size()):
-			table_tool_options[i]= table_tool_options[i].strip_edges()
-		return table_tool_options
+		return _strip_str_arr_elements_edges(table_tool_options)
 @export var table_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
 @export_file() var table_ouput_path: String = "res://tables/{table_name}.csv"
 
@@ -43,9 +46,7 @@ const _Log = preload("log.gd")
 @export var instantiation: String
 @export var import_tool_options: PackedStringArray:
 	get:
-		for i in range(import_tool_options.size()):
-			import_tool_options[i]= import_tool_options[i].strip_edges()
-		return import_tool_options
+		return _strip_str_arr_elements_edges(import_tool_options)
 @export var import_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 @export_file() var import_path: String = "res://tables/imported/{table_name}.gd"
 
@@ -53,7 +54,11 @@ const _Log = preload("log.gd")
 @export var additional_properties: Array[Dictionary]
 @export var descriptions: Dictionary
 @export var metas: PackedStringArray
-@export var need_meta_properties: PackedStringArray  # 需要meta的字段，生成时将在对应的字段下一列插入一列#开头的字段，仅用于编辑时，不会被导入
+# 需要meta的字段，生成时将在对应的字段下一列插入一列#开头的字段，仅用于编辑时，不会被导入
+@export var need_meta_properties: PackedStringArray:
+	get:
+		return _strip_str_arr_elements_edges(need_meta_properties)
+
 
 ## func_modify_data: Callable 修改要生成的数据行,参数为 Array[Dictionary]
 func generate_table(func_modify_data: Callable = Callable()) -> Error:
@@ -104,6 +109,9 @@ func generate_table(func_modify_data: Callable = Callable()) -> Error:
 				_Log.error([name, " - ", tr("生成表格失败："), tr("原生类不存在需要的静态实例化方法"), " - ", data_class, " - ", instantiation_method])
 				return ERR_INVALID_PARAMETER
 		_append_base_property_list_recursively(no_inheritance, data_class, property_list)
+
+	# 排除忽略的属性
+	property_list = property_list.filter(func(p): return not p["name"] in ignored_properties)
 
 	# 附加属性检查
 	for ap in additional_properties:
@@ -317,6 +325,12 @@ func import_table() -> Error:
 
 
 #---------------------
+func _strip_str_arr_elements_edges(str_arr:PackedStringArray) -> PackedStringArray:
+	for i in range(str_arr.size()):
+		str_arr[i]= str_arr[i].strip_edges()
+	return str_arr
+
+
 func _update_file_change(file:String) -> void:
 	if not Engine.is_editor_hint():
 		return
@@ -334,7 +348,6 @@ func _update_file_change(file:String) -> void:
 		Engine.get_main_loop().set_meta(&"__HACK_TIMER__", timer)
 	elif file_type == &"Resource" or ClassDB.is_parent_class(file_type, &"Resource"):
 		EditorInterface.get_resource_filesystem().reimport_files([file])
-	
 
 
 func _conver_to_backup_file_path(origin_path: String) -> String:

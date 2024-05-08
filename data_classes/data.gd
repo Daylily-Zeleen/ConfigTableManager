@@ -4,7 +4,7 @@
 @export var description:String
 @export var arr: Array
 @export var dict: Dictionary
-
+@export var need_ignore: int
 
 func _init(id: int) -> void:
 	_id = id

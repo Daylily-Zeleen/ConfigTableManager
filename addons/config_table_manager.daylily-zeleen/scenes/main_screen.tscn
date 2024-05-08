@@ -150,6 +150,19 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "用\",\"分隔，未列入的字段将排在其后。例:id, name, description"
 
+[node name="HBoxContainer8" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer8"]
+layout_mode = 2
+text = "忽略字段："
+
+[node name="IgnoreLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer8"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "用\",\"分隔，列入的字段将不被生成（但优先度低于附加字段）。例:internal_id, changeable_data"
+
 [node name="HBoxContainer6" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
 layout_mode = 2
 
@@ -169,7 +182,6 @@ layout_mode = 2
 [node name="SkipPrefixUnderscoreCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "即含有PROPERTY_USAGE_STORAGE的属性"
 button_pressed = true
 text = "跳过\"_\"开头的属性"
 
@@ -182,7 +194,6 @@ text = "仅需要存储的属性"
 [node name="NoInheritanceCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
 unique_name_in_owner = true
 layout_mode = 2
-tooltip_text = "即含有PROPERTY_USAGE_STORAGE的属性"
 button_pressed = true
 text = "不含父类属性"
 

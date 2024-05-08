@@ -17,6 +17,7 @@ ascending_order = true
 auto_backup = false
 auto_merge = true
 priority_properties = PackedStringArray("id", "name")
+ignored_properties = PackedStringArray("need_ignore")
 table_tool_options = PackedStringArray()
 table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
 table_ouput_path = "res://tables/{table_name}.csv"
