@@ -55,8 +55,8 @@ const _Log = preload("log.gd")
 @export var metas: PackedStringArray
 @export var need_meta_properties: PackedStringArray  # 需要meta的字段，生成时将在对应的字段下一列插入一列#开头的字段，仅用于编辑时，不会被导入
 
-
-func generate_table() -> Error:
+## func_modify_data: Callable 修改要生成的数据行,参数为 Array[Dictionary]
+func generate_table(func_modify_data: Callable = Callable()) -> Error:
 	if table_name.is_empty():
 		_Log.error([name, " - ", tr("生成表格失败："), tr("表格名不能为空")])
 		return ERR_INVALID_PARAMETER
@@ -198,8 +198,7 @@ func generate_table() -> Error:
 		elif descriptions.has(f):
 			header.descriptions[i] = descriptions[f]
 
-	var data_rows: Array[PackedStringArray]
-
+	var data:Array[Dictionary] = []
 	if FileAccess.file_exists(table_file):
 		if not DirAccess.get_directories_at(backup_file.get_base_dir()):
 			var err = DirAccess.make_dir_recursive_absolute(backup_file.get_base_dir())
@@ -218,9 +217,16 @@ func generate_table() -> Error:
 			if err != OK:
 				_Log.error([name, " - ", tr("生成表格失败："), tr("指定的表格工具无法解析已有的表格: "), table_file])
 				return err
-			data_rows = table_tool.to_data_rows(table_tool.get_data(), property_list.map(func(d): return d["name"]), property_list.map(func(d): return d["type"]))
+			data = table_tool.get_data()
 
-	#
+	# 修改数据
+	if func_modify_data.is_valid():
+		func_modify_data.call(data)
+
+	var data_rows: Array[PackedStringArray]
+	if not data.is_empty():
+		data_rows = table_tool.to_data_rows(data, property_list.map(func(d): return d["name"]), property_list.map(func(d): return d["type"]))
+
 	var err = table_tool.generate_table_file(table_file, header, data_rows, table_tool_options)
 	if not auto_backup:
 		# 不需要备份，删除
