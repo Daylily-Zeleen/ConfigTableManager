@@ -33,7 +33,7 @@ func _get_parse_error() -> Error:
 	return _last_parse_error
 
 
-func _parse_table_file(csv_file: String, _options:PackedStringArray) -> Error:
+func _parse_table_file(csv_file: String, _options: PackedStringArray) -> Error:
 	var fa = FileAccess.open(csv_file, FileAccess.READ)
 	if not is_instance_valid(fa):
 		_Log.error([tr("无法读取csv文件: "), csv_file, " - ", error_string(FileAccess.get_open_error())])
@@ -47,13 +47,13 @@ func _parse_table_file(csv_file: String, _options:PackedStringArray) -> Error:
 	var types := fa.get_csv_line(CSV_DELIM)
 
 	# 移除尾随空项（由其他软件产生）
-	for i in range(metas.size()-1,-1,-1):
+	for i in range(metas.size() - 1, -1, -1):
 		if metas[i].is_empty():
 			metas.remove_at(i)
 		else:
 			break
-	
-	for i in range(descs.size()-1,-1,-1):
+
+	for i in range(descs.size() - 1, -1, -1):
 		if descs[i].is_empty():
 			descs.remove_at(i)
 		else:
@@ -132,7 +132,7 @@ func _get_table_file_extension() -> String:
 	return "csv"
 
 
-func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], _options:PackedStringArray) -> Error:
+func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], _options: PackedStringArray) -> Error:
 	if not is_instance_valid(header):
 		_Log.error([tr("生成表格失败: "), error_string(ERR_INVALID_PARAMETER)])
 		return ERR_INVALID_PARAMETER
@@ -180,29 +180,37 @@ func _to_value_text(value: Variant) -> String:
 	if not typeof(value) in get_support_types():
 		_Log.error([tr("转换为文本失败,不支持的类型: "), value, " - ", type_string(typeof(value))])
 		return ""
-	# 不带两侧括号
 	if typeof(value) in [TYPE_STRING, TYPE_NODE_PATH, TYPE_STRING_NAME]:
 		return str(value)
+	if typeof(value) > TYPE_ARRAY:
+		# 转为数组给json
+		value = type_convert(value, TYPE_ARRAY)
+	# 不带两侧括号
 	return JSON.stringify(value).trim_prefix("[").trim_suffix("]").trim_prefix("{").trim_suffix("}")
 
 
 func _parse_value(text: String, type_id: int) -> Variant:
-	if text.is_empty() and type_id in get_support_types():
-		return type_convert(null, type_id)
+	if not type_id in get_support_types():
+		_Log.error([tr("不支持的类型: "), type_string(type_id)])
+		return null
+
+	var default := text.is_empty()
 	match type_id:
 		TYPE_BOOL:
-			return "t" in text.to_lower()
+			return false if default else ("t" in text.to_lower())
 		TYPE_INT:
-			return text.to_int()
+			return 0 if default else text.to_int()
 		TYPE_FLOAT:
-			return text.to_float()
+			return 0.0 if default else text.to_float()
 		TYPE_STRING:
-			return text
+			return "" if default else text
 		TYPE_STRING_NAME:
-			return StringName(text)
+			return &"" if default else StringName(text)
 		TYPE_NODE_PATH:
-			return NodePath(text)
+			return ^"" if default else NodePath(text)
 		TYPE_ARRAY, TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY, TYPE_PACKED_STRING_ARRAY:
+			if default:
+				return convert([], type_id)
 			var value_text := text
 			if not text.begins_with("[") and not text.ends_with("]"):
 				value_text = "[%s]" % text
@@ -212,16 +220,16 @@ func _parse_value(text: String, type_id: int) -> Variant:
 				return null
 			return convert(arr, type_id)
 		TYPE_DICTIONARY:
+			if default:
+				return {}
 			var value_text := text
 			if not text.begins_with("{") and not text.ends_with("}"):
 				value_text = "{%s}" % text
-			var arr = JSON.parse_string(value_text)
-			if typeof(arr) != TYPE_DICTIONARY:
+			var dict = JSON.parse_string(value_text)
+			if typeof(dict) != TYPE_DICTIONARY:
 				_Log.error([tr("非法值文本: "), text])
 				return null
-			return convert(arr, type_id)
-
-	_Log.error([tr("不支持的类型: "), type_string(type_id)])
+			return dict
 	return null
 
 
