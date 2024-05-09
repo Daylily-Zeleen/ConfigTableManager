@@ -75,6 +75,8 @@ func _ready() -> void:
 	_add_desc_btn.pressed.connect(_on_add_desc_btn_pressed)
 	_add_meta_btn.pressed.connect(_on_add_meta_btn_pressed)
 	_output_select_btn.pressed.connect(_on_output_select_btn_pressed)
+	%GenerateModifierSeletBtn.pressed.connect(_on_generate_modifier_select_btn_pressed)
+	%ImportModifierSeletBtn.pressed.connect(_on_import_modifier_select_btn_pressed)
 
 	_gen_and_import_tab.visibility_changed.connect(_on_gen_and_import_tab_visibility_changed)
 
@@ -206,6 +208,8 @@ func _load_preset(preset: _Preset) -> void:
 	_table_import_line_edit.text = preset.import_path
 	%TableOptionsLineEdit.text = ", ".join(preset.table_tool_options)
 	%ImportOptionsLineEdit.text = ", ".join(preset.import_tool_options)
+	%GenerateModifierLineEdit.text = preset.generate_modifier_file
+	%ImportModifierLineEdit.text = preset.import_mofifier_file
 
 	_remove_and_queue_free_children(_ap_contianer)
 	for ap in preset.additional_properties:
@@ -258,6 +262,8 @@ func _set_to_preset(preset: _Preset) -> void:
 	preset.import_path = _table_import_line_edit.text
 	preset.table_tool_options = Array(%TableOptionsLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
 	preset.import_tool_options = Array(%ImportOptionsLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
+	preset.generate_modifier_file = %GenerateModifierLineEdit.text
+	preset.import_mofifier_file = %ImportModifierLineEdit.text
 
 	preset.additional_properties.clear()
 	for ape in _ap_contianer.get_children():
@@ -345,6 +351,24 @@ func _on_script_select_btn_pressed() -> void:
 	if not result[0]:
 		return
 	_script_line_edit.text = result[1]
+
+
+func _on_generate_modifier_select_btn_pressed() -> void:
+	var path = %GenerateModifierLineEdit.text
+	_pop_file_dialog(tr("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
+	var result = await _path_selected as Array
+	if not result[0]:
+		return
+	%GenerateModifierLineEdit.text = result[1]
+
+
+func _on_import_modifier_select_btn_pressed() -> void:
+	var path = %ImportModifierLineEdit.text
+	_pop_file_dialog(tr("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
+	var result = await _path_selected as Array
+	if not result[0]:
+		return
+	%ImportModifierLineEdit.text = result[1]
 
 
 func _on_add_additional_property_btn_pressed() -> void:

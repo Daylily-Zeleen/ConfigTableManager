@@ -266,6 +266,26 @@ selected = 0
 popup/item_0/text = "CSV(,分隔): res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
 popup/item_0/id = 0
 
+[node name="GridContainer3" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+layout_mode = 2
+size_flags_vertical = 8
+columns = 3
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer3"]
+layout_mode = 2
+text = "表格生成修改器:"
+
+[node name="GenerateModifierLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "使用修改器在表格生成流程中修改数据，修改器应扩展自 res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
+
+[node name="GenerateModifierSeletBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择"
+
 [node name="导入选项" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
 visible = false
 layout_mode = 2
@@ -336,6 +356,26 @@ item_count = 1
 selected = 0
 popup/item_0/text = "默认GDScript导入: res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 popup/item_0/id = 0
+
+[node name="GridContainer3" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]
+layout_mode = 2
+size_flags_vertical = 8
+columns = 3
+
+[node name="Label" type="Label" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer3"]
+layout_mode = 2
+text = "导入修改器:"
+
+[node name="ImportModifierLineEdit" type="LineEdit" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+placeholder_text = "使用修改器在表格导入流程中修改数据，修改器应扩展自 res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
+
+[node name="ImportModifierSeletBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "选择"
 
 [node name="附加字段" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer"]
 visible = false
