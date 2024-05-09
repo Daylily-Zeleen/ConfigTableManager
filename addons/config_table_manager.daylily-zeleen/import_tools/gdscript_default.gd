@@ -4,6 +4,7 @@
 @tool
 extends "import_tool.gd"
 
+
 func _import(
 	import_path: String,
 	table_name: String,
@@ -34,14 +35,48 @@ func _import(
 	fa.store_line("")
 
 	# DataClass
+	var property_list: Array[Dictionary]
+	var property_defaul_values: Dictionary
 	var data_class := ""
 	if not data_class_script.is_empty():
 		var internal_class = "" if data_class_name.is_empty() else ".%s" % data_class_name
 		fa.store_line('const DataClass = preload("%s")%s' % [data_class_script, internal_class])
 		fa.store_line("")
 		data_class = "DataClass"
+
+		# 获取属性列表
+		var script = ResourceLoader.load(data_class_script, "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+		if not data_class_name.is_empty():
+			var internal = data_class_name.split(".", false)
+			while not internal.is_empty():
+				script = script.get_script_constant_map()[internal[0]]
+				internal.remove_at(0)
+		var base = script
+		while true:
+			property_list.append_array(base.get_script_property_list())
+			if not is_instance_valid(base.get_base_script()):
+				property_list.append_array(ClassDB.class_get_property_list(base.get_instance_base_type()))
+				var tmp_obj = ClassDB.instantiate(base.get_instance_base_type()) as Object
+				for p in property_list:
+					var n = p["name"]
+					if n in tmp_obj:
+						property_defaul_values[n] = tmp_obj.get(n)
+				break
+			base = base.get_base_script()
+
+		for p in property_list:
+			var n = p["name"]
+			if n in property_defaul_values:
+				continue
+			property_defaul_values[n] = script.get_property_default_value(n)
 	else:
 		data_class = data_class_name
+		property_list = ClassDB.class_get_property_list(data_class_name)
+		var tmp_obj = ClassDB.instantiate(data_class_name) as Object
+		for p in property_list:
+			var n = p["name"]
+			if n in tmp_obj:
+				property_defaul_values[n] = tmp_obj.get(n)
 
 	# find_by_property
 	fa.store_line("func get_data() -> Array[%s]:" % data_class)
@@ -97,18 +132,29 @@ func _import(
 	# _make_data
 	instantiation = instantiation.strip_edges()
 	var args := (
-		Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String): return a.strip_edges().trim_prefix("{").trim_suffix("}")) as PackedStringArray
-	) if not instantiation.ends_with("()") else PackedStringArray()
+		(
+			Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String): return a.strip_edges().trim_prefix("{").trim_suffix("}"))
+			as PackedStringArray
+		)
+		if not instantiation.ends_with("()")
+		else PackedStringArray()
+	)
 	var fields_with_type = fields.duplicate()
 	for i in range(fields_with_type.size()):
 		fields_with_type[i] = "%s: %s" % [fields_with_type[i], type_string(types[i])]
 	fa.store_line("func _make_data(%s) -> %s:" % [", ".join(fields_with_type), data_class])
 	fa.store_line("\tvar ret = %s.%s(%s)" % [data_class, instantiation.split("(")[0], ", ".join(args)])
+	var valid_properties := property_list.map(func(d): return d["name"]) as PackedStringArray
+	var hinted_fields: PackedStringArray = []
 	for f in Array(fields).filter(func(f: String): return not args.has(f)):
 		if custom_setters.has(f):
 			fa.store_line("\tret.%s(%s)" % [custom_setters[f], f])
-		else:
+		elif valid_properties.has(f):
 			fa.store_line("\tret.%s = %s" % [f, f])
+		elif not hinted_fields.has(f):
+			# 只提示一次
+			_Log.warning([tr("无法被赋值的字段将被跳过: "), f])
+			hinted_fields.push_back(f)
 	fa.store_line("\treturn ret")
 	fa.store_line("")
 	fa.store_line("")
@@ -120,7 +166,7 @@ func _import(
 		for i in range(fields.size()):
 			var f = fields[i]
 			var t = types[i]
-			args_text_list.push_back(_get_value_text(row, f, t))
+			args_text_list.push_back(_get_value_text(row, f, t, property_defaul_values))
 		fa.store_line("\t_make_data(%s)," % [", ".join(args_text_list)])
 	fa.store_line("]")
 	fa.store_line("")
@@ -133,8 +179,8 @@ func _get_import_file_extension() -> String:
 	return "gd"
 
 
-func _get_value_text(row: Dictionary, field: String, type_id: int) -> String:
-	var value = row.get(field, null)
+func _get_value_text(row: Dictionary, field: String, type_id: int, default_values: Dictionary) -> String:
+	var value = row.get(field, default_values.get(field, null))
 
 	var default := typeof(value) == TYPE_NIL
 	var convertd_value = type_convert(value, type_id)
