@@ -1,3 +1,5 @@
+## 表格导入工具基类，子类必须能够被无参构造
+## 重写 _ 开头的方法已自定义您的导入逻辑
 @tool
 
 const _TableHeader = preload("../scripts/table_header.gd")
