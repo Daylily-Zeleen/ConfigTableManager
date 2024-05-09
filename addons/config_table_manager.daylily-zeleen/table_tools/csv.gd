@@ -112,6 +112,10 @@ func _parse_table_file(csv_file: String, _options: PackedStringArray) -> Error:
 				_last_parse_error = ERR_PARSE_ERROR
 				return _last_parse_error
 
+			if row[i].is_empty():
+				# 跳过空数据，避免在此生成默认值
+				continue
+
 			var value := parse_value(row[i], type)
 
 			if typeof(value) == TYPE_NIL:
@@ -195,6 +199,10 @@ func _parse_value(text: String, type_id: int) -> Variant:
 		return null
 
 	var default := text.is_empty()
+	if default:
+		_Log.error([tr("Bug: 为空值生成默认值,请提交issue并提供复现流程或MRP。")])
+		return null
+
 	match type_id:
 		TYPE_BOOL:
 			return false if default else ("t" in text.to_lower())
