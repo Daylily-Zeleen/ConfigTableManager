@@ -1,10 +1,12 @@
 @tool
 extends Resource
 
+const _Log = preload("log.gd")
 const _TableHeader = preload("table_header.gd")
 const _TableTool = preload("../table_tools/table_tool.gd")
 const _ImportTool = preload("../import_tools/import_tool.gd")
-const _Log = preload("log.gd")
+const _GenerateModifier = preload("generate_modifier.gd")
+const _ImportModifier = preload("import_modifier.gd")
 
 # 触发生成
 @export var trigger_generate_table: bool = false:
@@ -39,16 +41,18 @@ const _Log = preload("log.gd")
 @export var table_tool_options: PackedStringArray:
 	get:
 		return _strip_str_arr_elements_edges(table_tool_options)
-@export var table_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
+@export_file() var table_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
 @export_file() var table_ouput_path: String = "res://tables/{table_name}.csv"
+@export_file() var generate_modifier_file: String = "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
 
 # 表格导入选项
 @export var instantiation: String
 @export var import_tool_options: PackedStringArray:
 	get:
 		return _strip_str_arr_elements_edges(import_tool_options)
-@export var import_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+@export_file() var import_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 @export_file() var import_path: String = "res://tables/imported/{table_name}.gd"
+@export_file() var import_mofifier_file: String = "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
 
 # 附加
 @export var additional_properties: Array[Dictionary]
@@ -60,8 +64,9 @@ const _Log = preload("log.gd")
 		return _strip_str_arr_elements_edges(need_meta_properties)
 
 
+## enable_modifier: 是否启用修改器
 ## func_modify_data: Callable 修改要生成的数据行,参数为 Array[Dictionary]
-func generate_table(func_modify_data: Callable = Callable()) -> Error:
+func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Callable()) -> Error:
 	if table_name.is_empty():
 		_Log.error([name, " - ", tr("生成表格失败："), tr("表格名不能为空")])
 		return ERR_INVALID_PARAMETER
@@ -193,19 +198,6 @@ func generate_table(func_modify_data: Callable = Callable()) -> Error:
 
 	var backup_file := _conver_to_backup_file_path(table_file)
 
-	# 准备表头
-	var header := _TableHeader.new()
-	header.metas = metas
-	header.fields = property_list.map(func(p): return p["name"])
-	header.types = property_list.map(func(p): return type_string(p["type"]))
-	header.descriptions.resize(header.fields.size())
-	for i in range(header.fields.size()):
-		var f = header.fields[i]
-		if f.begins_with("#"):
-			header.descriptions[i] = tr("不被导入")
-		elif descriptions.has(f):
-			header.descriptions[i] = descriptions[f]
-
 	var data:Array[Dictionary] = []
 	if FileAccess.file_exists(table_file):
 		if not DirAccess.get_directories_at(backup_file.get_base_dir()):
@@ -225,15 +217,57 @@ func generate_table(func_modify_data: Callable = Callable()) -> Error:
 			if err != OK:
 				_Log.error([name, " - ", tr("生成表格失败："), tr("指定的表格工具无法解析已有的表格: "), table_file])
 				return err
-			data = table_tool.get_data()
+			data = table_tool.get_data().duplicate(true)
 
-	# 修改数据
+	# 修改器
+	var modified_fileds := property_list.map(func(p): return p["name"]) as PackedStringArray
+	var modified_types := property_list.map(func(p): return p["type"]) as PackedByteArray
+	var modified_data := data
+	var modified_options := table_tool_options.duplicate()
+	var modified_metas := metas.duplicate()
+	var modified_desc := descriptions.duplicate()
+	if enable_modifier:
+		if not ResourceLoader.exists(generate_modifier_file, "Script"):
+			_Log.error([name, " - ", tr("生成表格失败："), tr("无效的生成修改器脚本: "), generate_modifier_file])
+			return ERR_INVALID_PARAMETER
+		var modifier_script := ResourceLoader.load(generate_modifier_file, "Script", ResourceLoader.CACHE_MODE_IGNORE)
+		if not modifier_script.can_instantiate():
+			_Log.error([name, " - ", tr("生成表格失败："), tr("生成修改器无法被实例化: "), generate_modifier_file])
+			return ERR_INVALID_PARAMETER
+		var modifier := modifier_script.new() as _GenerateModifier
+		if not is_instance_valid(modifier):
+			_Log.error([name, " - ", tr("生成表格失败："), tr("脚本不是继承自合法的合法的生成修改器: "), generate_modifier_file])
+			_Log.error(["\t- ", tr("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"])
+			return ERR_INVALID_PARAMETER
+
+		# 修改
+		modifier.begin_modify(table_name, data_class.strip_edges(), script_path.strip_edges())
+		modifier.modify_fileds_definitions(modified_fileds, modified_types)
+		modified_data = modifier.modify_data(modified_data)
+		modified_desc = modifier.modify_descriptions(modified_desc)
+		modified_metas = modifier.modify_metas(modified_metas)
+		modified_options = modifier.modify_table_tool_options(modified_options)
+
+	# 通过数据修改方法修改数据
 	if func_modify_data.is_valid():
-		func_modify_data.call(data)
+		func_modify_data.call(modified_data)
 
 	var data_rows: Array[PackedStringArray]
-	if not data.is_empty():
-		data_rows = table_tool.to_data_rows(data, property_list.map(func(d): return d["name"]), property_list.map(func(d): return d["type"]))
+	if not modified_data.is_empty():
+		data_rows = table_tool.to_data_rows(modified_data, property_list.map(func(d): return d["name"]), property_list.map(func(d): return d["type"]))
+
+	# 准备表头
+	var header := _TableHeader.new()
+	header.metas = modified_metas
+	header.fields = modified_fileds
+	header.types = Array(modified_types).map(func(t): return type_string(t)) as PackedStringArray
+	header.descriptions.resize(header.fields.size())
+	for i in range(header.fields.size()):
+		var f = header.fields[i]
+		if f.begins_with("#"):
+			header.descriptions[i] = tr("不被导入")
+		elif modified_desc.has(f):
+			header.descriptions[i] = modified_desc[f]
 
 	var err = table_tool.generate_table_file(table_file, header, data_rows, table_tool_options)
 	if not auto_backup:
@@ -249,7 +283,8 @@ func generate_table(func_modify_data: Callable = Callable()) -> Error:
 	return OK
 
 
-func import_table() -> Error:
+## enable_modifier: 是否启用修改器
+func import_table(enable_modifier:bool = true) -> Error:
 	# 表格工具
 	if not ResourceLoader.exists(table_tool_script_file, &"Script"):
 		_Log.error([name, " - ", tr("导入失败:"), tr("表格工具脚本不存在："), table_tool_script_file])
@@ -273,6 +308,11 @@ func import_table() -> Error:
 		_Log.error([name, " - ", tr("导入失败:"), tr("表格不存在："), table_file])
 		return ERR_FILE_NOT_FOUND
 
+	var err = table_tool.parse_table_file(table_ouput_path.replace("{table_name}", table_name.capitalize().replace(" ", "_").to_lower()), table_tool_options)
+	if err != OK:
+		_Log.error([name, " - ", tr("导入失败:"), tr("指定表格工具无法解析表格："), error_string(err)])
+		return err
+
 	# 导入工具
 	if not ResourceLoader.exists(import_tool_script_file, &"Script"):
 		_Log.error([name, " - ", tr("导入失败:"), tr("指定导入工具不存在："), import_tool_script_file])
@@ -282,6 +322,44 @@ func import_table() -> Error:
 	if not import_tool_script.can_instantiate():
 		_Log.error([name, " - ", tr("导入失败:"), tr("指定导入工具无法实例化："), import_tool_script_file])
 		return ERR_INVALID_PARAMETER
+
+	var header := table_tool.get_header()
+
+	var custom_setters := {}
+	for ap in additional_properties:
+		if not ap.setter.is_empty():
+			custom_setters[ap.name] = ap.setter
+
+	# 修改器
+	var modified_table_name := table_name
+	var modified_custom_setter := custom_setters
+	var modified_data := table_tool.get_data().duplicate(true)
+	var modified_options := import_tool_options.duplicate()
+	if enable_modifier:
+		if not ResourceLoader.exists(import_mofifier_file, "Script"):
+			_Log.error([name, " - ", tr("导入表格失败："), tr("无效的导入修改器脚本: "), import_mofifier_file])
+			return ERR_INVALID_PARAMETER
+		var modifier_script := ResourceLoader.load(import_mofifier_file, "Script", ResourceLoader.CACHE_MODE_IGNORE)
+		if not modifier_script.can_instantiate():
+			_Log.error([name, " - ", tr("导入表格失败："), tr("导入修改器无法被实例化: "), import_mofifier_file])
+			return ERR_INVALID_PARAMETER
+		var modifier := modifier_script.new() as _ImportModifier
+		if not is_instance_valid(modifier):
+			_Log.error([name, " - ", tr("导入表格失败："), tr("脚本不是继承自合法的合法的导入修改器: "), import_mofifier_file])
+			_Log.error(["\t- ", tr("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"])
+			return ERR_INVALID_PARAMETER
+
+		# 修改
+		modifier.begin_modify(table_name, data_class.strip_edges(), script_path.strip_edges())
+		modified_table_name = modifier.modify_table_name(modified_table_name)
+		modified_custom_setter = modifier.modify_custom_setters(modified_custom_setter)
+		modified_data = modifier.modify_data(modified_data)
+		header.metas = modifier.modify_metas(header.metas)
+		modified_options = modifier.modify_import_tool_options(modified_options)
+
+	var inst = instantiation.strip_edges()
+	if inst.is_empty():
+		inst = "new()"
 
 	var import_tool = import_tool_script.new() as _ImportTool
 	if not is_instance_valid(import_tool):
@@ -294,27 +372,13 @@ func import_table() -> Error:
 		_Log.error([name, " - ", tr("导入失败:"), tr("导入工具不支持该扩展名："), import_file_path])
 		return ERR_INVALID_PARAMETER
 
-	var err = table_tool.parse_table_file(table_ouput_path.replace("{table_name}", table_name.capitalize().replace(" ", "_").to_lower()), table_tool_options)
-	if err != OK:
-		_Log.error([name, " - ", tr("导入失败:"), tr("指定表格工具无法解析表格："), error_string(err)])
-		return err
-
-	#
-	var custom_setters := {}
-	for ap in additional_properties:
-		if not ap.setter.is_empty():
-			custom_setters[ap.name] = ap.setter
-
-	var inst = instantiation.strip_edges()
-	if inst.is_empty():
-		inst = "new()"
-
 	if not DirAccess.dir_exists_absolute(import_file_path.get_base_dir()):
 		err = DirAccess.make_dir_recursive_absolute(import_file_path.get_base_dir())
 		if err != OK:
 			_Log.error([name, " - ", tr("导入失败,无法创建导入路径:"), import_file_path.get_base_dir(), " - ", error_string(err)])
 			return err
-	err = import_tool.import(import_file_path, table_name, table_tool.get_header(), data_class, script_path, inst, custom_setters, table_tool.get_data(), import_tool_options)
+
+	err = import_tool.import(import_file_path, modified_table_name, header, data_class, script_path, inst, modified_custom_setter, modified_data, modified_options)
 	if err != OK:
 		_Log.error([name, " - ", tr("导入失败:"), error_string(err)])
 		return err
