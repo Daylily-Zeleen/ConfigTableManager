@@ -192,7 +192,7 @@ func _remove_and_queue_free_children(node: Node) -> void:
 func _load_preset(preset: _Preset) -> void:
 	_preset_name_line_edit.text = preset.name
 	_klass_name_line_edit.text = preset.data_class
-	_script_line_edit.text = preset.script_path
+	_script_line_edit.text = preset.data_class_script
 	%TableNameLineEdit.text = preset.table_name.strip_edges()
 	%SkipPrefixUnderscoreCheckBox.set_pressed_no_signal(preset.skip_prefix_underscore_properties)
 	_only_storage_check_box.set_pressed_no_signal(preset.only_strage_properties)
@@ -246,7 +246,7 @@ func _load_preset(preset: _Preset) -> void:
 func _set_to_preset(preset: _Preset) -> void:
 	preset.name = _preset_name_line_edit.text
 	preset.data_class = _klass_name_line_edit.text
-	preset.script_path = _script_line_edit.text
+	preset.data_class_script = _script_line_edit.text
 	preset.table_name = %TableNameLineEdit.text.strip_edges()
 	preset.skip_prefix_underscore_properties = %SkipPrefixUnderscoreCheckBox.button_pressed
 	preset.only_strage_properties = _only_storage_check_box.button_pressed

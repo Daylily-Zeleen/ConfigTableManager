@@ -22,7 +22,7 @@ const _ImportModifier = preload("import_modifier.gd")
 @export var name: String
 # 数据类
 @export var data_class: String
-@export_file() var script_path: String
+@export_file() var data_class_script: String
 @export var table_name: String
 
 # 表格生成选项
@@ -78,11 +78,11 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 	)
 	var script: Script
 
-	if not script_path.is_empty():
-		if not ResourceLoader.exists(script_path, &"Script"):
-			_Log.error([name, " - ", tr("生成表格失败："), tr("非法脚本文件"), " - ", script_path])
+	if not data_class_script.is_empty():
+		if not ResourceLoader.exists(data_class_script, &"Script"):
+			_Log.error([name, " - ", tr("生成表格失败："), tr("非法脚本文件"), " - ", data_class_script])
 			return ERR_INVALID_PARAMETER
-		script = ResourceLoader.load(script_path, &"Script", ResourceLoader.CACHE_MODE_IGNORE)
+		script = ResourceLoader.load(data_class_script, &"Script", ResourceLoader.CACHE_MODE_IGNORE)
 
 	var property_list: Array[Dictionary]
 
@@ -96,12 +96,12 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 
 		if not Engine.is_editor_hint() and not script.can_instantiate():
 			# 只在非编辑器下进行检查
-			_Log.error([name, " - ", tr("生成表格失败："), tr("类无法被实例化"), " - ", script_path, " - ", data_class])
+			_Log.error([name, " - ", tr("生成表格失败："), tr("类无法被实例化"), " - ", data_class_script, " - ", data_class])
 			return ERR_INVALID_PARAMETER
 
 		if instantiation_method != "new":
 			if script.get_script_method_list().filter(func(m): return m["name"] == instantiation_method and m["flags"] & METHOD_FLAG_STATIC).is_empty():
-				_Log.error([name, " - ", tr("生成表格失败："), tr("脚本类不存在需要的静态实例化方法"), " - ", script_path, " - ", instantiation_method])
+				_Log.error([name, " - ", tr("生成表格失败："), tr("脚本类不存在需要的静态实例化方法"), " - ", data_class_script, " - ", instantiation_method])
 				return ERR_INVALID_PARAMETER
 		_append_base_property_list_recursively_script(no_inheritance, script, property_list)
 	else:
@@ -241,7 +241,7 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 			return ERR_INVALID_PARAMETER
 
 		# 修改
-		modifier.begin_modify(table_name, data_class.strip_edges(), script_path.strip_edges())
+		modifier.begin_modify(table_name, data_class.strip_edges(), data_class_script.strip_edges())
 		modifier.modify_fileds_definitions(modified_fileds, modified_types)
 		modified_data = modifier.modify_data(modified_data)
 		modified_desc = modifier.modify_descriptions(modified_desc)
@@ -350,7 +350,7 @@ func import_table(enable_modifier:bool = true) -> Error:
 			return ERR_INVALID_PARAMETER
 
 		# 修改
-		modifier.begin_modify(table_name, data_class.strip_edges(), script_path.strip_edges())
+		modifier.begin_modify(table_name, data_class.strip_edges(), data_class_script.strip_edges())
 		modified_table_name = modifier.modify_table_name(modified_table_name)
 		modified_custom_setter = modifier.modify_custom_setters(modified_custom_setter)
 		modified_data = modifier.modify_data(modified_data)
@@ -378,7 +378,7 @@ func import_table(enable_modifier:bool = true) -> Error:
 			_Log.error([name, " - ", tr("导入失败,无法创建导入路径:"), import_file_path.get_base_dir(), " - ", error_string(err)])
 			return err
 
-	err = import_tool.import(import_file_path, modified_table_name, header, data_class, script_path, inst, modified_custom_setter, modified_data, modified_options)
+	err = import_tool.import(import_file_path, modified_table_name, header, data_class, data_class_script, inst, modified_custom_setter, modified_data, modified_options)
 	if err != OK:
 		_Log.error([name, " - ", tr("导入失败:"), error_string(err)])
 		return err
