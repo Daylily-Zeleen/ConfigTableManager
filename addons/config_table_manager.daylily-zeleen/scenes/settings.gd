@@ -31,6 +31,15 @@ var presets_dir: String:
 @onready var _save_btn: Button = %SaveBtn
 @onready var _file_dialog: FileDialog = %FileDialog
 
+const DEFAULT_TABLE_TOOL = {
+	"CSV(,分隔)": "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd",
+	"Excel(xlsx)": "res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd",
+}
+
+const DEFAULT_IMPORT_TOOL = {
+	"默认GDScript导入": "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd",
+}
+
 
 func _ready() -> void:
 	_preset_dir_select_btn.pressed.connect(func(): _file_dialog.popup_centered_ratio(0.6))
@@ -67,9 +76,10 @@ func _refresh() -> void:
 	for item in root.get_children():
 		root.remove_child(item)
 		item.free()
-	_add_tree_itme(root, "CSV(,分隔)", "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd", false)
+	for k in DEFAULT_TABLE_TOOL:
+		_add_tree_itme(root, k, DEFAULT_TABLE_TOOL[k], false)
 	for n in table_tools:
-		if table_tools[n] == "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd":
+		if table_tools[n] in DEFAULT_TABLE_TOOL.values():
 			continue
 		_add_tree_itme(root, n, table_tools[n])
 	_refresh_tools(_table_tools_tree)
@@ -78,13 +88,13 @@ func _refresh() -> void:
 	for item in root.get_children():
 		root.remove_child(item)
 		item.free()
-	_add_tree_itme(root, "默认GDScript导入", "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd", false)
+	for k in DEFAULT_IMPORT_TOOL:
+		_add_tree_itme(root, k, DEFAULT_IMPORT_TOOL[k], false)
 	for n in import_tools:
-		if import_tools[n] == "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd":
+		if import_tools[n] in DEFAULT_IMPORT_TOOL.values():
 			continue
 		_add_tree_itme(root, n, import_tools[n])
 	_refresh_tools(_import_tools_tree)
-	
 
 
 func _add_tree_itme(parent: TreeItem, p_name: String, path: String, editable := true) -> void:
@@ -119,7 +129,9 @@ func _validate_tools(tools: Dictionary, for_table_tool: bool) -> Dictionary:
 	if for_table_tool:
 		required_base = ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
 	else:
-		required_base = ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+		required_base = (
+			ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+		)
 
 	for n in tools:
 		n = (n as String).strip_edges()

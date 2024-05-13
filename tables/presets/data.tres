@@ -8,7 +8,7 @@ trigger_generate_table = false
 trigger_import_table = false
 name = "data"
 data_class = ""
-script_path = "res://data_classes/data.gd"
+data_class_script = "res://data_classes/data.gd"
 table_name = "DataTable"
 skip_prefix_underscore_properties = true
 only_strage_properties = false
@@ -18,13 +18,15 @@ auto_backup = false
 auto_merge = true
 priority_properties = PackedStringArray("id", "name")
 ignored_properties = PackedStringArray("need_ignore")
-table_tool_options = PackedStringArray()
-table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
-table_ouput_path = "res://tables/{table_name}.csv"
+table_tool_options = PackedStringArray("sheet=Data")
+table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd"
+table_ouput_path = "res://tables/{table_name}.xlsx"
+generate_modifier_file = "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
 instantiation = "new({id})"
 import_tool_options = PackedStringArray("generate_class_name")
 import_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 import_path = "res://tables/imported/{table_name}.gd"
+import_mofifier_file = "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
 additional_properties = Array[Dictionary]([{
 "name": "id",
 "setter": "",
