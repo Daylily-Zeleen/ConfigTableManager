@@ -55,13 +55,22 @@ def override_xlsx_worksheets_from_json(json_file_path: str, output_xlsx_file_pat
     f = open(json_file_path, "r", encoding="utf8")
     data: dict[str, dict] = json.load(f)
 
+    if len(data) <= 0:
+        logging.error("The input json has not data.")
+        exit(1)
+
     workbook: Workbook
+    default_sheetnames: list[str] = []
     if os.path.exists(output_xlsx_file_path):
         workbook = openpyxl.load_workbook(output_xlsx_file_path)
     else:
         workbook = Workbook()
+        default_sheetnames = workbook.sheetnames
 
     for sheet_name in data:
+        if sheet_name in default_sheetnames:
+            default_sheetnames.remove(sheet_name)
+
         # 覆盖
         if not sheet_name in workbook.sheetnames:
             workbook.create_sheet(sheet_name)
@@ -85,6 +94,10 @@ def override_xlsx_worksheets_from_json(json_file_path: str, output_xlsx_file_pat
                 cell = sheet.cell(row=row + 1, column=column + 1)
                 if not cell.value is None:
                     cell.value = ""
+
+    for sheet_name in default_sheetnames:
+        if sheet_name in workbook:
+            del workbook[sheet_name]
 
     workbook.save(output_xlsx_file_path)
     workbook.close()

@@ -1,6 +1,0 @@
-测试元数据
-ID 字段,,,,,不被导入
-id,name,dict,description,arr,#arr
-int,String,Dictionary,String,Array,String
-0,test1,"""a"":1,""b"":""bc""",测试数据1,"1,2,""abc""",不被导入的列
-1,test2,,测试数据2,"""yes""",啊吧啊吧
