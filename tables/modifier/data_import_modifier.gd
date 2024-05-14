@@ -9,7 +9,7 @@ var _is_required_data: bool
 func _begin_modify(table_name: String, data_class_name: String, data_class_script: String) -> void:
 	var require := ResourceLoader.load("res://data_classes/data.gd", "", ResourceLoader.CACHE_MODE_IGNORE)
 	var input := ResourceLoader.load(data_class_script, "", ResourceLoader.CACHE_MODE_IGNORE)
-	_is_required_data = require.resource_path == input.resource_path
+	_is_required_data = is_instance_valid(input) and require.resource_path == input.resource_path
 
 
 func _modify_data(data: Array[Dictionary]) -> Array[Dictionary]:
