@@ -94,21 +94,8 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 				_Log.error([name, " - ", tr("生成表格失败："), tr("非法内部类"), " - ", data_class])
 				return ERR_INVALID_PARAMETER
 
-		if not Engine.is_editor_hint() and not script.can_instantiate():
-			# 只在非编辑器下进行检查
-			_Log.error([name, " - ", tr("生成表格失败："), tr("类无法被实例化"), " - ", data_class_script, " - ", data_class])
-			return ERR_INVALID_PARAMETER
-
-		if instantiation_method != "new":
-			if script.get_script_method_list().filter(func(m): return m["name"] == instantiation_method and m["flags"] & METHOD_FLAG_STATIC).is_empty():
-				_Log.error([name, " - ", tr("生成表格失败："), tr("脚本类不存在需要的静态实例化方法"), " - ", data_class_script, " - ", instantiation_method])
-				return ERR_INVALID_PARAMETER
 		_append_base_property_list_recursively_script(no_inheritance, script, property_list)
 	else:
-		if not ClassDB.class_exists(data_class) or not ClassDB.can_instantiate(data_class):
-			_Log.error([name, " - ", tr("生成表格失败："), tr("原生类不存在或者不能被实例化"), " - ", data_class])
-			return ERR_INVALID_PARAMETER
-
 		if instantiation_method != "new":
 			if not ClassDB.class_has_method(data_class, instantiation_method):
 				_Log.error([name, " - ", tr("生成表格失败："), tr("原生类不存在需要的静态实例化方法"), " - ", data_class, " - ", instantiation_method])
@@ -360,6 +347,41 @@ func import_table(enable_modifier:bool = true) -> Error:
 	var inst = instantiation.strip_edges()
 	if inst.is_empty():
 		inst = "new()"
+
+	var script: Script
+
+	if not data_class_script.is_empty():
+		if not ResourceLoader.exists(data_class_script, &"Script"):
+			_Log.error([name, " - ", tr("生成表格失败："), tr("非法脚本文件"), " - ", data_class_script])
+			return ERR_INVALID_PARAMETER
+		script = ResourceLoader.load(data_class_script, &"Script", ResourceLoader.CACHE_MODE_IGNORE)
+
+	if is_instance_valid(script):
+		if not data_class.is_empty():
+			# 脚本内部类
+			script = script[data_class]
+			if not is_instance_valid(script):
+				_Log.error([name, " - ", tr("生成表格失败："), tr("非法内部类"), " - ", data_class])
+				return ERR_INVALID_PARAMETER
+
+		if not Engine.is_editor_hint() and not script.can_instantiate():
+			# 只在非编辑器下进行检查
+			_Log.error([name, " - ", tr("生成表格失败："), tr("类无法被实例化"), " - ", data_class_script, " - ", data_class])
+			return ERR_INVALID_PARAMETER
+
+		if not inst.begins_with("new"):
+			if script.get_script_method_list().filter(func(m): return m["name"] == inst.split("(")[0] and m["flags"] & METHOD_FLAG_STATIC).is_empty():
+				_Log.error([name, " - ", tr("生成表格失败："), tr("脚本类不存在需要的静态实例化方法"), " - ", data_class_script, " - ", inst])
+				return ERR_INVALID_PARAMETER
+	else:
+		if not ClassDB.class_exists(data_class) or not ClassDB.can_instantiate(data_class):
+			_Log.error([name, " - ", tr("生成表格失败："), tr("原生类不存在或者不能被实例化"), " - ", data_class])
+			return ERR_INVALID_PARAMETER
+
+		if not inst.begins_with("new"):
+			if not ClassDB.class_has_method(data_class, inst.split("(")[0]):
+				_Log.error([name, " - ", tr("生成表格失败："), tr("原生类不存在需要的静态实例化方法"), " - ", data_class, " - ", inst])
+				return ERR_INVALID_PARAMETER
 
 	var import_tool = import_tool_script.new() as _ImportTool
 	if not is_instance_valid(import_tool):
