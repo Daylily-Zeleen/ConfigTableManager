@@ -65,7 +65,7 @@ const _ImportModifier = preload("import_modifier.gd")
 
 
 ## enable_modifier: 是否启用修改器
-## func_modify_data: Callable 修改要生成的数据行,参数为 Array[Dictionary]
+## func_modify_data: Callable 修改要生成的数据行,参数为 Array[Dictionary], 返回修改后的数据 Array[Dictionary]
 func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Callable()) -> Error:
 	if table_name.is_empty():
 		_Log.error([name, " - ", tr("生成表格失败："), tr("表格名不能为空")])
@@ -237,11 +237,11 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 
 	# 通过数据修改方法修改数据
 	if func_modify_data.is_valid():
-		func_modify_data.call(modified_data)
+		modified_data = func_modify_data.call(modified_data)
 
 	var data_rows: Array[PackedStringArray]
 	if not modified_data.is_empty():
-		data_rows = table_tool.to_data_rows(modified_data, property_list.map(func(d): return d["name"]), property_list.map(func(d): return d["type"]))
+		data_rows = table_tool.to_data_rows(modified_data, modified_fileds, modified_types)
 
 	# 准备表头
 	var header := _TableHeader.new()
