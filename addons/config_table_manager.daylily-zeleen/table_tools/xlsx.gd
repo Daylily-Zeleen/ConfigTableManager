@@ -1,6 +1,7 @@
 ## Excel(xlsx) 表格工具
 ## Options:
-## sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表，则该参数必须指定
+## sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表，则该参数必须指定。
+## parse_sheet_must_exists 可选,如果加入该选项，指定工作表不存在时将发生解析错误。默认允许不存在。
 @tool
 extends "csv.gd"
 
@@ -12,11 +13,14 @@ var _tmp_json_path: String = ProjectSettings.globalize_path(EditorInterface.get_
 
 func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 	var sheet_name: String = ""
+	var parse_sheet_must_exists := false
 	for option in options:
 		if option.begins_with("sheet="):
 			sheet_name = option.trim_prefix("sheet=")
 			sheet_name = sheet_name.strip_edges()
 			break
+		if option == "parse_sheet_must_exists":
+			parse_sheet_must_exists = true
 
 	if sheet_name.is_empty():
 		_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("必须使用 sheet=your_sheet_name 选项指定工作表。")])
@@ -39,9 +43,13 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 	var sheets: Dictionary = JSON.parse_string(json) as Dictionary
 
 	if not sheet_name in sheets:
-		_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("不存在指定的工作表: "), sheet_name])
-		_last_parse_error = ERR_PARSE_ERROR
-		return _last_parse_error
+		if parse_sheet_must_exists:
+			_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("不存在指定的工作表: "), sheet_name])
+			_last_parse_error = ERR_PARSE_ERROR
+			return _last_parse_error
+		else:
+			_last_parse_error = OK
+			return _last_parse_error
 
 	var sheet := Array(sheets[sheet_name]["data"], TYPE_ARRAY, &"", null) as Array[Array]
 	if sheet.size() < 4:
