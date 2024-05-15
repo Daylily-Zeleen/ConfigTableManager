@@ -1,5 +1,6 @@
-# csv 表格工具
-# 暂无 Options 支持
+## csv 表格工具
+## 可选参数：
+##  arr_dict_with_brackets 可选。如果使用，生成表格时所有的数组与字典类型将加上方/花括号。
 @tool
 extends "table_tool.gd"
 
@@ -9,6 +10,7 @@ var _last_parse_error: Error = ERR_PARSE_ERROR
 var _header: _TableHeader
 var _data: Array[Dictionary] = []
 
+var arr_dict_with_brackets := false
 
 func _get_support_types() -> PackedByteArray:
 	return [
@@ -33,7 +35,11 @@ func _get_parse_error() -> Error:
 	return _last_parse_error
 
 
-func _parse_table_file(csv_file: String, _options: PackedStringArray) -> Error:
+func _parse_table_file(csv_file: String, options: PackedStringArray) -> Error:
+	for op in options:
+		if op == "arr_dict_with_brackets":
+			arr_dict_with_brackets == true
+
 	var fa = FileAccess.open(csv_file, FileAccess.READ)
 	if not is_instance_valid(fa):
 		_Log.error([tr("无法读取csv文件: "), csv_file, " - ", error_string(FileAccess.get_open_error())])
@@ -136,7 +142,11 @@ func _get_table_file_extension() -> String:
 	return "csv"
 
 
-func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], _options: PackedStringArray) -> Error:
+func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], options: PackedStringArray) -> Error:
+	for op in options:
+		if op == "arr_dict_with_brackets":
+			arr_dict_with_brackets == true
+
 	if not is_instance_valid(header):
 		_Log.error([tr("生成表格失败: "), error_string(ERR_INVALID_PARAMETER)])
 		return ERR_INVALID_PARAMETER
@@ -190,7 +200,10 @@ func _to_value_text(value: Variant) -> String:
 		# 转为数组给json
 		value = type_convert(value, TYPE_ARRAY)
 	# 不带两侧括号
-	return JSON.stringify(value).trim_prefix("[").trim_suffix("]").trim_prefix("{").trim_suffix("}")
+	if arr_dict_with_brackets:
+		return JSON.stringify(value)
+	else:
+		return JSON.stringify(value).trim_prefix("[").trim_suffix("]").trim_prefix("{").trim_suffix("}")
 
 
 func _parse_value(text: String, type_id: int) -> Variant:

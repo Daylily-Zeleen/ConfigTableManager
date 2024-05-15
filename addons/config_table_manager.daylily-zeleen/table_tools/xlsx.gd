@@ -2,6 +2,7 @@
 ## Options:
 ## sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表，则该参数必须指定。
 ## parse_sheet_must_exists 可选,如果加入该选项，指定工作表不存在时将发生解析错误。默认允许不存在。
+## arr_dict_with_brackets 可选。如果使用，生成表格时所有的数组与字典类型将加上方/花括号。
 @tool
 extends "csv.gd"
 
@@ -18,9 +19,10 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		if option.begins_with("sheet="):
 			sheet_name = option.trim_prefix("sheet=")
 			sheet_name = sheet_name.strip_edges()
-			break
 		if option == "parse_sheet_must_exists":
 			parse_sheet_must_exists = true
+		if option == "arr_dict_with_brackets":
+			arr_dict_with_brackets = true
 
 	if sheet_name.is_empty():
 		_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("必须使用 sheet=your_sheet_name 选项指定工作表。")])
@@ -160,7 +162,8 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 		if option.begins_with("sheet="):
 			sheet_name = option.trim_prefix("sheet=")
 			sheet_name = sheet_name.strip_edges()
-			break
+		if option == "arr_dict_with_brackets":
+			arr_dict_with_brackets = true
 
 	if sheet_name.is_empty():
 		_Log.error([tr("解析xlsx文件: "), save_path, " - ", tr("必须使用 sheet=your_sheet_name 选项指定工作表。")])

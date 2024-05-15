@@ -50,8 +50,8 @@
 
 |表格工具|说明|选项参数|参数说明|
 |-|-|-|-|
-|CSV(,分隔)|解析与生成使用","分隔的csv表格|N/A|N/A|
-|Excel(xlsx)|解析与生成xlsx，生成时如果指定文件已存在，仅对指定工作表进行覆盖|sheet=your_sheet_name；parse_sheet_must_exists|sheet:**必选**，指定该预设对应的工作表；parse_sheet_must_exists: 可选，如果使用该参数，解析时如果不存在指定工作表将发生解析错误|
+|CSV(,分隔)|解析与生成使用","分隔的csv表格|arr_dict_with_brackets|arr_dict_with_brackets：可选，如果指定，生成时将为数组和字典类型数值添加方/花括号|
+|Excel(xlsx)|解析与生成xlsx，生成时如果指定文件已存在，仅对指定工作表进行覆盖|sheet=your_sheet_name；parse_sheet_must_exists；arr_dict_with_brackets|sheet:**必选**，指定该预设对应的工作表；parse_sheet_must_exists: 可选，如果使用该参数，解析时如果不存在指定工作表将发生解析错误。arr_dict_with_brackets：可选，如果指定，生成时将为数组和字典类型数值添加方/花括号|
 
 ### 2. 导入工具
 
