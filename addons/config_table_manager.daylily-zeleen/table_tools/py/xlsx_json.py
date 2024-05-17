@@ -1,7 +1,6 @@
 import subprocess
 import logging
 
-
 # 检查
 _result = subprocess.run("pip show openpyxl", shell=True, capture_output=True)
 if _result.returncode != 0:
@@ -13,7 +12,9 @@ import sys
 import json
 import os
 import openpyxl
-from openpyxl import Workbook
+from openpyxl import Workbook, cell
+from openpyxl.styles.colors import Color, RGB
+from openpyxl.styles.borders import Border, Side
 
 
 def dump_xlsx_to_json(xlsx_file_path: str, output_json_path: str):
@@ -23,7 +24,6 @@ def dump_xlsx_to_json(xlsx_file_path: str, output_json_path: str):
 
     for sheet_name in workbook.sheetnames:
         sheet = workbook[sheet_name]
-
         # Sheet
         sheet_data: list[list[dict[str, None]]] = []
         for row in range(sheet.max_row):
@@ -33,6 +33,8 @@ def dump_xlsx_to_json(xlsx_file_path: str, output_json_path: str):
                 row_data.append(
                     {
                         "value": cell.value,
+                        "fill": _to_dict(cell.fill),
+                        "border": _to_dict(cell.border),
                         # TODO: 存储更多的单元格属性
                     }
                 )
@@ -88,7 +90,13 @@ def override_xlsx_worksheets_from_json(json_file_path: str, output_xlsx_file_pat
             for column in range(len(sheet_data[row])):
                 cell_data: dict[str, None] = sheet_data[row][column]
                 sheet.cell(row=row + 1, column=column + 1, value=cell_data["value"])
+                cell = sheet.cell(row=row + 1, column=column + 1)
+                if "fill" in cell_data:
+                    _set_cell_fill(cell, cell_data["fill"])
+                if "border" in cell_data:
+                    _set_cell_border(cell, cell_data["border"])
                 # TODO: 其他单元格属性(先检查是否有对应属性)
+
             # 清除右侧的多余格
             for column in range(len(sheet_data[row]), sheet.max_column):
                 cell = sheet.cell(row=row + 1, column=column + 1)
@@ -104,7 +112,99 @@ def override_xlsx_worksheets_from_json(json_file_path: str, output_xlsx_file_pat
 
 
 def _to_dict(obj: None) -> dict:
-    return {key: getattr(obj, key) for key in vars(obj) if not key.startswith("_")}
+    if not hasattr(obj, "__dict__"):
+        return obj
+    ret = {}
+    for k in vars(obj):
+        if k.startswith("_"):
+            continue
+        v = getattr(obj, k)
+        if hasattr(v, "__dict__"):
+            v = _to_dict(v)
+        ret[k] = v
+    return ret
+
+
+def _set_cell_fill(cell: cell.Cell, dict: dict) -> None:
+    import openpyxl.styles.fills as fills
+
+    PatternFill_attrs = ["patternType", "fgColor", "bgColor"]
+    GradientFill_attrs = ["type", "degree", "left", "right", "top", "bottom", "stop"]
+
+    is_meet = lambda attrs: len([attr for attr in attrs if attr in dict]) == len(attrs)
+
+    if is_meet(PatternFill_attrs):
+        cell.fill = fills.PatternFill(
+            patternType=dict["patternType"],
+            fgColor=_get_color_from_dict(dict["fgColor"]),
+            bgColor=_get_color_from_dict(dict["bgColor"]),
+        )
+    elif is_meet(GradientFill_attrs):
+        sl = []
+        for dict in dict["stop"]:
+            stop = fills.Stop(color=_get_color_from_dict(dict=["color"]), position=dict["position"])
+            sl.append(stop)
+        cell.fill = fills.GradientFill(
+            type=dict["type"],
+            degree=dict["degree"],
+            left=dict["left"],
+            right=dict["right"],
+            top=dict["top"],
+            bottom=dict["bottom"],
+            stop=sl,
+        )
+    else:
+        logging("Parse error: is not a valid dict.", dict)
+
+
+def _set_cell_border(cell: cell.Cell, dict: dict) -> None:
+    for k in ["start", "end", "left", "right", "top", "bottom", "diagonal", "vertical", "horizontal"]:
+        if k not in dict:
+            dict[k] = None
+        else:
+            side_dict = dict[k]
+            if not "style" in side_dict:
+                side_dict["style"] = None
+            if not "color" in side_dict:
+                side_dict["color"] = None
+            dict[k] = Side(style=side_dict["style"], color=_get_color_from_dict(side_dict["color"]))
+
+    for k in ["diagonalUp", "diagonalDown"]:
+        if k not in dict:
+            dict[k] = False
+
+    if "outline" not in dict:
+        dict["outline"] = True
+
+    cell.border = Border(
+        start=dict["start"],
+        end=dict["end"],
+        left=dict["left"],
+        right=dict["right"],
+        top=dict["top"],
+        bottom=dict["bottom"],
+        diagonal=dict["diagonal"],
+        vertical=dict["vertical"],
+        horizontal=dict["horizontal"],
+        diagonalUp=dict["diagonalUp"],
+        diagonalDown=dict["diagonalDown"],
+        outline=dict["outline"],
+    )
+
+
+def _get_color_from_dict(dict: dict) -> Color:
+    if "index" in dict:
+        dict["indexed"] = dict["index"]
+    if not "tint" in dict:
+        dict["tint"] = 0.0
+    if "indexed" in dict:
+        return Color(indexed=dict["indexed"], tint=dict["tint"])
+    elif "theme" in dict:
+        return Color(theme=dict["theme"], tint=dict["tint"])
+    elif "auto" in dict:
+        return Color(auto=dict["auto"])
+    else:
+        return Color(rgb=dict["rgb"])
 
 
 def main(argv):

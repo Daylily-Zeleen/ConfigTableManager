@@ -3,8 +3,15 @@
 ## sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表，则该参数必须指定。
 ## parse_sheet_must_exists 可选,如果加入该选项，指定工作表不存在时将发生解析错误。默认允许不存在。
 ## arr_dict_with_brackets 可选。如果使用，生成表格时所有的数组与字典类型将加上方/花括号。
+## colorize_header=true 是否对生成的表头单元格被赋予颜色，默认true
 @tool
 extends "csv.gd"
+
+const META_COLOR = Color.DARK_GRAY
+const DESC_COLOR = Color.AQUA
+const FIELD_COLOR = Color.DARK_SALMON
+const TYPE_COLOR = Color.LAWN_GREEN
+const META_FILED_COLOR = Color.ALICE_BLUE
 
 const _PY_TOOL_RELATIVE_PATH = "py/xlsx_json.py"
 
@@ -158,12 +165,15 @@ func _get_table_file_extension() -> String:
 func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], options: PackedStringArray) -> Error:
 	save_path = ProjectSettings.globalize_path(save_path)
 	var sheet_name: String = ""
+	var colorize_header := true
 	for option in options:
 		if option.begins_with("sheet="):
 			sheet_name = option.trim_prefix("sheet=")
 			sheet_name = sheet_name.strip_edges()
 		if option == "arr_dict_with_brackets":
 			arr_dict_with_brackets = true
+		if option.begins_with("colorize_header="):
+			colorize_header = "t" in option.trim_prefix("colorize_header=").to_lower()
 
 	if sheet_name.is_empty():
 		_Log.error([tr("解析xlsx文件: "), save_path, " - ", tr("必须使用 sheet=your_sheet_name 选项指定工作表。")])
@@ -191,6 +201,9 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 	sheet_data.push_back(_to_row(header.fields))
 	sheet_data.push_back(_to_row(header.types))
 
+	if colorize_header:
+		_colorize_header(sheet_data)
+
 	for row in data_rows:
 		sheet_data.push_back(_to_row(row))
 
@@ -209,6 +222,47 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 
 
 # -----------------
+func _colorize_header(sheet_data: Array) -> void:
+	assert(sheet_data.size() >= 4)
+	# meta
+	for cell in sheet_data[0]:
+		cell["fill"] = _make_pattern_fill(META_COLOR)
+		cell["border"] = _make_border()
+	# desc
+	for cell in sheet_data[1]:
+		cell["fill"] = _make_pattern_fill(DESC_COLOR)
+		cell["border"] = _make_border()
+	# field & type
+	for i in range(sheet_data[2].size()):
+		if is_meta_filed(sheet_data[2][i]["value"]):
+			sheet_data[2][i]["fill"] = _make_pattern_fill(META_FILED_COLOR)
+			sheet_data[3][i]["fill"] = _make_pattern_fill(META_FILED_COLOR)
+			if sheet_data[1].size() > i:
+				sheet_data[1][i]["fill"] = _make_pattern_fill(META_FILED_COLOR)
+		else:
+			sheet_data[2][i]["fill"] = _make_pattern_fill(FIELD_COLOR)
+			sheet_data[3][i]["fill"] = _make_pattern_fill(TYPE_COLOR)
+		sheet_data[2][i]["border"] = _make_border()
+		sheet_data[3][i]["border"] = _make_border()
+
+
+func _make_pattern_fill(fgColor: Color, bgColor: Color = Color(0.0, 0.0, 0.0, 0.0)) -> Dictionary:
+	return {
+		patternType = "solid",
+		fgColor = {rgb = fgColor.to_html(false)},
+		bgColor = {rgb = bgColor.to_html(false)},
+	}
+
+
+func _make_border() -> Dictionary:
+	return {
+		left = {style = "thin", color = {rgb = Color.BLACK.to_html(false)}, outline = true},
+		right = {style = "thin", color = {rgb = Color.BLACK.to_html(false)}, outline = true},
+		top = {style = "thin", color = {rgb = Color.BLACK.to_html(false)}, outline = true},
+		bottom = {style = "thin", color = {rgb = Color.BLACK.to_html(false), outline = true}},
+	}
+
+
 func _strip_right_null_cell(row: Array) -> Array[Dictionary]:
 	# row:Array[Dictionary]
 	var row_data = Array(row.duplicate(), TYPE_DICTIONARY, &"", null) as Array[Dictionary]
