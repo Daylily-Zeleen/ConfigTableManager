@@ -187,7 +187,7 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 
 	var data:Array[Dictionary] = []
 	if FileAccess.file_exists(table_file):
-		if not DirAccess.get_directories_at(backup_file.get_base_dir()):
+		if not DirAccess.dir_exists_absolute(backup_file.get_base_dir()):
 			var err = DirAccess.make_dir_recursive_absolute(backup_file.get_base_dir())
 			if err != OK:
 				_Log.error([name, " - ", tr("生成表格失败："), tr("无法创建备份路径: "), backup_file.get_base_dir()])
