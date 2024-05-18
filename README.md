@@ -2,88 +2,90 @@
 
 ![image](icon.svg)
 
-一个用于管理配置表格的Godot插件
+[点击这里查看中文说明](README.zh.md)
 
-## 特性
+A Godot plugin for managing config/data tables.
 
-1. 简单使用，根据数据类生成表头，允许添加附加列。
-2. 生成与导入预设可保存，方便反复调节。
-3. 支持重新生成表格时自动备份与合并。
-4. 高度自定义，可添加自己的表格工具与导入工具，生成符合您需求的的表格文件或导入为你需要的资源格式。
-5. 可添加生成修改器与导入修改器，在表格生成与导入流程中插入你的自定义逻辑以修改要生成或导入的数据。
+## Features
 
-## 概念
+1. Easy to use, generate table header by using a data class. Allow to add additional columns.
+2. How to generate and import can be save as a preset, convenient to adjust repeatedly.
+3. Support backup and merge when regenerating tables.
+4. Highly customizable, you can add your **Table Tool** and **Import Tool** to generate table file and import as resource which are meet your needs. ( This plugin is provide **CSV**, **xlsx** table tools, and provide **GDScript** import tool.)
+5. You can add Generate Modifier and Import Modifier to insert your logic for modify data in generating and importing workflow.
 
-1. 预设(Preset)：
-    描述表格如何生成和如何导入
-2. 表格工具(Table Tool):
-    用于解析表格和生成表格的工具脚本, 继承自 `res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd`。
-3. 导入工具(Import Tool)
-    用于导入表格, 继承自 `res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd`。
-4. 生成修改器(Generate Modifier):
-    用于在表格生成流程中插入自定义逻辑，以修改要生成的数据，这对程序化生成数据非常有用。继承自`res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd`。
-5. 导入修改器(Import Modifier):
-    用于在导入流程中插入自定义逻辑，以修改要导入的数据，这对导入数据去重与后处理非常有用。继承自`res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd`。
+## Concepts
 
-## 如何开始
+1. Preset：
+    A resource to descript how to generate table file and how to import as resource.
+2. Table Tool:
+    A tool script to parse and generate table file, must extend from `res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd`.
+3. Import Tool:
+    A tool script to import table data as a Godot resource, must extend from `res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd`.
+4. Generate Modifier:
+    A tool script to insert your custom logic to modify data in table generating workflow. It is useful for programmed data generating. Must extend from `res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd`.
+5. Import Modifier:
+    A tool script to insert your custom logic to modify data in table import workflow. It is useful for programmed data generating and data validation. Must extend from `res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd`.
 
-1. 下载并安装该插件，并再编辑器中启用，点击编辑器上方中间"![image](addons/config_table_manager.daylily-zeleen/icon.svg) Config Table Manager"按钮以显示该插件的UI。
-2. 创建你的数据类脚本。
-3. 在“预设管理”页面中创建你的预设，填写必要项目:
-   1. `数据类脚本`选择你刚刚创建的脚本。
-   2. 填写`表格名`。
-   3. 填写`预设名称`，并点击“**保存**”。
+## How to Start
 
-   其他栏目均为进阶选项，如非必要无需修改。
+1. Get (clone, download, or from Asset Library) and install this plugin, and enabled it in editor, click "![image](addons/config_table_manager.daylily-zeleen/icon.svg) Config Table Manager" to show the main UI panel of this plugin.
+2. Create your data class script.
+3. Create your preset for the data class in "Presets" tab and fill required options:
+   1. Select your data class script to fill `Data Class Script`.
+   2. Fill `Table Name`。
+   3. Fill `Preset Name`，and click "**Save**"。
+
+   You don't need to changed other advance options.
    ![image](.doc/preset_manage.png)
-4. 跳转到“生成与导入”页面，在左侧勾选你需要的预设进行生成（或全部生成），生成的表格默认在`res://tables/`路径下（默认生成CSV表格,**支持生成Excel(xlsx)**）。
+4. Jump to "Generate & Import" tab check presets which you want to generate in left side (or generate all). Generated table files are located in `res://tables/` by default (default will generate csv table file, **Excel(xlsx) is supported**).
    ![image](.doc/gen_and_import.PNG)
-5. 到外部编辑生成的csv表格(这里推荐使用VSCode并使用 "Edit csv" 插件进行编辑),注意使用utf8编码。
-6. 回到编辑器中的“生成与导入”页面，在右侧勾选你需要的预设进行导入（或全部导入），导入的资源默认在`res://tables/imported/`路径下（默认导入为GDScript脚本）。
-7. 现在你可以实例化有csv表格导入的GDScript脚本进行使用，具体请查看生成的脚本。
+5. Modify the generated table file (.csv by default) in external editor (recommend to use "VScode" with "Edit csv" plugin for csv file). **Note: use utf8 for encoding.**
+6. Return to the editor and select "Generate & Import" tab, check presets which you want to import as resource in right side (or import all). Imported resources are located in `res://tables/imported/` by default (default will generate as GDScript).
+7. Now, you can use the imported resource in Godot. Typically, for default import as GDScript, you can instantiate the script to get data, please refer to the generated script for more details.
 
-如有疑惑，请先在[Github页面上](https://github.com/Daylily-Zeleen/ConfigTableManager)下载该项目以查看示例配置。
+If you have any doubts, please clone or download this project in [Github page](https://github.com/Daylily-Zeleen/ConfigTableManager) to refer example presets first.
 
-## 内置工具
+## Internal Tools
 
-### 1. 表格工具
+### 1. Table Tools
 
-|表格工具|说明|选项参数|参数说明|
+|Table Tool|Description|Options|Options Description|
 |-|-|-|-|
-|CSV(,分隔)|解析与生成使用","分隔的csv表格|arr_dict_with_brackets|arr_dict_with_brackets：可选，如果指定，生成时将为数组和字典类型数值添加方/花括号|
-|Excel(xlsx)|解析与生成xlsx，生成时如果指定文件已存在，仅对指定工作表进行覆盖|sheet=your_sheet_name；parse_sheet_must_exists；arr_dict_with_brackets；colorize_header=true|sheet:**必选**，指定该预设对应的工作表；parse_sheet_must_exists: 可选，如果使用该参数，解析时如果不存在指定工作表将发生解析错误。arr_dict_with_brackets：可选，如果指定，生成时将为数组和字典类型数值添加方/花括号；colorize_header：可选，`true`时为生成的表头添加颜色，默认`true`|
+|CSV("," delimiter)|Parse and generate ".csv" table file which use "," as delimiter.|arr_dict_with_brackets|arr_dict_with_brackets：Optional. If specified，add square/curly braces to array and dictionary type values during generation.|
+|Excel(xlsx)|Parse and generate ".xlsx" file. Only overwrite specific worksheet.|sheet=your_sheet_name；parse_sheet_must_exists；arr_dict_with_brackets；colorize_header=true|sheet:**Required**. Specify the preset should operate which worksheet; parse_sheet_must_exists: Optional. If specified, if there have not the target worksheet during parsing, it will happen parse error. default is false; arr_dict_with_brackets：Optional. If specified, add square/curly braces to array and dictionary type values during generation; colorize_header：Optional. if `true`, colorize table header when generating. default is `true`.|
 
-### 2. 导入工具
+### 2. Import Tools
 
-|导入工具|说明|选项参数|参数说明|
+|Import Tool|Description|Options|Options Description|
 |-|-|-|-|
-|默认GDScript导入|将表格数据导入为GDScript（适合**数据量小**的场合）|generate_class_name|可选，如果有该选项且预设指定table_name是合法的标识符，则使用table_name生成全局类名(class_name)|
+|GDScript(Default)|Import table as GDScription, hold an array of data objects. It is work fine with the situation of having not many data|generate_class_name|generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
 
-## 自定义工具
+## Custom Tools
 
-### 表格工具与导入工具
+### Customize Table Tools and Import Tools
 
    ![image](.doc/settings.PNG)
 
-1. 扩展`res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd`并重写其中的虚方法以实现你的表格工具，用于解析和生成符合你需求的表格。将该脚本添加到设置中，它将出现在“预设管理”页面以供使用。
-2. 扩展`res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd`并重写其中的虚方法以实现你的导入，用于生成符合你需求的导入资源。将该脚本添加到设置中，它将出现在“预设管理”页面以供使用。
+1. Extend `res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd` and override its virtual methods (starts with "_") to implement your table tool, to parse and generate table files which meet your needs. Then add the script to "Settings" tab and save settings, it will appear in the "Presets" tab.
+2. Extend `res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd` and override its virtual methods (starts with "_") to implement your import tool, to import as resources which meet your needs. Then add the script to "Settings" tab and save settings, it will appear in the "Presets" tab.
 
-### 自定义生成修改器与导入修改器
+### Customize Generate Modifiers and Import Modifiers
 
-1. 扩展`res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd`并重写其中的虚方法以实现你的生成修改器。
-2. 扩展`res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd`并重写其中的虚方法以实现你的导入修改器。
+1. Extend `res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd` and override its virtual methods (starts with "_").
+2. Extend `res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd` and override its virtual methods (starts with "_").
 
-修改器是针对某一预设起作用，为了让你的预设应用修改器，需要在预设的`生成选项`与`导入选项`中“表格生成修改器”与“表格导入修改器”栏目中选择你的修改器脚本（记得保存预设）。
+Modifier is work with specific preset. To apply your modifier, you should select your modifier script for "Table Generate Modifier"/"Import Modifier" in `Generate Options`/`Import Options` tab of `Preset` tab. Remember to save preset.
 
-## 欢迎提交你的表格工具与导入工具
+## Welcome to submit your Table Tools and Import Tools
 
-欢迎提交你的表格工具与导入工具（置于`res://addons/config_table_manager.daylily-zeleen/table_tools/`与`res://addons/config_table_manager.daylily-zeleen/import_tools/`下）,丰富该插件的多样性。
+Welcome to submit your Table Tools and Import Tools (place in `res://addons/config_table_manager.daylily-zeleen/table_tools/`and `res://addons/config_table_manager.daylily-zeleen/import_tools/`), enrich the diversity of this plugin.
 
-也欢迎提交任何修复和改进。
+And welcome to submit any fix and improve.
 
-## 如果这个插件对你有帮助，请点个Star或并考虑为我[充电](https://afdian.net/a/Daylily-Zeleen)
+## If this plugin can help your, please click a Star and consider to [buy me a coffee.](https://afdian.net/a/Daylily-Zeleen)
 
 ## TODO
 
-1. 添加C#导入工具（目前本人没这个需求，等待有缘人贡献，或者等我有空了再添加）
-2. 英文本地化
+1. Add C# import tool (I have not need for this, waiting for someone to submit or waiting for me if I have time).
+2. Add GDScript import tool which use `Dictionary` to support large data volume (at least better than traverse an array by the default GDScript import).
