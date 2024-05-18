@@ -3,6 +3,7 @@ extends VBoxContainer
 
 const _Preset = preload("../scripts/preset.gd")
 const _Log = _Preset._Log
+const _Localize = _Preset._Localize
 
 enum Mode {
 	GENERATE_TABLE,
@@ -21,11 +22,11 @@ enum Mode {
 	set(v):
 		mode = v
 		if mode == Mode.GENERATE_TABLE:
-			%SelectOnlyBtn.text = tr("对选中项进行生成")
-			%AllBtn.text = tr("对所有项进行生成")
+			%SelectOnlyBtn.text = _Localize.translate("对选中项进行生成")
+			%AllBtn.text = _Localize.translate("对所有项进行生成")
 		else:
-			%SelectOnlyBtn.text = tr("对选中项执行导入")
-			%AllBtn.text = tr("对所有项执行导入")
+			%SelectOnlyBtn.text = _Localize.translate("对选中项执行导入")
+			%AllBtn.text = _Localize.translate("对所有项执行导入")
 
 var save_path: String
 
@@ -41,9 +42,9 @@ func _ready() -> void:
 	_tree.clear()
 	_tree.create_item()
 	_tree.column_titles_visible = true
-	_tree.set_column_title(0, tr("选中"))
-	_tree.set_column_title(1, tr("排除"))
-	_tree.set_column_title(2, tr("预设"))
+	_tree.set_column_title(0, _Localize.translate("选中"))
+	_tree.set_column_title(1, _Localize.translate("排除"))
+	_tree.set_column_title(2, _Localize.translate("预设"))
 	_tree.set_column_expand(0, false)
 	_tree.set_column_expand(1, false)
 	_tree.item_edited.connect(_on_tree_item_edited)
@@ -140,7 +141,7 @@ func _execute(select_only) -> void:
 		var path := item.get_metadata(2) as String
 		var preset = ResourceLoader.load(path, "Resource", ResourceLoader.CACHE_MODE_IGNORE) as _Preset
 		if not is_instance_valid(preset):
-			_Log.error([tr("表格预设不存在: "), path])
+			_Log.error([_Localize.translate("表格预设不存在: "), path])
 			continue
 
 		if preset.resource_path.is_empty():

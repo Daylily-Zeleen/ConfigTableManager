@@ -1,15 +1,26 @@
 @tool
 extends EditorPlugin
 
+const _Localize = preload("res://addons/config_table_manager.daylily-zeleen/localization/localize.gd")
 var plugin_control
 
 
 func _enter_tree() -> void:
+	const localizeation_dir = "res://addons/config_table_manager.daylily-zeleen/localization"
+	for file in DirAccess.get_files_at(localizeation_dir):
+		if file.get_file().get_extension().to_lower() != "po":
+			continue
+		_Localize.add_translation(ResourceLoader.load(localizeation_dir.path_join(file), "", ResourceLoader.CACHE_MODE_IGNORE))
+
 	var path = _get_main_scene_path()
 	plugin_control = ResourceLoader.load(path).instantiate()
 	EditorInterface.get_editor_main_screen().add_child(plugin_control)
 	EditorInterface.get_editor_main_screen().size_flags_vertical = Control.SIZE_EXPAND_FILL
 	plugin_control.hide()
+
+
+func _exit_tree() -> void:
+	_Localize.clean_translations()
 
 
 func _has_main_screen() -> bool:

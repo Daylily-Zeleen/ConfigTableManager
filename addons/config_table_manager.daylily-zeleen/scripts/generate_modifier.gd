@@ -1,6 +1,8 @@
 ## 在生成表格流程中修改数据，内部状态不会被复用，每次修改都会实例化一个修改器，
 @tool
 
+const _Localize = preload("../localization/localize.gd")
+
 
 # 修改开始时调用, 典型应用是用于让继承者知道当前是为哪个数据类进行数据修改
 func _begin_modify(table_name: String, data_class_name: String, data_class_script: String) -> void:
@@ -37,7 +39,7 @@ func begin_modify(table_name: String, data_class_name: String, data_class_script
 func modify_fileds_definitions(inout_fields: PackedStringArray, inout_types: PackedByteArray) -> bool:
 	_modify_fileds_definitions(inout_fields, inout_types)
 	if inout_fields.size() != inout_types.size():
-		preload("log.gd").error([tr("修改后的字段数量与类型属性不对应。")])
+		preload("log.gd").error([_Localize.translate(&"修改后的字段数量与类型属性不对应。")])
 		return false
 	return true
 

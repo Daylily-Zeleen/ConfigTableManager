@@ -1,6 +1,8 @@
 @tool
 extends PanelContainer
 
+const _Localize = preload("../localization/localize.gd")
+
 signal delete_request
 
 @onready var name_line_edit: LineEdit = %NameLineEdit
@@ -16,6 +18,7 @@ func _ready() -> void:
 			continue
 		type_options.add_item(type_string(t).trim_prefix("Packed"), t)
 	delete_btn.pressed.connect(func(): delete_request.emit())
+	_Localize.localiza_node(self)
 
 
 func setup(prop_name: String, type: int, setter: String) -> void:

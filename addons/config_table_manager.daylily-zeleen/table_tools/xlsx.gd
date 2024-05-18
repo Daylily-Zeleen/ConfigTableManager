@@ -32,19 +32,19 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 			arr_dict_with_brackets = true
 
 	if sheet_name.is_empty():
-		_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("必须使用 sheet=your_sheet_name 选项指定工作表。")])
+		_Log.error([_Localize.translate("解析xlsx文件: "), xlsx_file, " - ", _Localize.translate("必须使用 sheet=your_sheet_name 选项指定工作表。")])
 		_last_parse_error = ERR_INVALID_PARAMETER
 		return _last_parse_error
 
 	if not FileAccess.file_exists(xlsx_file):
-		_Log.error([tr("无法读取xlsx文件: "), xlsx_file, " - ", error_string(ERR_FILE_NOT_FOUND)])
+		_Log.error([_Localize.translate("无法读取xlsx文件: "), xlsx_file, " - ", error_string(ERR_FILE_NOT_FOUND)])
 		_last_parse_error = ERR_FILE_NOT_FOUND
 		return _last_parse_error
 
 	var output := []
 	var err := OS.execute("python", ['"%s"' % _py_tool_path, "--dump_json", '"%s"' % ProjectSettings.globalize_path(xlsx_file), '"%s"' % _tmp_json_path], output, true)
 	if err != OK:
-		_Log.error([tr("无法解析xlsx文件: "), xlsx_file, " - ", "\n".join(output)])
+		_Log.error([_Localize.translate("无法解析xlsx文件: "), xlsx_file, " - ", "\n".join(output)])
 		_last_parse_error = FAILED
 		return _last_parse_error
 
@@ -53,7 +53,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 
 	if not sheet_name in sheets:
 		if parse_sheet_must_exists:
-			_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("不存在指定的工作表: "), sheet_name])
+			_Log.error([_Localize.translate("解析xlsx文件: "), xlsx_file, " - ", _Localize.translate("不存在指定的工作表: "), sheet_name])
 			_last_parse_error = ERR_PARSE_ERROR
 			return _last_parse_error
 		else:
@@ -62,7 +62,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 
 	var sheet := Array(sheets[sheet_name]["data"], TYPE_ARRAY, &"", null) as Array[Array]
 	if sheet.size() < 4:
-		_Log.error([tr("解析xlsx文件: "), xlsx_file, " - ", tr("非法格式")])
+		_Log.error([_Localize.translate("解析xlsx文件: "), xlsx_file, " - ", _Localize.translate("非法格式")])
 		_last_parse_error = ERR_PARSE_ERROR
 		return _last_parse_error
 
@@ -99,7 +99,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 	if fields.size() != types.size():
 		_header = null
 		_data.clear()
-		_Log.error([tr("解析xlsx文件失败: "), xlsx_file, " - ", tr("请使用生成工具创建合法的表头。")])
+		_Log.error([_Localize.translate("解析xlsx文件失败: "), xlsx_file, " - ", _Localize.translate("请使用生成工具创建合法的表头。")])
 		_last_parse_error = ERR_PARSE_ERROR
 		return _last_parse_error
 
@@ -108,7 +108,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		if not f.is_valid_identifier() and not is_meta_filed(f):
 			_header = null
 			_data.clear()
-			_Log.error([tr("解析xlsx文件失败: "), xlsx_file, " - ", tr("非法标识符: "), f])
+			_Log.error([_Localize.translate("解析xlsx文件失败: "), xlsx_file, " - ", _Localize.translate("非法标识符: "), f])
 			_last_parse_error = ERR_PARSE_ERROR
 			return _last_parse_error
 	# 检查类型
@@ -116,7 +116,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		if get_type_id(t) <= 0:
 			_header = null
 			_data.clear()
-			_Log.error([tr("解析xlsx文件失败: "), xlsx_file, " - ", tr("不支持的类型: "), t])
+			_Log.error([_Localize.translate("解析xlsx文件失败: "), xlsx_file, " - ", _Localize.translate("不支持的类型: "), t])
 			_last_parse_error = ERR_PARSE_ERROR
 			return _last_parse_error
 
@@ -134,7 +134,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 			if type < 0:
 				_header = null
 				_data.clear()
-				_Log.error([tr("解析xlsx文件失败: "), xlsx_file])
+				_Log.error([_Localize.translate("解析xlsx文件失败: "), xlsx_file])
 				_last_parse_error = ERR_PARSE_ERROR
 				return _last_parse_error
 
@@ -147,7 +147,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 			if typeof(value) == TYPE_NIL:
 				_header = null
 				_data.clear()
-				_Log.error([tr("解析xlsx文件失败: "), xlsx_file])
+				_Log.error([_Localize.translate("解析xlsx文件失败: "), xlsx_file])
 				_last_parse_error = ERR_PARSE_ERROR
 				return _last_parse_error
 
@@ -176,12 +176,12 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 			colorize_header = "t" in option.trim_prefix("colorize_header=").to_lower()
 
 	if sheet_name.is_empty():
-		_Log.error([tr("解析xlsx文件: "), save_path, " - ", tr("必须使用 sheet=your_sheet_name 选项指定工作表。")])
+		_Log.error([_Localize.translate("解析xlsx文件: "), save_path, " - ", _Localize.translate("必须使用 sheet=your_sheet_name 选项指定工作表。")])
 		_last_parse_error = ERR_INVALID_PARAMETER
 		return _last_parse_error
 
 	if not is_instance_valid(header):
-		_Log.error([tr("生成表格失败: "), error_string(ERR_INVALID_PARAMETER)])
+		_Log.error([_Localize.translate("生成表格失败: "), error_string(ERR_INVALID_PARAMETER)])
 		return ERR_INVALID_PARAMETER
 
 	var json_data := {}
@@ -214,7 +214,7 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 	var output := []
 	var err := OS.execute("python", ['"%s"' % _py_tool_path, "--override_xlsx", '"%s"' % _tmp_json_path, '"%s"' % ProjectSettings.globalize_path(save_path)], output, true)
 	if err != OK:
-		_Log.error([tr("无法覆盖xlsx文件: "), save_path, " - ", "\n".join(output)])
+		_Log.error([_Localize.translate("无法覆盖xlsx文件: "), save_path, " - ", "\n".join(output)])
 		_last_parse_error = FAILED
 		return _last_parse_error
 

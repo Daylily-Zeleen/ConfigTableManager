@@ -1,0 +1,708 @@
+# LANGUAGE translation for Config Table Manager for the following files:
+# res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd
+# res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.tscn
+# res://addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+# res://addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+# res://addons/config_table_manager.daylily-zeleen/scenes/meta_edit.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/meta_edit.tscn
+# res://addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.tscn
+# res://addons/config_table_manager.daylily-zeleen/scenes/settings.gd
+# res://addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+# res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd
+# res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd
+# res://addons/config_table_manager.daylily-zeleen/scripts/log.gd
+# res://addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+# res://addons/config_table_manager.daylily-zeleen/scripts/table_header.gd
+# res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+# res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd
+# res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+# res://addons/config_table_manager.daylily-zeleen/config_table_manager.daylily-zeleen.gd
+#
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Config Table Manager\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8-bit\n"
+
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd
+msgid "导表失败: "
+msgstr "Import table failed: "
+
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd
+msgid "无法被赋值的字段将被跳过: "
+msgstr "An unassignable filed will be skiped: "
+
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd
+msgid "转换失败，不支持的类型: "
+msgstr "Unsupported type is converted failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.tscn
+msgid "要附加的属性名称"
+msgstr "The name of additional property"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.tscn
+msgid "非空将使用自定义Setter进行设置"
+msgstr "Custom setter for assigning value. Keep empty will use \"=\" directly."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.tscn
+#: addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.tscn
+msgid " - "
+msgstr " - "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "选中"
+msgstr "Select"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "排除"
+msgstr "Exclude"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "预设"
+msgstr "Preset"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "表格预设不存在: "
+msgstr "A non-existent table preset: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "表格生成"
+msgstr "Table Generate"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "对选中项进行生成"
+msgstr "Generate Selected"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "对所有项进行生成"
+msgstr "Generate All"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "对选中项执行导入"
+msgstr "Import Selected"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn
+msgid "对所有项执行导入"
+msgstr "Import All"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "无效的预设保存路径\"{save_dir}\"，必须是资源目录下的合法路径。"
+msgstr "Invalid presets save directory \"{save_dir}\", it require a valid directory of resource file system."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "预设名称不能为空。"
+msgstr "Prset name must not empty."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "预设名称\"{preset_name}\"无法作为文件名"
+msgstr "Preset name \"{preset_name}\" can't be a file name."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "创建预设路径\"{presets_dir}\"失败: "
+msgstr "Create presets directory \"{presets_dir}\" failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "保存预设失败\"{file_name}\"失败: "
+msgstr "Save preset \"{file_name}\" failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "保存预设\"{preset_name}\"成功: "
+msgstr "Save preset \"{preset_name}\" success: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "删除失败,预设”{file_path}“不存在"
+msgstr "Delete failed, preset "{file_path}" is not exists."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "删除预设失败: "
+msgstr "Delete preset failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "删除预设成功: "
+msgstr "Delete preset success: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "重复的字段描述将被跳过: "
+msgstr "A duplicate filed description will be skiped: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "Bug，请提交issue并提供复现步骤"
+msgstr "But, please submit an issue and provide reproduce stps."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "删除预设失败,未选中预设"
+msgstr "Delete preset failed, has not seleting preset."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "选择脚本"
+msgstr "Select Script"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "输出文件"
+msgstr "Output File"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "- None -"
+msgstr "- None -"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "预设:"
+msgstr "Preset:"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "预设名称: "
+msgstr "Preset Name: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "要保存的预设名称"
+msgstr "The name of preset."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "保存"
+msgstr "Save"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "删除"
+msgstr "Delete"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "数据类名："
+msgstr "Data Class Name: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "原生类名或脚本的内部类名，留空时脚本不能为空"
+msgstr "Native class name or internal class of a script. If has not selete a script, this options must be specified."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "数据类脚本："
+msgstr "Data Class Script: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "可选项"
+msgstr "Options"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "选择"
+msgstr "Select"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格名："
+msgstr "Table Name: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "建议使用大驼峰命名"
+msgstr "Recommend to use PascalCase."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "优先字段："
+msgstr "Priority Fields:"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "用\",\"分隔，未列入的字段将排在其后。例:id, name, description"
+msgstr "Seperate by \",\". e.g. id, name, description"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "忽略字段："
+msgstr "Ignore Fileds: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "用\",\"分隔，列入的字段将不被生成（但优先度低于附加字段）。例:internal_id, changeable_data"
+msgstr "Seperate by \",\". e.g. internal_id, changeable_data"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "需要元字段的字段: "
+msgstr "Need Meta Fields:"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "用\",\"分隔，生成的元字段列不会被导入，仅用于表格编辑。"
+msgstr "Seperate by \",\". Generate meta fields will not be imported, only use for editing tables."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "跳过\"_\"开头的属性"
+msgstr "Skip properties starting with \"_\""
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "即含有PROPERTY_USAGE_STORAGE的属性"
+msgstr "Which have "PROPERTY_USAGE_STORAGE" flag."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "仅需要存储的属性"
+msgstr "Only Storage Properties"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "不含父类属性"
+msgstr "Exclude Parent Properties"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "按字母升序"
+msgstr "In Ascending Alphabetical Order"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "如果表格生成路径已存在文件，则将生成备份（于同目录下的.backup文件夹中），备份文件名称将加上备份时间作为前缀。"
+msgstr ""
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "覆盖前备份"
+msgstr "Backup Before Overwrite"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "如果生成路径已存在目标文件，将对数据行的兼容字段进行合并"
+msgstr ""
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "自动合并"
+msgstr "Auto Merge Data"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格生成路径:"
+msgstr "Table Generate Path:"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格选项参数："
+msgstr "Table Tool Options: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "特定于表格工具的选项参数，用\",\"分隔。"
+msgstr "Option parameters specific to table tool, separated by \",\"."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格工具："
+msgstr "Table Tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格生成修改器:"
+msgstr "Table Generate Modifier: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "使用修改器在表格生成流程中修改数据，修改器应扩展自 res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
+msgstr "Modify data in table generate workflow. Should extends from \"res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd\""
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "数据对象实例化："
+msgstr "Instantiation of Data Object: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "例：create({id}, {name}), 作为参数的属性将在赋值阶段时被跳过。默认无参构造"
+msgstr "e.g. create({id}, {name}). Default is non-parameters constuctor."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "导入路径:"
+msgstr "Import Path: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "导入选项参数："
+msgstr "Import Tool Options: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid ""
+"特定于导入工具的选项参数，用\",\"分隔。\n"
+"例如默认GDScript导入可提供generate_class_name参数来为生成的脚本添加全局类名（如果表格名是合法的标识符）。"
+msgstr "Option parameters specific to import tool, separated by \",\"."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "特定于导入工具的选项参数，用\",\"分隔。如默认GDScript导入可使用generate_class_name"
+msgstr "Option parameters specific to import tool, separated by \",\". e.g. \"generate_class_name\" for Default GDScript Import."
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "导入工具："
+msgstr "Import Tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "导入修改器:"
+msgstr "Import Modifier: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "使用修改器在表格导入流程中修改数据，修改器应扩展自 res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
+msgstr "Modify data in table import workflow. Should extends from \"res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd\""
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "+"
+msgstr "+"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "确认操作？"
+msgstr "Confirm?"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "预设管理"
+msgstr "Presets"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "生成与导入"
+msgstr "Generat & Import"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "设置"
+msgstr "Settings"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格选项"
+msgstr "Table Options"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "导入选项"
+msgstr "Import Options"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "附加字段"
+msgstr "Additnial Fields"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "字段描述"
+msgstr "Fields Descriptions"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "自定义元数据"
+msgstr "Custom Meta Data"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn
+msgid "表格导入"
+msgstr "Table Import"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/meta_edit.tscn
+msgid "Meta"
+msgstr "Meta"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/meta_edit.tscn
+msgid "X"
+msgstr "X"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.tscn
+msgid "字段名称"
+msgstr "Filed Name"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.tscn
+msgid "描述"
+msgstr "Description"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "表格工具"
+msgstr "Table Tool"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "脚本路径"
+msgstr "Script Path"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "导入工具"
+msgstr "Import Tool"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.gd
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "保存设置失败: "
+msgstr "Save Setting Failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "预设保存路径："
+msgstr "Presets Save Path: "
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "保存设置"
+msgstr "Save Settings"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "Open a Directory"
+msgstr ""
+
+#: addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd
+msgid "修改后的字段数量与类型属性不对应。"
+msgstr "The number of modified fields does not match the types."
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "生成表格失败："
+msgstr "Generate table failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格名不能为空"
+msgstr "Table name can not be empty."
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "非法脚本文件"
+msgstr "Invalid script file"
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "非法内部类"
+msgstr "Invalid internal class"
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "原生类不存在需要的静态实例化方法"
+msgstr "The native class has not the static instantiation method"
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格工具脚本不存在: "
+msgstr "Table Tool is not exists: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格工具无法被实例化: "
+msgstr "The table tool can't be instantiated: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "脚本不是继承自合法的表格工具: "
+msgstr "The script is not a valid table tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "请查阅: "
+msgstr "Please refer to: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格工具不支持该扩展名: "
+msgstr "The table tool is unsupport this extension: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "重复的附加字段将被跳过："
+msgstr "Duplicate additional filed will be skiped: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "被生成的属性中缺少需要的实例化参数: "
+msgstr "Missing the required instantiation parameter:"
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "不存在的优先排序字段将被跳过: "
+msgstr "Priority sorting fields that do not exist will be skipped: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "无法创建备份路径: "
+msgstr "Can not create backup directory: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "无法创建备份: "
+msgstr "Can not create backup: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "指定的表格工具无法解析已有的表格: "
+msgstr "The table tool can't parsing exists table: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "无效的生成修改器脚本: "
+msgstr "Invalid generate modifier script: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "生成修改器无法被实例化: "
+msgstr "Can't instantiate generate modifier: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "脚本不是继承自合法的合法的生成修改器: "
+msgstr "The script is not a valid generate modifier: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "不被导入"
+msgstr "Not imported."
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "生成表格成功："
+msgstr "Generate table success: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "导入失败:"
+msgstr "Import table failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格工具脚本不存在："
+msgstr "Not exsits table tool script: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格工具无法被实例化："
+msgstr "Can't instantiate table tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "脚本不是继承自合法的表格工具："
+msgstr "The script is not a valid table tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格工具不支持该扩展名："
+msgstr "The table tool can't support this extension: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "表格不存在："
+msgstr "Table is not exists: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "指定表格工具无法解析表格："
+msgstr "The table tool can't parse table: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "指定导入工具不存在："
+msgstr "The import tool is not exists: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "指定导入工具无法实例化："
+msgstr "Can't not instantiate import tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "导入表格失败："
+msgstr "Import table failed: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "无效的导入修改器脚本: "
+msgstr "The import modifier script is invalid: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "导入修改器无法被实例化: "
+msgstr "Can't instantiate import modifier: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "脚本不是继承自合法的合法的导入修改器: "
+msgstr "The script is not extends from a valid import modifer: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "类无法被实例化"
+msgstr "Class can't be instantiated"
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "脚本类不存在需要的静态实例化方法"
+msgstr "Script class has not the require static instantiation method"
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "原生类不存在或者不能被实例化"
+msgstr "The native class is not exists or can't be instantiated."
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "指定脚本不是继承自导入工具："
+msgstr "The Script is not a valid import tool: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "导入工具不支持该扩展名："
+msgstr "The import tool is not support extension: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "导入失败,无法创建导入路径:"
+msgstr "Import failed, can't create import directory."
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "导入表格成功:"
+msgstr "Import table success: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "不支持的属性类型将被跳过:"
+msgstr "Unsupport type will be skiped: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "如果是脚本类型可以安全忽略。"
+msgstr "Can be ignore if it is script type."
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "非法属性名称: "
+msgstr "Invlid property name: "
+
+#: addons/config_table_manager.daylily-zeleen/scripts/preset.gd
+msgid "非法属性类型: "
+msgstr "Invalid property type: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+msgid "无法读取csv文件: "
+msgstr "Can not read CSV file: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+msgid "解析csv文件失败: "
+msgstr "Parse CSV failed: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "请使用生成工具创建合法的表头。"
+msgstr "Please use table tool to generate a valid table header."
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "非法标识符: "
+msgstr "Illegal identifier: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+#: addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "不支持的类型: "
+msgstr "Unsupport type: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "生成表格失败: "
+msgstr "Generate table failed: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+msgid "生成表格失败,无法生成:"
+msgstr "Generate table failed: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+msgid "转换为文本失败,不支持的类型: "
+msgstr "Convert text failed, unsupport type: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+msgid "Bug: 为空值生成默认值,请提交issue并提供复现流程或MRP。"
+msgstr "Bug: generate default value for empty value. Please submit an issue and provide reproduce steps or MRP."
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/csv.gd
+msgid "非法值文本: "
+msgstr "Illegal value text: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd
+msgid "无法转换，类型与字段不符"
+msgstr "Conver failed, types and files are not match"
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd
+msgid "无法转换，不支持的类型: "
+msgstr "Conver failed, unsupport type: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "解析xlsx文件: "
+msgstr "Paese xlsx file: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "必须使用 sheet=your_sheet_name 选项指定工作表。"
+msgstr "Must use "sheet=your_sheet_name" option to specific the worksheet."
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "无法读取xlsx文件: "
+msgstr "Can't read xlsx file: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "无法解析xlsx文件: "
+msgstr "Can't parse xlsx file: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "不存在指定的工作表: "
+msgstr "The worksheet is not exists: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "非法格式"
+msgstr "Illegal format"
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "解析xlsx文件失败: "
+msgstr "Parse xlsx file failed: "
+
+#: addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd
+msgid "无法覆盖xlsx文件: "
+msgstr "Can't Overwrite xlsx file:"

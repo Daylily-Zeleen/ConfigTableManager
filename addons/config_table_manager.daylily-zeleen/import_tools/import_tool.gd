@@ -4,7 +4,7 @@
 
 const _TableHeader = preload("../scripts/table_header.gd")
 const _Log = preload("../scripts/log.gd")
-
+const _Localize = preload("../localization/localize.gd")
 
 func _import(
 	import_path: String,

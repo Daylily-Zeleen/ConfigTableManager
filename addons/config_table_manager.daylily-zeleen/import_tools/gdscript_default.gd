@@ -18,7 +18,7 @@ func _import(
 ) -> Error:
 	var fa = FileAccess.open(import_path, FileAccess.WRITE)
 	if not is_instance_valid(fa):
-		_Log.error([tr("导表失败: "), error_string(FileAccess.get_open_error())])
+		_Log.error([_Localize.translate("导表失败: "), error_string(FileAccess.get_open_error())])
 		return FileAccess.get_open_error()
 
 	if table_name.is_valid_identifier() and options.has("generate_class_name"):
@@ -153,7 +153,7 @@ func _import(
 			fa.store_line("\tret.%s = %s" % [f, f])
 		elif not hinted_fields.has(f):
 			# 只提示一次
-			_Log.warning([tr("无法被赋值的字段将被跳过: "), f])
+			_Log.warning([_Localize.translate("无法被赋值的字段将被跳过: "), f])
 			hinted_fields.push_back(f)
 	fa.store_line("\treturn ret")
 	fa.store_line("")
@@ -316,5 +316,5 @@ func __get_value_text(convertd_value, default := false) -> String:
 					elems.push_back(__get_value_text(e))
 				return ("%s([])" % type) if default else ("%s([%s])" % [type, ", ".join(elems)])
 
-	_Log.error([tr("转换失败，不支持的类型: "), type, " - ", convertd_value])
+	_Log.error([_Localize.translate("转换失败，不支持的类型: "), type, " - ", convertd_value])
 	return ""

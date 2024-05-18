@@ -1,6 +1,8 @@
 @tool
 extends PanelContainer
 
+const _Localize = preload("../localization/localize.gd")
+
 signal tools_updated
 
 var presets_dir: String:
@@ -48,9 +50,9 @@ func _ready() -> void:
 
 	_table_tools_tree.clear()
 	_table_tools_tree.create_item()
-	_table_tools_tree.set_column_title(0, tr("表格工具"))
-	_table_tools_tree.set_column_title(1, tr("脚本路径"))
-	_table_tools_tree.set_column_title(2, tr("+"))
+	_table_tools_tree.set_column_title(0, _Localize.translate("表格工具"))
+	_table_tools_tree.set_column_title(1, _Localize.translate("脚本路径"))
+	_table_tools_tree.set_column_title(2, _Localize.translate("+"))
 	_table_tools_tree.set_column_expand(1, true)
 	_table_tools_tree.set_column_expand(2, false)
 	_table_tools_tree.column_title_clicked.connect(_on_tree_colum_title_clicked.bind(_table_tools_tree))
@@ -59,9 +61,9 @@ func _ready() -> void:
 
 	_import_tools_tree.clear()
 	_import_tools_tree.create_item()
-	_import_tools_tree.set_column_title(0, tr("导入工具"))
-	_import_tools_tree.set_column_title(1, tr("脚本路径"))
-	_import_tools_tree.set_column_title(2, tr("+"))
+	_import_tools_tree.set_column_title(0, _Localize.translate("导入工具"))
+	_import_tools_tree.set_column_title(1, _Localize.translate("脚本路径"))
+	_import_tools_tree.set_column_title(2, _Localize.translate("+"))
 	_import_tools_tree.set_column_expand(1, true)
 	_import_tools_tree.set_column_expand(2, false)
 	_import_tools_tree.column_title_clicked.connect(_on_tree_colum_title_clicked.bind(_import_tools_tree))
@@ -185,8 +187,8 @@ func _on_save_btn_pressed() -> void:
 	var ps := PackedScene.new()
 	var err := ps.pack(self)
 	if err != OK:
-		printerr(tr("保存设置失败: "), error_string(err))
+		printerr(_Localize.translate("保存设置失败: "), error_string(err))
 
 	err = ResourceSaver.save(ps, scene_path)
 	if err != OK:
-		printerr(tr("保存设置失败: "), error_string(err))
+		printerr(_Localize.translate("保存设置失败: "), error_string(err))

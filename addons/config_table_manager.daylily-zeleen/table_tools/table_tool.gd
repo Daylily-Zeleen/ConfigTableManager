@@ -4,6 +4,7 @@
 
 const _Log = preload("../scripts/log.gd")
 const _TableHeader = preload("../scripts/table_header.gd")
+const _Localize = preload("../localization/localize.gd")
 
 
 func _get_support_types() -> PackedByteArray:
@@ -72,18 +73,18 @@ func get_type_id(type_text: String) -> int:
 	for t in _get_support_types():
 		if type_string(t) == type_text:
 			return t
-	_Log.error([tr("不支持的类型: "), type_text])
+	_Log.error([_Localize.translate("不支持的类型: "), type_text])
 	return -1
 
 
 func to_data_rows(data: Array[Dictionary], fields: PackedStringArray, types: PackedByteArray) -> Array[PackedStringArray]:
 	if fields.size() != types.size():
-		_Log.error([tr("无法转换，类型与字段不符")])
+		_Log.error([_Localize.translate("无法转换，类型与字段不符")])
 		return []
 
 	for t in types:
 		if not t in _get_support_types():
-			_Log.error([tr("无法转换，不支持的类型: "), type_string(t)])
+			_Log.error([_Localize.translate("无法转换，不支持的类型: "), type_string(t)])
 			return []
 
 	var ret: Array[PackedStringArray] = []

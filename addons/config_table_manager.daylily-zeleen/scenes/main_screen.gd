@@ -4,6 +4,7 @@ extends PanelContainer
 const _Settings = preload("settings.gd")
 const _Preset = preload("../scripts/preset.gd")
 const _Log = _Preset._Log
+const _Localize = _Preset._Localize
 
 const _AdditionalPropertyEdit = preload("additional_property_edit.gd")
 const _PropertyDescriptionEdit = preload("property_description_edit.gd")
@@ -83,9 +84,10 @@ func _ready() -> void:
 	_preset_options.pressed.connect(_on_preset_options_pressed)
 
 	_preset_options.clear()
-	_preset_options.add_item("- None -")
+	_preset_options.add_item(_Localize.translate("- None -"))
 	_preset_options.set_item_metadata(0, null)
 
+	_Localize.localiza_node(self)
 	_on_settings_tools_updated()
 
 
@@ -110,14 +112,14 @@ func _on_preset_options_pressed() -> void:
 
 func _refresh_preset_options(preset_name: String = "") -> void:
 	_preset_options.clear()
-	_preset_options.add_item("- None -")
+	_preset_options.add_item(_Localize.translate("- None -"))
 	_preset_options.set_item_metadata(0, null)
 	if not DirAccess.dir_exists_absolute(_settings.presets_dir):
 		return
 	var fs := EditorInterface.get_resource_filesystem() as EditorFileSystem
 	var dir := fs.get_filesystem_path(_settings.presets_dir)
 	if not is_instance_valid(dir):
-		_Log.error([tr('无效的预设保存路径"{save_dir}"，必须是资源目录下的合法路径。').format({save_dir = _settings.presets_dir})])
+		_Log.error([_Localize.translate('无效的预设保存路径"{save_dir}"，必须是资源目录下的合法路径。').format({save_dir = _settings.presets_dir})])
 		return
 
 	var idx := -1
@@ -140,16 +142,16 @@ func _refresh_preset_options(preset_name: String = "") -> void:
 func _save_preset() -> void:
 	var preset_name: String = _preset_name_line_edit.text
 	if preset_name.is_empty():
-		_Log.error([tr("预设名称不能为空。")])
+		_Log.error([_Localize.translate("预设名称不能为空。")])
 		return
 	if not preset_name.is_valid_filename():
-		_Log.error([tr('预设名称"{preset_name}"无法作为文件名').format({preset_name = preset_name})])
+		_Log.error([_Localize.translate('预设名称"{preset_name}"无法作为文件名').format({preset_name = preset_name})])
 		return
 	var presets_dir := _settings.presets_dir
 	if not DirAccess.dir_exists_absolute(presets_dir):
 		var err := DirAccess.make_dir_recursive_absolute(presets_dir)
 		if err != OK:
-			_Log.error([tr('创建预设路径"{presets_dir}"失败: ').format({presets_dir = presets_dir}), error_string(err)])
+			_Log.error([_Localize.translate('创建预设路径"{presets_dir}"失败: ').format({presets_dir = presets_dir}), error_string(err)])
 			return
 
 	var preset := _Preset.new()
@@ -159,26 +161,26 @@ func _save_preset() -> void:
 	var fp := presets_dir.path_join(file_name)
 	var err := ResourceSaver.save(preset, fp, ResourceSaver.FLAG_NONE)
 	if err != OK:
-		_Log.error([tr('保存预设失败"{file_name}"失败: ').format({file_name = file_name}), error_string(err)])
+		_Log.error([_Localize.translate('保存预设失败"{file_name}"失败: ').format({file_name = file_name}), error_string(err)])
 		return
 
 	EditorInterface.get_resource_filesystem().update_file(file_name)
-	_Log.info([tr('保存预设"{preset_name}"成功: ').format({preset_name = preset_name})])
+	_Log.info([_Localize.translate('保存预设"{preset_name}"成功: ').format({preset_name = preset_name})])
 	_refresh_preset_options(preset.name)
 
 
 func _delete_preset(preset: _Preset) -> void:
 	var file_path := preset.resource_path
 	if not FileAccess.file_exists(file_path):
-		_Log.error([tr("删除失败,预设”{file_path}“不存在").format({file_path = file_path})])
+		_Log.error([_Localize.translate("删除失败,预设”{file_path}“不存在").format({file_path = file_path})])
 		return
 
 	var err := DirAccess.remove_absolute(file_path)
 	if not err == OK:
-		_Log.error([tr("删除预设失败: "), error_string(err)])
+		_Log.error([_Localize.translate("删除预设失败: "), error_string(err)])
 		return
 
-	_Log.info([tr("删除预设成功: "), preset.name])
+	_Log.info([_Localize.translate("删除预设成功: "), preset.name])
 	EditorInterface.get_resource_filesystem().update_file(file_path)
 	_refresh_preset_options()
 
@@ -282,7 +284,7 @@ func _set_to_preset(preset: _Preset) -> void:
 		if not is_instance_valid(pde):
 			continue
 		if preset.descriptions.has(pde.get_property_name()):
-			_Log.warning([tr("重复的字段描述将被跳过: "), pde.get_property_name(), " - ", pde.get_description()])
+			_Log.warning([_Localize.translate("重复的字段描述将被跳过: "), pde.get_property_name(), " - ", pde.get_description()])
 			continue
 		preset.descriptions[pde.get_property_name()] = pde.get_description()
 
@@ -318,7 +320,7 @@ func _on_preset_options_selected(idx: int) -> void:
 	else:
 		preset = _preset_options.get_item_metadata(idx)
 	if not is_instance_valid(preset):
-		_Log.error([tr("Bug，请提交issue并提供复现步骤")])
+		_Log.error([_Localize.translate("Bug，请提交issue并提供复现步骤")])
 		return
 	_load_preset(preset)
 
@@ -329,7 +331,7 @@ func _on_save_btn_pressed() -> void:
 
 func _on_delete_btn_pressed() -> void:
 	if _preset_options.selected < 0:
-		_Log.error([tr("删除预设失败,未选中预设")])
+		_Log.error([_Localize.translate("删除预设失败,未选中预设")])
 		return
 
 	_confirmation_dialog.popup_centered()
@@ -338,7 +340,7 @@ func _on_delete_btn_pressed() -> void:
 
 	var preset = _preset_options.get_item_metadata(_preset_options.selected) as _Preset
 	if not is_instance_valid(preset):
-		_Log.error([tr("Bug，请提交issue并提供复现步骤")])
+		_Log.error([_Localize.translate("Bug，请提交issue并提供复现步骤")])
 		return
 
 	_delete_preset(preset)
@@ -346,7 +348,7 @@ func _on_delete_btn_pressed() -> void:
 
 func _on_script_select_btn_pressed() -> void:
 	var path = _script_line_edit.text
-	_pop_file_dialog(tr("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
+	_pop_file_dialog(_Localize.translate("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
 	var result = await _path_selected as Array
 	if not result[0]:
 		return
@@ -355,7 +357,7 @@ func _on_script_select_btn_pressed() -> void:
 
 func _on_generate_modifier_select_btn_pressed() -> void:
 	var path = %GenerateModifierLineEdit.text
-	_pop_file_dialog(tr("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
+	_pop_file_dialog(_Localize.translate("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
 	var result = await _path_selected as Array
 	if not result[0]:
 		return
@@ -364,7 +366,7 @@ func _on_generate_modifier_select_btn_pressed() -> void:
 
 func _on_import_modifier_select_btn_pressed() -> void:
 	var path = %ImportModifierLineEdit.text
-	_pop_file_dialog(tr("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
+	_pop_file_dialog(_Localize.translate("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
 	var result = await _path_selected as Array
 	if not result[0]:
 		return
@@ -392,7 +394,7 @@ func _on_add_meta_btn_pressed() -> void:
 func _on_output_select_btn_pressed() -> void:
 	var path = _output_line_edit.text
 	# "*.csv;CSV表格"
-	_pop_file_dialog(tr("输出文件"), FileDialog.FILE_MODE_OPEN_FILE, [], path)
+	_pop_file_dialog(_Localize.translate("输出文件"), FileDialog.FILE_MODE_OPEN_FILE, [], path)
 	var result = await _path_selected as Array
 	if not result[0]:
 		return
