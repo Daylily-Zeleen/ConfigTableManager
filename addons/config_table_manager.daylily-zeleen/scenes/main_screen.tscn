@@ -176,7 +176,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "用\",\"分隔，生成的元字段列不会被导入，仅用于表格编辑。"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
+[node name="HBoxContainer3" type="HFlowContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
 layout_mode = 2
 
 [node name="SkipPrefixUnderscoreCheckBox" type="CheckBox" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/HBoxContainer3"]
@@ -261,10 +261,12 @@ text = "表格工具："
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-item_count = 1
+item_count = 2
 selected = 0
 popup/item_0/text = "CSV(,分隔): res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
 popup/item_0/id = 0
+popup/item_1/text = "Excel(xlsx): res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd"
+popup/item_1/id = 1
 
 [node name="GridContainer3" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项"]
 layout_mode = 2
@@ -354,7 +356,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 item_count = 1
 selected = 0
-popup/item_0/text = "默认GDScript导入: res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+popup/item_0/text = "GDScript(TypedArray风格): res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 popup/item_0/id = 0
 
 [node name="GridContainer3" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]

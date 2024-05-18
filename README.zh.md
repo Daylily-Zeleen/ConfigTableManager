@@ -37,9 +37,9 @@
    3. 填写`预设名称`，并点击“**保存**”。
 
    其他栏目均为进阶选项，如非必要无需修改。
-   ![image](.doc/preset_manage.png)
+   ![image](.doc/preset_manage.zh.png)
 4. 跳转到“生成与导入”页面，在左侧勾选你需要的预设进行生成（或全部生成），生成的表格默认在`res://tables/`路径下（默认生成CSV表格,**支持生成Excel(xlsx)**）。
-   ![image](.doc/gen_and_import.PNG)
+   ![image](.doc/gen_and_import.zh.PNG)
 5. 到外部编辑生成的csv表格(这里推荐使用VSCode并使用 "Edit csv" 插件进行编辑),注意使用utf8编码。
 6. 回到编辑器中的“生成与导入”页面，在右侧勾选你需要的预设进行导入（或全部导入），导入的资源默认在`res://tables/imported/`路径下（默认导入为GDScript脚本）。
 7. 现在你可以实例化有csv表格导入的GDScript脚本进行使用，具体请查看生成的脚本。
@@ -65,7 +65,7 @@
 
 ### 自定义表格工具与导入工具
 
-   ![image](.doc/settings.PNG)
+   ![image](.doc/settings.zh.PNG)
 
 1. 扩展`res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd`并重写其中的虚方法以实现你的表格工具，用于解析和生成符合你需求的表格。将该脚本添加到设置中，它将出现在“预设管理”页面以供使用。
 2. 扩展`res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd`并重写其中的虚方法以实现你的导入，用于生成符合你需求的导入资源。将该脚本添加到设置中，它将出现在“预设管理”页面以供使用。

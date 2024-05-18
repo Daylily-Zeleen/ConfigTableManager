@@ -18,6 +18,11 @@ config/features=PackedStringArray("4.2")
 
 enabled=PackedStringArray("res://addons/config_table_manager.daylily-zeleen/plugin.cfg")
 
+[internationalization]
+
+locale/translations=PackedStringArray("res://addons/config_table_manager.daylily-zeleen/localization/en.po")
+locale/translations_pot_files=PackedStringArray("res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd", "res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.tscn", "res://addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/gen_and_import.tscn", "res://addons/config_table_manager.daylily-zeleen/scenes/main_screen.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/main_screen.tscn", "res://addons/config_table_manager.daylily-zeleen/scenes/meta_edit.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/meta_edit.tscn", "res://addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/property_description_edit.tscn", "res://addons/config_table_manager.daylily-zeleen/scenes/settings.gd", "res://addons/config_table_manager.daylily-zeleen/scenes/settings.tscn", "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd", "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd", "res://addons/config_table_manager.daylily-zeleen/scripts/log.gd", "res://addons/config_table_manager.daylily-zeleen/scripts/preset.gd", "res://addons/config_table_manager.daylily-zeleen/scripts/table_header.gd", "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd", "res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd", "res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd", "res://addons/config_table_manager.daylily-zeleen/config_table_manager.daylily-zeleen.gd")
+
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
