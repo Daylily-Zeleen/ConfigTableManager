@@ -59,7 +59,7 @@ If you have any doubts, please clone or download this project in [Github page](h
 
 |Import Tool|Description|Options|Options Description|
 |-|-|-|-|
-|GDScript(Default)|Import table as GDScription, hold an array of data objects. It is work fine with the situation of having not many data|generate_class_name|generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
+|GDScript(TypedArray Style)|Import table as GDScription, hold an array of data objects. It is work fine with the situation of having not many data|generate_class_name|generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
 
 ## Custom Tools
 

@@ -422,7 +422,7 @@ func _on_settings_tools_updated() -> void:
 	var table_tools := _settings.table_tools
 	var table_option_idx := -1
 	for n in table_tools:
-		_table_tool_options.add_item("%s: %s" % [n, table_tools[n]])
+		_table_tool_options.add_item("%s: %s" % [_Localize.translate(n), table_tools[n]])
 		_table_tool_options.set_item_metadata(_table_tool_options.item_count - 1, table_tools[n])
 		if selecting_table_tool == table_tools[n]:
 			table_option_idx = _table_tool_options.item_count - 1
@@ -434,7 +434,7 @@ func _on_settings_tools_updated() -> void:
 	var import_option_idx := -1
 	var import_tools := _settings.import_tools
 	for n in import_tools:
-		_import_tool_options.add_item("%s: %s" % [n, import_tools[n]])
+		_import_tool_options.add_item("%s: %s" % [_Localize.translate(n), import_tools[n]])
 		_import_tool_options.set_item_metadata(_import_tool_options.item_count - 1, import_tools[n])
 		if selecting_import_tool == import_tools[n]:
 			import_option_idx = _import_tool_options.item_count - 1

@@ -59,7 +59,7 @@
 
 |导入工具|说明|选项参数|参数说明|
 |-|-|-|-|
-|默认GDScript导入|将表格数据导入为GDScript（内部使用数组存储数据，适合**数据量小**的场合）|generate_class_name|可选，如果有该选项且预设指定table_name是合法的标识符，则使用table_name生成全局类名(class_name)|
+|GDScript(TypedArray风格)|将表格数据导入为GDScript（内部使用数组存储数据，适合**数据量小**的场合）|generate_class_name|可选，如果有该选项且预设指定table_name是合法的标识符，则使用table_name生成全局类名(class_name)|
 
 ## 自定义工具
 

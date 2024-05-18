@@ -39,7 +39,7 @@ const DEFAULT_TABLE_TOOL = {
 }
 
 const DEFAULT_IMPORT_TOOL = {
-	"默认GDScript导入": "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd",
+	"GDScript(TypedArray风格)": "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd",
 }
 
 
@@ -101,7 +101,7 @@ func _refresh() -> void:
 
 func _add_tree_itme(parent: TreeItem, p_name: String, path: String, editable := true) -> void:
 	var item := parent.create_child()
-	item.set_text(0, p_name)
+	item.set_text(0, _Localize.translate(p_name))
 	item.set_text(1, path)
 	item.set_editable(0, editable)
 	item.set_editable(1, editable)

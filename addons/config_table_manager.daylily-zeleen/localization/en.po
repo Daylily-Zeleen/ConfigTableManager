@@ -438,6 +438,18 @@ msgstr "Save Settings"
 msgid "Open a Directory"
 msgstr ""
 
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "CSV(,分隔)"
+msgstr "CSV("," delimiter)"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "Excel(xlsx)"
+msgstr ""
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "GDScript(TypedArray风格)"
+msgstr "GDScript(TypedArray Style)"
+
 #: addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd
 msgid "修改后的字段数量与类型属性不对应。"
 msgstr "The number of modified fields does not match the types."
