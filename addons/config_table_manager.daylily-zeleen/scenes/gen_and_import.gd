@@ -50,6 +50,10 @@ func _ready() -> void:
 
 
 func setup(presets: Array[_Preset]) -> void:
+	for item in _tree.get_root().get_children():
+		_tree.get_root().remove_child(item)
+		item.free()
+
 	for p in presets:
 		var item = _tree.get_root().create_child() as TreeItem
 		item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
