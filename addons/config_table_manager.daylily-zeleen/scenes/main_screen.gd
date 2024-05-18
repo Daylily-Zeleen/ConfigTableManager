@@ -456,6 +456,9 @@ func _on_gen_and_import_tab_visibility_changed() -> void:
 
 			presets.append(preset)
 
+	%GenerateTables.save_path = EditorInterface.get_editor_paths().get_project_settings_dir().path_join(".ctm_generate_settings")
+	%ImportTables.save_path = EditorInterface.get_editor_paths().get_project_settings_dir().path_join(".ctm_import_settings")
+
 	%GenerateTables.setup(presets)
 	%ImportTables.setup(presets)
 
