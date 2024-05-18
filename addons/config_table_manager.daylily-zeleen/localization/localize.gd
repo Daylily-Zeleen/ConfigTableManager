@@ -17,11 +17,11 @@ static func clean_translations() -> void:
 	_translations.clear()
 
 
-static func translate(msg: StringName) -> StringName:
+static func translate(msg: String) -> String:
 	var local := TranslationServer.get_tool_locale()
 	for translation in _translations.filter(func(t: Translation): return t.locale == local):
 		translation = translation as Translation
-		var translated := translation.get_message(msg) as StringName
+		var translated = translation.get_message(msg)
 		if translated != msg:
 			return translated
 	return msg
