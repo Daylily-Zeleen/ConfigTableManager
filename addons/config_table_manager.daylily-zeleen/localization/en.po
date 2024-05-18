@@ -440,7 +440,7 @@ msgstr ""
 
 #: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
 msgid "CSV(,分隔)"
-msgstr "CSV("," delimiter)"
+msgstr "CSV(\",\" delimiter)"
 
 #: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
 msgid "Excel(xlsx)"

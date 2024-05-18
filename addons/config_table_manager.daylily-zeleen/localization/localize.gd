@@ -22,7 +22,7 @@ static func translate(msg: String) -> String:
 	for translation in _translations.filter(func(t: Translation): return t.locale == local):
 		translation = translation as Translation
 		var translated = translation.get_message(msg)
-		if translated != msg:
+		if not translated.is_empty() and translated != msg:
 			return translated
 	return msg
 
