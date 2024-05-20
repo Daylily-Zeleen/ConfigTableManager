@@ -88,10 +88,6 @@ func _import(
 			if n in tmp_obj:
 				property_defaul_values[n] = tmp_obj.get(n)
 
-	if property_list.filter(func(p): return p["name"] == priority_key).size() != 1:
-		_Log.error([table_name, " ", _Localize.translate("导表失败: "), _Localize.translate("数据类不存在指定为key的属性 %s，请使用 key=prop_name 作为选项参数进行指定。") % [priority_key]])
-		return ERR_INVALID_PARAMETER
-
 	var existed_values = []
 	for d in data_rows:
 		var v = d.get(priority_key, null)
@@ -105,6 +101,11 @@ func _import(
 
 	var fields := header.fields.duplicate()
 	var types := Array(header.types).map(to_type_id) as PackedByteArray
+
+	if not fields.has(priority_key):
+		_Log.error([table_name, " ", _Localize.translate("导表失败: "), _Localize.translate("数据类不存在指定为key的属性 %s，请使用 key=prop_name 作为选项参数进行指定。") % [priority_key]])
+		return ERR_INVALID_PARAMETER
+
 	var priority_key_type_id: int = types[fields.find(priority_key)]
 
 	# get_data
