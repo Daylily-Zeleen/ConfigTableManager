@@ -40,6 +40,7 @@ const DEFAULT_TABLE_TOOL = {
 
 const DEFAULT_IMPORT_TOOL = {
 	"GDScript(TypedArray风格)": "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd",
+	"GDScript(Dictionary风格)": "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd",
 }
 
 
@@ -129,11 +130,9 @@ func _validate_tools(tools: Dictionary, for_table_tool: bool) -> Dictionary:
 	var ret := {}
 	var required_base: Script
 	if for_table_tool:
-		required_base = ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+		required_base = ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE)
 	else:
-		required_base = (
-			ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
-		)
+		required_base = ResourceLoader.load("res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd", "Script", ResourceLoader.CACHE_MODE_IGNORE)
 
 	for n in tools:
 		n = (n as String).strip_edges()

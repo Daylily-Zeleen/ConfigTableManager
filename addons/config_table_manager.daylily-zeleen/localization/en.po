@@ -45,6 +45,22 @@ msgstr "An unassignable filed will be skiped: "
 msgid "转换失败，不支持的类型: "
 msgstr "Unsupported type is converted failed: "
 
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd
+msgid "未指定作为key的数据类属性，请使用 key=prop_name 作为选项参数进行指定。"
+msgstr "Has not specify the key of data class. Please use \"key=prop_name\" to specify as import option."
+
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd
+msgid "数据类不存在指定为key的属性 %s，请使用 key=prop_name 作为选项参数进行指定。"
+msgstr "The data class has not this property (%s) to be the key. Please use \"key=prop_name\" to specify as import option."
+
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd
+msgid "存在未配置key (%s)的数据: %s。"
+msgstr "Has a data without config key (%s): %s"
+
+#: addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd
+msgid "存在key (%s)重复的数据，重复的值为: %s。"
+msgstr "Duplicate key (%s), the value is: %s"
+
 #: addons/config_table_manager.daylily-zeleen/scenes/additional_property_edit.tscn
 msgid "要附加的属性名称"
 msgstr "The name of additional property"
@@ -449,6 +465,10 @@ msgstr ""
 #: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
 msgid "GDScript(TypedArray风格)"
 msgstr "GDScript(TypedArray Style)"
+
+#: addons/config_table_manager.daylily-zeleen/scenes/settings.tscn
+msgid "GDScript(Dictionary风格)"
+msgstr "GDScript(Dictionary风格 Style)"
 
 #: addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd
 msgid "修改后的字段数量与类型属性不对应。"

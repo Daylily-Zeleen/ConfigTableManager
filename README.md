@@ -11,7 +11,7 @@ A Godot plugin for managing config/data tables.
 1. Easy to use, generate table header by using a data class. Allow to add additional columns.
 2. How to generate and import can be save as a preset, convenient to adjust repeatedly.
 3. Support backup and merge when regenerating tables.
-4. Highly customizable, you can add your **Table Tool** and **Import Tool** to generate table file and import as resource which are meet your needs. ( This plugin is provide **CSV**, **xlsx** table tools, and provide **GDScript** import tool.)
+4. Highly customizable, you can add your **Table Tool** and **Import Tool** to generate table file and import as resource which are meet your needs. ( This plugin is provide **CSV**, **xlsx** table tools, and provide **GDScript(TypedArray/Dictionary)** import tool.)
 5. You can add Generate Modifier and Import Modifier to insert your logic for modify data in generating and importing workflow.
 
 ## Concepts
@@ -41,7 +41,7 @@ A Godot plugin for managing config/data tables.
 4. Jump to "Generate & Import" tab check presets which you want to generate in left side (or generate all). Generated table files are located in `res://tables/` by default (default will generate csv table file, **Excel(xlsx) is supported**).
    ![image](.doc/gen_and_import.PNG)
 5. Modify the generated table file (.csv by default) in external editor (recommend to use "VScode" with "Edit csv" plugin for csv file). **Note: use utf8 for encoding.**
-6. Return to the editor and select "Generate & Import" tab, check presets which you want to import as resource in right side (or import all). Imported resources are located in `res://tables/imported/` by default (default will generate as GDScript).
+6. Return to the editor and select "Generate & Import" tab, check presets which you want to import as resource in right side (or import all). Imported resources are located in `res://tables/imported/` by default (default will generate as GDScript (TypedArray style)).
 7. Now, you can use the imported resource in Godot. Typically, for default import as GDScript, you can instantiate the script to get data, please refer to the generated script for more details.
 
 If you have any doubts, please clone or download this project in [Github page](https://github.com/Daylily-Zeleen/ConfigTableManager) to refer example presets first.
@@ -59,7 +59,8 @@ If you have any doubts, please clone or download this project in [Github page](h
 
 |Import Tool|Description|Options|Options Description|
 |-|-|-|-|
-|GDScript(TypedArray Style)|Import table as GDScription, hold an array of data objects. It is work fine with the situation of having not many data|generate_class_name|generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
+|GDScript(TypedArray Style)|Import table as GDScript, hold an Array of data objects. It is work fine with the situation of having not many data.|generate_class_name|generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
+|GDScript(Dictionary Style)|Import table as GDScript, hold a Dictionary of data objects. Better search performance when dealing with larger quantities.|key=prop_name; generate_class_name|key: **Required**. To specify the property to be the Dictionary key. The the value of key property should not empty or duplicate;generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
 
 ## Custom Tools
 
@@ -88,4 +89,3 @@ And welcome to submit any fix and improve.
 ## TODO
 
 1. Add C# import tool (I have not need for this, waiting for someone to submit or waiting for me if I have time).
-2. Add GDScript import tool which use `Dictionary` to support large data volume (at least better than traverse an array by the default GDScript import).
