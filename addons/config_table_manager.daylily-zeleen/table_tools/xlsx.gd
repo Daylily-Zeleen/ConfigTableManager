@@ -205,7 +205,18 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 		_colorize_header(sheet_data)
 
 	for row in data_rows:
-		sheet_data.push_back(_to_row(row))
+		var row_data := []
+		row_data.resize(row.size())
+		for i in range(row.size()):
+			if row[i].is_empty():
+				row_data[i] = ""
+			else:
+				var type_id := get_type_id(header.types[i])
+				if type_id in [TYPE_INT, TYPE_FLOAT, TYPE_BOOL]:
+					row_data[i] = parse_value(row[i], type_id)
+				else:
+					row_data[i] = row[i]
+		sheet_data.push_back(_to_row(row_data))
 
 	var fa := FileAccess.open(_tmp_json_path, FileAccess.WRITE)
 	fa.store_string(JSON.stringify(json_data))
