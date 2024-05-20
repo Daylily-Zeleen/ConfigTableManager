@@ -207,6 +207,8 @@ func _import(
 			args_text_list.push_back(_get_value_text(row, f, t, property_defaul_values))
 		var priority_key_text := _get_value_text(row, priority_key, priority_key_type_id, property_defaul_values)
 		fa.store_line("\t_data[%s] = _make_data(%s)" % [priority_key_text, ", ".join(args_text_list)])
+	if data_rows.is_empty():
+		fa.store_line("\tpass")
 	fa.store_line("")
 	fa.close()
 

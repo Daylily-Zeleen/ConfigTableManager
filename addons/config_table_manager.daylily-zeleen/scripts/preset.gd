@@ -312,6 +312,9 @@ func import_table(enable_modifier:bool = true) -> Error:
 		return ERR_INVALID_PARAMETER
 
 	var header := table_tool.get_header()
+	if not is_instance_valid(header):
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定表格工具无法解析表格："), error_string(ERR_PARSE_ERROR)])
+		return ERR_PARSE_ERROR
 
 	var custom_setters := {}
 	for ap in additional_properties:
