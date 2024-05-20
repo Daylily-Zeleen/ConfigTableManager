@@ -201,10 +201,20 @@ func _to_value_text(value: Variant) -> String:
 		# 转为数组给json
 		value = type_convert(value, TYPE_ARRAY)
 	# 不带两侧括号
-	if arr_dict_with_brackets:
-		return JSON.stringify(value)
-	else:
-		return JSON.stringify(value).trim_prefix("[").trim_suffix("]").trim_prefix("{").trim_suffix("}")
+	const fake_indent = "F`A@K*E&I#N|D-E+N/T"
+	match typeof(value):
+		TYPE_ARRAY:
+			var text := JSON.stringify(value, fake_indent).replace("\n" + fake_indent, " ").trim_prefix("[ ").trim_suffix("\n]")
+			if arr_dict_with_brackets:
+				text = "[%s]" % text
+			return text
+		TYPE_DICTIONARY:
+			var text := JSON.stringify(value, fake_indent).replace("\n" + fake_indent, " ").trim_prefix("{ ").trim_suffix("\n}")
+			if arr_dict_with_brackets:
+				text = "{%s}" % text
+			return text
+		_:
+			return JSON.stringify(value)
 
 
 func _parse_value(text: String, type_id: int) -> Variant:
