@@ -214,6 +214,18 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 				var type_id := get_type_id(header.types[i])
 				if type_id in [TYPE_INT, TYPE_FLOAT, TYPE_BOOL]:
 					row_data[i] = parse_value(row[i], type_id)
+				elif not arr_dict_with_brackets and type_id in [TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY,TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY]:
+					var converted = parse_value(row[i], type_id)
+					if converted.size() == 1:
+						row_data[i] = converted[0]
+					else:
+						row_data[i] = row[i]
+				elif not arr_dict_with_brackets and type_id == TYPE_ARRAY:
+					var converted = parse_value(row[i], type_id)
+					if converted.size() == 1 and typeof(converted[0]) in [TYPE_INT, TYPE_FLOAT, TYPE_BOOL]:
+						row_data[i] = converted[0]
+					else:
+						row_data[i] = row[i]
 				else:
 					row_data[i] = row[i]
 		sheet_data.push_back(_to_row(row_data))
