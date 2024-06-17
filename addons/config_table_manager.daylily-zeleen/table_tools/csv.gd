@@ -205,11 +205,15 @@ func _to_value_text(value: Variant) -> String:
 	match typeof(value):
 		TYPE_ARRAY:
 			var text := JSON.stringify(value, fake_indent).replace("\n" + fake_indent, " ").trim_prefix("[ ").trim_suffix("\n]")
+			if value.is_empty():
+				text = ""
 			if arr_dict_with_brackets:
 				text = "[%s]" % text
 			return text
 		TYPE_DICTIONARY:
 			var text := JSON.stringify(value, fake_indent).replace("\n" + fake_indent, " ").trim_prefix("{ ").trim_suffix("\n}")
+			if value.is_empty():
+				text = ""
 			if arr_dict_with_brackets:
 				text = "{%s}" % text
 			return text
