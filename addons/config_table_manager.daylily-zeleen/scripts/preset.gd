@@ -9,6 +9,9 @@ const _GenerateModifier = preload("generate_modifier.gd")
 const _ImportModifier = preload("import_modifier.gd")
 const _Localize = preload("../localization/localize.gd")
 
+const _DEFAULT_GENERATE_MODIFIER_FILE := "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
+const _DEFAULT_IMPORT_MODIFIER_FILE := "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
+
 # 触发生成
 @export var trigger_generate_table: bool = false:
 	set(v):
@@ -44,7 +47,7 @@ const _Localize = preload("../localization/localize.gd")
 		return _strip_str_arr_elements_edges(table_tool_options)
 @export_file() var table_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
 @export_file() var table_ouput_path: String = "res://tables/{table_name}.csv"
-@export_file() var generate_modifier_file: String = "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
+@export_file() var generate_modifier_file: String = _DEFAULT_GENERATE_MODIFIER_FILE
 
 # 表格导入选项
 @export var instantiation: String
@@ -53,7 +56,7 @@ const _Localize = preload("../localization/localize.gd")
 		return _strip_str_arr_elements_edges(import_tool_options)
 @export_file() var import_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 @export_file() var import_path: String = "res://tables/imported/{table_name}.gd"
-@export_file() var import_mofifier_file: String = "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
+@export_file() var import_modifier_file: String = _DEFAULT_IMPORT_MODIFIER_FILE
 
 # 附加
 @export var additional_properties: Array[Dictionary]
@@ -215,6 +218,8 @@ func generate_table(enable_modifier:bool = true, func_modify_data: Callable = Ca
 	var modified_metas := metas.duplicate()
 	var modified_desc := descriptions.duplicate()
 	if enable_modifier:
+		if generate_modifier_file.is_empty():
+			generate_modifier_file = _DEFAULT_GENERATE_MODIFIER_FILE
 		if not ResourceLoader.exists(generate_modifier_file, "Script"):
 			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("无效的生成修改器脚本: "), generate_modifier_file])
 			return ERR_INVALID_PARAMETER
@@ -327,16 +332,18 @@ func import_table(enable_modifier:bool = true) -> Error:
 	var modified_data := table_tool.get_data().duplicate(true)
 	var modified_options := import_tool_options.duplicate()
 	if enable_modifier:
-		if not ResourceLoader.exists(import_mofifier_file, "Script"):
-			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("无效的导入修改器脚本: "), import_mofifier_file])
+		if import_modifier_file.is_empty():
+			import_modifier_file = _DEFAULT_IMPORT_MODIFIER_FILE
+		if not ResourceLoader.exists(import_modifier_file, "Script"):
+			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("无效的导入修改器脚本: "), import_modifier_file])
 			return ERR_INVALID_PARAMETER
-		var modifier_script := ResourceLoader.load(import_mofifier_file, "Script", ResourceLoader.CACHE_MODE_IGNORE)
+		var modifier_script := ResourceLoader.load(import_modifier_file, "Script", ResourceLoader.CACHE_MODE_IGNORE)
 		if not modifier_script.can_instantiate():
-			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("导入修改器无法被实例化: "), import_mofifier_file])
+			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("导入修改器无法被实例化: "), import_modifier_file])
 			return ERR_INVALID_PARAMETER
 		var modifier := modifier_script.new() as _ImportModifier
 		if not is_instance_valid(modifier):
-			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("脚本不是继承自合法的合法的导入修改器: "), import_mofifier_file])
+			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("脚本不是继承自合法的合法的导入修改器: "), import_modifier_file])
 			_Log.error(["\t- ", _Localize.translate("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"])
 			return ERR_INVALID_PARAMETER
 

@@ -26,7 +26,7 @@ instantiation = "new({id})"
 import_tool_options = PackedStringArray("generate_class_name")
 import_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 import_path = "res://tables/imported/{table_name}.gd"
-import_mofifier_file = "res://tables/modifier/data_import_modifier.gd"
+import_modifier_file = "res://tables/modifier/data_import_modifier.gd"
 additional_properties = Array[Dictionary]([{
 "name": "id",
 "setter": "",

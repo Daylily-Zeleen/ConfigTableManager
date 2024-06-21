@@ -211,7 +211,7 @@ func _load_preset(preset: _Preset) -> void:
 	%TableOptionsLineEdit.text = ", ".join(preset.table_tool_options)
 	%ImportOptionsLineEdit.text = ", ".join(preset.import_tool_options)
 	%GenerateModifierLineEdit.text = preset.generate_modifier_file
-	%ImportModifierLineEdit.text = preset.import_mofifier_file
+	%ImportModifierLineEdit.text = preset.import_modifier_file
 
 	_remove_and_queue_free_children(_ap_contianer)
 	for ap in preset.additional_properties:
@@ -265,7 +265,7 @@ func _set_to_preset(preset: _Preset) -> void:
 	preset.table_tool_options = Array(%TableOptionsLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
 	preset.import_tool_options = Array(%ImportOptionsLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
 	preset.generate_modifier_file = %GenerateModifierLineEdit.text
-	preset.import_mofifier_file = %ImportModifierLineEdit.text
+	preset.import_modifier_file = %ImportModifierLineEdit.text
 
 	preset.additional_properties.clear()
 	for ape in _ap_contianer.get_children():
