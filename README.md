@@ -84,7 +84,7 @@ Welcome to submit your Table Tools and Import Tools (place in `res://addons/conf
 
 And welcome to submit any fix and improve.
 
-## If this plugin can help your, please click a Star and consider to [buy me a coffee.](https://afdian.net/a/Daylily-Zeleen)
+## If this plugin can help your, please click a Star and consider to [buy me a coffee.](https://afdian.com/a/Daylily-Zeleen)
 
 ## TODO
 

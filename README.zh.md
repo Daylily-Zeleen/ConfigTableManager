@@ -84,7 +84,7 @@
 
 也欢迎提交任何修复和改进。
 
-## 如果这个插件对你有帮助，请点个Star或并考虑为我[充电。](https://afdian.net/a/Daylily-Zeleen)
+## 如果这个插件对你有帮助，请点个Star或并考虑为我[充电。](https://afdian.com/a/Daylily-Zeleen)
 
 ## TODO
 

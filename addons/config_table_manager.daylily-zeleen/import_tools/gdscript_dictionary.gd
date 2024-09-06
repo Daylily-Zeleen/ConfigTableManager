@@ -149,7 +149,7 @@ func _import(
 
 	# filter
 	fa.store_line("func filter(indicate:Callable) -> Array[%s]:" % data_class)
-	fa.store_line("\treturn _data.values().filter(indicate)")
+	fa.store_line("\treturn Array(_data.values().filter(indicate), TYPE_OBJECT, (DataClass as Script).get_instance_base_type(), DataClass)")
 	fa.store_line("")
 	fa.store_line("")
 
