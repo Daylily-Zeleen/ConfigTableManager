@@ -105,7 +105,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 
 	# 检查字段名
 	for f in fields:
-		if not f.is_valid_identifier() and not is_meta_filed(f):
+		if not TextServerManager.get_primary_interface().is_valid_identifier(f) and not is_meta_filed(f):
 			_header = null
 			_data.clear()
 			_Log.error([_Localize.translate("解析xlsx文件失败: "), xlsx_file, " - ", _Localize.translate("非法标识符: "), f])

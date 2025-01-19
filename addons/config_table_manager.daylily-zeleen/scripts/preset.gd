@@ -507,7 +507,7 @@ func _append_base_property_list_recursively(p_no_inheritance: bool, klass: Strin
 
 func _is_ap_valid(ap: Dictionary) -> bool:
 	ap["name"] = ap.get("name", "").strip_edges()
-	if not ap["name"].is_valid_identifier():
+	if not TextServerManager.get_primary_interface().is_valid_identifier(ap["name"]):
 		_Log.error([_Localize.translate("非法属性名称: "), ap["name"]])
 		return false
 

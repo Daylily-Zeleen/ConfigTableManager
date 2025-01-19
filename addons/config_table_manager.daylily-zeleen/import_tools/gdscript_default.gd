@@ -21,7 +21,7 @@ func _import(
 		_Log.error([_Localize.translate("导表失败: "), error_string(FileAccess.get_open_error())])
 		return FileAccess.get_open_error()
 
-	if table_name.is_valid_identifier() and options.has("generate_class_name"):
+	if TextServerManager.get_primary_interface().is_valid_identifier(table_name) and options.has("generate_class_name"):
 		fa.store_line("class_name %s" % table_name)
 		fa.store_line("")
 
