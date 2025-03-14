@@ -50,3 +50,7 @@ static var _data:Array[DataClass] = [
 	_make_data(2, "import_data", {}, "该行由导入修改器生成。", Array([])),
 ]
 
+
+static func _init() -> void:
+	_data.make_read_only()
+

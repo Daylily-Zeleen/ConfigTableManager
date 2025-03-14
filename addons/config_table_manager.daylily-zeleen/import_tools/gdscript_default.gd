@@ -179,6 +179,12 @@ func _import(
 		fa.store_line("\t_make_data(%s)," % [", ".join(args_text_list)])
 	fa.store_line("]")
 	fa.store_line("")
+	fa.store_line("")
+
+	# 构造，使数据只读
+	fa.store_line(member_prefix + "func _init() -> void:")
+	fa.store_line("\t_data.make_read_only()")
+	fa.store_line("")
 	fa.close()
 
 	return OK
