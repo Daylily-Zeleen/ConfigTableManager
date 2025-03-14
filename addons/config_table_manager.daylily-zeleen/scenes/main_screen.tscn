@@ -354,10 +354,13 @@ text = "导入工具："
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
-item_count = 1
+item_count = 2
 selected = 0
+allow_reselect = true
 popup/item_0/text = "GDScript(TypedArray风格): res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
 popup/item_0/id = 0
+popup/item_1/text = "GDScript(Dictionary风格): res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd"
+popup/item_1/id = 1
 
 [node name="GridContainer3" type="GridContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项"]
 layout_mode = 2
@@ -467,7 +470,6 @@ layout_mode = 2
 [node name="GenerateTables" parent="TabContainer/生成与导入/HBoxContainer" instance=ExtResource("2_sf0g2")]
 unique_name_in_owner = true
 layout_mode = 2
-title = "表格生成"
 
 [node name="ImportTables" parent="TabContainer/生成与导入/HBoxContainer" instance=ExtResource("2_sf0g2")]
 unique_name_in_owner = true
