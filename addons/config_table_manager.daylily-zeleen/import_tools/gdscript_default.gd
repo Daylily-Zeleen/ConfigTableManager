@@ -31,7 +31,7 @@ func _import(
 		if not meta_list_text.is_empty():
 			meta_list_text += ", "
 		meta_list_text += '"%s"' % m
-	fa.store_line("const TABLE_META_LIST:PackedStringArray = [%s]" % meta_list_text)
+	fa.store_line("const TABLE_META_LIST: PackedStringArray = [%s]" % meta_list_text)
 	fa.store_line("")
 
 	# DataClass
@@ -103,7 +103,7 @@ func _import(
 	fa.store_line("")
 
 	# find
-	fa.store_line("func find(indicate:Callable) -> %s:" % data_class)
+	fa.store_line("func find(indicate: Callable) -> %s:" % data_class)
 	fa.store_line("\tfor d in _data:")
 	fa.store_line("\t\tif indicate.call(d):")
 	fa.store_line("\t\t\treturn d")
@@ -112,7 +112,7 @@ func _import(
 	fa.store_line("")
 
 	# filter
-	fa.store_line("func filter(indicate:Callable) -> Array[%s]:" % data_class)
+	fa.store_line("func filter(indicate: Callable) -> Array[%s]:" % data_class)
 	fa.store_line("\treturn _data.filter(indicate)")
 	fa.store_line("")
 	fa.store_line("")
@@ -143,7 +143,7 @@ func _import(
 	for i in range(fields_with_type.size()):
 		fields_with_type[i] = "%s: %s" % [fields_with_type[i], type_string(types[i])]
 	fa.store_line("func _make_data(%s) -> %s:" % [", ".join(fields_with_type), data_class])
-	fa.store_line("\tvar ret = %s.%s(%s)" % [data_class, instantiation.split("(")[0], ", ".join(args)])
+	fa.store_line("\tvar ret := %s.%s(%s)" % [data_class, instantiation.split("(")[0], ", ".join(args)])
 	var valid_properties := property_list.map(func(d: Dictionary) -> String: return d["name"]) as PackedStringArray
 	var hinted_fields: PackedStringArray = []
 	for f: String in Array(fields).filter(func(f: String) -> bool: return not args.has(f)):

@@ -1,4 +1,4 @@
-const TABLE_META_LIST:PackedStringArray = []
+const TABLE_META_LIST: PackedStringArray = []
 
 const DataClass = preload("res://data_classes/data.gd").InternalData
 
@@ -11,33 +11,33 @@ func get_record(key: int) -> DataClass:
 
 
 func find_by_property(prop_name: StringName, target_value: Variant) -> DataClass:
-	for d in _data.values():
+	for d: DataClass in _data.values():
 		if d.get(prop_name) == target_value:
 			return d
 	return null
 
 
 func find_by_getter(getter_name: StringName, target_value: Variant) -> DataClass:
-	for d in _data.values():
+	for d: DataClass in _data.values():
 		if d.call(getter_name) == target_value:
 			return d
 	return null
 
 
-func find(indicate:Callable) -> DataClass:
-	for d in _data.values():
+func find(indicate: Callable) -> DataClass:
+	for d: DataClass in _data.values():
 		if indicate.call(d):
 			return d
 	return null
 
 
-func filter(indicate:Callable) -> Array[DataClass]:
+func filter(indicate: Callable) -> Array[DataClass]:
 	return Array(_data.values().filter(indicate), TYPE_OBJECT, (DataClass as Script).get_instance_base_type(), DataClass)
 
 
 # -----------------------------------------------------------------------
 func _make_data(id: int, name: String, str_arr: PackedStringArray, desc: String) -> DataClass:
-	var ret = DataClass.create(id, name)
+	var ret := DataClass.create(id, name)
 	ret.str_arr = str_arr
 	ret.desc = desc
 	return ret

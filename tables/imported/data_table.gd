@@ -1,6 +1,6 @@
 class_name DataTable
 
-const TABLE_META_LIST:PackedStringArray = ["测试元数据"]
+const TABLE_META_LIST: PackedStringArray = ["测试元数据"]
 
 const DataClass = preload("res://data_classes/data.gd")
 
@@ -22,20 +22,20 @@ func find_by_getter(getter_name: StringName, target_value: Variant) -> DataClass
 	return null
 
 
-func find(indicate:Callable) -> DataClass:
+func find(indicate: Callable) -> DataClass:
 	for d in _data:
 		if indicate.call(d):
 			return d
 	return null
 
 
-func filter(indicate:Callable) -> Array[DataClass]:
+func filter(indicate: Callable) -> Array[DataClass]:
 	return _data.filter(indicate)
 
 
 # -----------------------------------------------------------------------
 func _make_data(id: int, name: String, dict: Dictionary, description: String, arr: Array) -> DataClass:
-	var ret = DataClass.new(id)
+	var ret := DataClass.new(id)
 	ret.name = name
 	ret.dict = dict
 	ret.description = description
