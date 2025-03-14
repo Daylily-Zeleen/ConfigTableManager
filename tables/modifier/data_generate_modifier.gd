@@ -6,7 +6,7 @@ var _is_required_data: bool
 
 
 # 修改开始时调用, 典型应用是用于让继承者知道当前是为哪个数据类进行数据修改
-func _begin_modify(table_name: String, data_class_name: String, data_class_script: String) -> void:
+func _begin_modify(_table_name: String, _data_class_name: String, data_class_script: String) -> void:
 	var require := ResourceLoader.load("res://data_classes/data.gd", "", ResourceLoader.CACHE_MODE_IGNORE)
 	var input := ResourceLoader.load(data_class_script, "", ResourceLoader.CACHE_MODE_IGNORE)
 	_is_required_data = is_instance_valid(input) and require.resource_path == input.resource_path

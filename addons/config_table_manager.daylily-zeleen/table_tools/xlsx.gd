@@ -67,15 +67,15 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		return _last_parse_error
 
 	_header = _TableHeader.new()
-	var metas := _to_str_arr(sheet[0])
+	var meta_list := _to_str_arr(sheet[0])
 	var descs := _to_str_arr(sheet[1])
 	var fields := _to_str_arr(sheet[2])
 	var types := _to_str_arr(sheet[3])
 
 	# 移除尾随空项（由其他软件产生）
-	for i in range(metas.size() - 1, -1, -1):
-		if metas[i].is_empty():
-			metas.remove_at(i)
+	for i in range(meta_list.size() - 1, -1, -1):
+		if meta_list[i].is_empty():
+			meta_list.remove_at(i)
 		else:
 			break
 
@@ -85,12 +85,12 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		else:
 			break
 
-	if metas.size() == 1 and metas[0] == "PlaceHolder Metas":
-		metas.clear()
+	if meta_list.size() == 1 and meta_list[0] in ["PlaceHolder Meta List", "PlaceHolder Metas"]: # 兼容旧格式
+		meta_list.clear()
 	if descs.size() == 1 and descs[0] == "PlaceHolder Descriptions":
 		descs.clear()
 
-	_header.metas = metas
+	_header.meta_list = meta_list
 	_header.descriptions = descs
 	_header.fields = fields
 	_header.types = types
@@ -142,7 +142,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 				# 跳过空数据，避免在此生成默认值
 				continue
 
-			var value := parse_value(row[i], type)
+			var value: Variant = parse_value(row[i], type)
 
 			if typeof(value) == TYPE_NIL:
 				_header = null
@@ -189,14 +189,14 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 	json_data[sheet_name] = {"data": sheet_data}
 
 	# 确保非空行
-	var metas = header.metas.duplicate()
-	var descs = header.descriptions.duplicate()
-	if metas.size() == 0:
-		metas.push_back("PlaceHolder Metas")
+	var meta_list := header.meta_list.duplicate()
+	var descs := header.descriptions.duplicate()
+	if meta_list.size() == 0:
+		meta_list.push_back("PlaceHolder Meta List")
 	if descs.size() <= 0:
 		descs.push_back("PlaceHolder Descriptions")
 
-	sheet_data.push_back(_to_row(metas))
+	sheet_data.push_back(_to_row(meta_list))
 	sheet_data.push_back(_to_row(descs))
 	sheet_data.push_back(_to_row(header.fields))
 	sheet_data.push_back(_to_row(header.types))
@@ -218,13 +218,13 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 					not arr_dict_with_brackets
 					and type_id in [TYPE_PACKED_BYTE_ARRAY, TYPE_PACKED_INT32_ARRAY, TYPE_PACKED_INT64_ARRAY, TYPE_PACKED_FLOAT32_ARRAY, TYPE_PACKED_FLOAT64_ARRAY]
 				):
-					var converted = parse_value(row[i], type_id)
+					var converted: Variant = parse_value(row[i], type_id)
 					if converted.size() == 1:
 						row_data[i] = converted[0]
 					else:
 						row_data[i] = row[i]
 				elif not arr_dict_with_brackets and type_id == TYPE_ARRAY:
-					var converted = parse_value(row[i], type_id)
+					var converted: Variant = parse_value(row[i], type_id)
 					if converted.size() == 1 and typeof(converted[0]) in [TYPE_INT, TYPE_FLOAT, TYPE_BOOL]:
 						row_data[i] = converted[0]
 					else:
@@ -251,11 +251,11 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 func _colorize_header(sheet_data: Array) -> void:
 	assert(sheet_data.size() >= 4)
 	# meta
-	for cell in sheet_data[0]:
+	for cell: Dictionary in sheet_data[0]:
 		cell["fill"] = _make_pattern_fill(META_COLOR)
 		cell["border"] = _make_border()
 	# desc
-	for cell in sheet_data[1]:
+	for cell: Dictionary in sheet_data[1]:
 		cell["fill"] = _make_pattern_fill(DESC_COLOR)
 		cell["border"] = _make_border()
 	# field & type
@@ -291,7 +291,7 @@ func _make_border() -> Dictionary:
 
 func _strip_right_null_cell(row: Array) -> Array[Dictionary]:
 	# row:Array[Dictionary]
-	var row_data = Array(row.duplicate(), TYPE_DICTIONARY, &"", null) as Array[Dictionary]
+	var row_data := Array(row.duplicate(), TYPE_DICTIONARY, &"", null) as Array[Dictionary]
 	for i in range(row_data.size() - 1, -1, -1):
 		if row_data[i]["value"] == null:
 			row_data.pop_back()
@@ -302,8 +302,8 @@ func _strip_right_null_cell(row: Array) -> Array[Dictionary]:
 
 func _to_str_arr(row: Array) -> PackedStringArray:
 	# roe: Array[Dictionary]
-	return _strip_right_null_cell(row).map(func(e: Dictionary): return "" if e["value"] == null else str(e["value"]))
+	return _strip_right_null_cell(row).map(func(e: Dictionary) -> String: return "" if e["value"] == null else str(e["value"]))
 
 
 func _to_row(str_arr: Array) -> Array[Dictionary]:
-	return Array(str_arr.map(func(e): return {value = e}), TYPE_DICTIONARY, &"", null)
+	return Array(str_arr.map(func(e: String) -> Dictionary: return {value = e}), TYPE_DICTIONARY, &"", null)

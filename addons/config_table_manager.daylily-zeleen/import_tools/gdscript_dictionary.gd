@@ -26,7 +26,7 @@ func _import(
 		_Log.error([table_name, " ", _Localize.translate("导表失败: "), _Localize.translate("未指定作为key的数据类属性，请使用 key=prop_name 作为选项参数进行指定。")])
 		return ERR_INVALID_PARAMETER
 
-	var fa = FileAccess.open(import_path, FileAccess.WRITE)
+	var fa := FileAccess.open(import_path, FileAccess.WRITE)
 	if not is_instance_valid(fa):
 		_Log.error([_Localize.translate("导表失败: "), error_string(FileAccess.get_open_error())])
 		return FileAccess.get_open_error()
@@ -36,61 +36,61 @@ func _import(
 		fa.store_line("")
 
 	# TABLE_META_LIST
-	var metas_text := ""
-	for m in header.metas:
-		if not metas_text.is_empty():
-			metas_text += ", "
-		metas_text += '"%s"' % m
-	fa.store_line("const TABLE_META_LIST:PackedStringArray = [%s]" % metas_text)
+	var meta_list_text := ""
+	for m in header.meta_list:
+		if not meta_list_text.is_empty():
+			meta_list_text += ", "
+		meta_list_text += '"%s"' % m
+	fa.store_line("const TABLE_META_LIST:PackedStringArray = [%s]" % meta_list_text)
 	fa.store_line("")
 
 	# DataClass
 	var property_list: Array[Dictionary]
-	var property_defaul_values: Dictionary
+	var property_default_values := {}
 	var data_class := ""
 	if not data_class_script.is_empty():
-		var internal_class = "" if data_class_name.is_empty() else ".%s" % data_class_name
+		var internal_class := "" if data_class_name.is_empty() else ".%s" % data_class_name
 		fa.store_line('const DataClass = preload("%s")%s' % [data_class_script, internal_class])
 		fa.store_line("")
 		data_class = "DataClass"
 
 		# 获取属性列表
-		var script = ResourceLoader.load(data_class_script, "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+		var script := ResourceLoader.load(data_class_script, "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
 		if not data_class_name.is_empty():
-			var internal = data_class_name.split(".", false)
+			var internal := data_class_name.split(".", false)
 			while not internal.is_empty():
 				script = script.get_script_constant_map()[internal[0]]
 				internal.remove_at(0)
-		var base = script
+		var base := script
 		while true:
 			property_list.append_array(base.get_script_property_list())
 			if not is_instance_valid(base.get_base_script()):
 				property_list.append_array(ClassDB.class_get_property_list(base.get_instance_base_type()))
-				var tmp_obj = ClassDB.instantiate(base.get_instance_base_type()) as Object
+				var tmp_obj := ClassDB.instantiate(base.get_instance_base_type()) as Object
 				for p in property_list:
-					var n = p["name"]
+					var n := p["name"] as String
 					if n in tmp_obj:
-						property_defaul_values[n] = tmp_obj.get(n)
+						property_default_values[n] = tmp_obj.get(n)
 				break
 			base = base.get_base_script()
 
 		for p in property_list:
-			var n = p["name"]
-			if n in property_defaul_values:
+			var n := p["name"] as String
+			if n in property_default_values:
 				continue
-			property_defaul_values[n] = script.get_property_default_value(n)
+			property_default_values[n] = script.get_property_default_value(n)
 	else:
 		data_class = data_class_name
 		property_list = ClassDB.class_get_property_list(data_class_name)
-		var tmp_obj = ClassDB.instantiate(data_class_name) as Object
+		var tmp_obj := ClassDB.instantiate(data_class_name) as Object
 		for p in property_list:
-			var n = p["name"]
+			var n := p["name"] as String
 			if n in tmp_obj:
-				property_defaul_values[n] = tmp_obj.get(n)
+				property_default_values[n] = tmp_obj.get(n)
 
-	var existed_values = []
+	var existed_values := []
 	for d in data_rows:
-		var v = d.get(priority_key, null)
+		var v: Variant = d.get(priority_key, null)
 		if typeof(v) == TYPE_NIL:
 			_Log.error([table_name, " ", _Localize.translate("导表失败: "), _Localize.translate("存在未配置key (%s)的数据: %s。") % [priority_key, d]])
 			return ERR_INVALID_PARAMETER
@@ -155,7 +155,7 @@ func _import(
 
 	fa.store_line("# -----------------------------------------------------------------------")
 	# 过滤meta字段
-	var idx = 0
+	var idx := 0
 	while idx < fields.size():
 		if is_meta_filed(fields[idx]):
 			fields.remove_at(idx)
@@ -167,20 +167,20 @@ func _import(
 	instantiation = instantiation.strip_edges()
 	var args := (
 		(
-			Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String): return a.strip_edges().trim_prefix("{").trim_suffix("}"))
+			Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String) -> String: return a.strip_edges().trim_prefix("{").trim_suffix("}"))
 			as PackedStringArray
 		)
 		if not instantiation.ends_with("()")
 		else PackedStringArray()
 	)
-	var fields_with_type = fields.duplicate()
+	var fields_with_type := fields.duplicate()
 	for i in range(fields_with_type.size()):
 		fields_with_type[i] = "%s: %s" % [fields_with_type[i], type_string(types[i])]
 	fa.store_line("func _make_data(%s) -> %s:" % [", ".join(fields_with_type), data_class])
 	fa.store_line("\tvar ret = %s.%s(%s)" % [data_class, instantiation.split("(")[0], ", ".join(args)])
-	var valid_properties := property_list.map(func(d): return d["name"]) as PackedStringArray
+	var valid_properties := property_list.map(func(d: Dictionary) -> String: return d["name"]) as PackedStringArray
 	var hinted_fields: PackedStringArray = []
-	for f in Array(fields).filter(func(f: String): return not args.has(f)):
+	for f: String in Array(fields).filter(func(f: String) -> bool: return not args.has(f)):
 		if custom_setters.has(f):
 			fa.store_line("\tret.%s(%s)" % [custom_setters[f], f])
 		elif valid_properties.has(f):
@@ -200,12 +200,12 @@ func _import(
 
 	fa.store_line("func _init() -> void:")
 	for row in data_rows:
-		var args_text_list: PackedStringArray
+		var args_text_list := PackedStringArray()
 		for i in range(fields.size()):
-			var f = fields[i]
-			var t = types[i]
-			args_text_list.push_back(_get_value_text(row, f, t, property_defaul_values))
-		var priority_key_text := _get_value_text(row, priority_key, priority_key_type_id, property_defaul_values)
+			var f := fields[i]
+			var t := types[i]
+			args_text_list.push_back(_get_value_text(row, f, t, property_default_values))
+		var priority_key_text := _get_value_text(row, priority_key, priority_key_type_id, property_default_values)
 		fa.store_line("\t_data[%s] = _make_data(%s)" % [priority_key_text, ", ".join(args_text_list)])
 	if data_rows.is_empty():
 		fa.store_line("\tpass")

@@ -44,7 +44,8 @@ func _make_data(id: int, name: String, dict: Dictionary, description: String, ar
 
 
 var _data:Array[DataClass] = [
-	_make_data(0, "test1", {"a": 1, "b": "bc"}, "测试数据1", Array([1, 2, "abc"])),
-	_make_data(1, "test2", {}, "测试数据2", Array(["yes"])),
+	_make_data(0, "test1", {"a": 1, "b": "str1"}, "歪比八卜", Array([1, 1.2, "string"])),
+	_make_data(1, "test2", {"c": "str2"}, "玛卡巴卡", Array([])),
+	_make_data(2, "import_data", {}, "该行由导入修改器生成。", Array([])),
 ]
 

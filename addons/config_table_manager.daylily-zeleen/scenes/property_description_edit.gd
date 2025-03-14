@@ -9,8 +9,8 @@ signal delete_request
 
 
 func _ready() -> void:
-	delete_btn.pressed.connect(func(): delete_request.emit())
-	preload("../localization/localize.gd").localiza_node(self)
+	delete_btn.pressed.connect(func() -> void: delete_request.emit())
+	preload("../localization/localize.gd").localize_node(self)
 
 func setup(prop_name: String, desc: String) -> void:
 	if not is_node_ready():

@@ -25,11 +25,11 @@ const _MetaEdit = preload("meta_edit.gd")
 @onready var _add_ap_btn: Button = %AddAPBtn
 @onready var _add_desc_btn: Button = %AddDescBtn
 @onready var _add_meta_btn: Button = %AddMetaBtn
-@onready var _output_select_btn: Button = %OutputSeletBtn
-@onready var _table_import_select_btn: Button = %TableImportSelectBtn
+@onready var _output_select_btn: Button = %OutputSelectBtn
+# @onready var _table_import_select_btn: Button = %TableImportSelectBtn
 
 # 预设参数
-@onready var _klass_name_line_edit: LineEdit = %ClassNameLineEdit
+@onready var _class_name_line_edit: LineEdit = %ClassNameLineEdit
 @onready var _script_line_edit: LineEdit = %ScriptLineEdit
 @onready var _only_storage_check_box: CheckBox = %OnlyStorageCheckBox
 @onready var _no_inheritance_check_box: CheckBox = %NoInheritanceCheckBox
@@ -39,17 +39,17 @@ const _MetaEdit = preload("meta_edit.gd")
 @onready var _output_line_edit: LineEdit = %OutputLineEdit
 @onready var _table_import_line_edit: LineEdit = %TableImportLineEdit
 
-@onready var _tab_contaner: TabContainer = %TabContainer
+@onready var _tab_container: TabContainer = %TabContainer
 @onready var _settings: _Settings
-@onready var _ap_contianer: VBoxContainer = %APContaner
-@onready var _desc_container: VBoxContainer = %DescContaner
-@onready var _meta_container: VBoxContainer = %MetaContaner
+@onready var _ap_container: VBoxContainer = %APContainer
+@onready var _desc_container: VBoxContainer = %DescContainer
+@onready var _meta_container: VBoxContainer = %MetaContainer
 
 @onready var _table_tool_options: OptionButton = %TableToolOptions
 @onready var _import_tool_options: OptionButton = %ImportToolOptions
 
-@onready var _preset_manager_tab = find_child("预设管理")
-@onready var _gen_and_import_tab = find_child("生成与导入")
+# @onready var _preset_manager_tab := find_child("预设管理") as Node
+@onready var _gen_and_import_tab := find_child("生成与导入") as Node
 
 var _ap_edit_scene: PackedScene = _load((get_script().resource_path as String).get_base_dir().path_join("additional_property_edit.tscn"))
 var _pd_edit_scene: PackedScene = _load((get_script().resource_path as String).get_base_dir().path_join("property_description_edit.tscn"))
@@ -59,14 +59,14 @@ var _meta_edit_scene: PackedScene = _load((get_script().resource_path as String)
 func _ready() -> void:
 	_settings = _load((get_script().resource_path as String).get_base_dir().path_join("settings.tscn")).instantiate()
 	_settings.tools_updated.connect(_on_settings_tools_updated)
-	_tab_contaner.add_child(_settings)
+	_tab_container.add_child(_settings)
 
-	_confirmation_dialog.confirmed.connect(func(): _confirmed.emit(true))
-	_confirmation_dialog.canceled.connect(func(): _confirmed.emit(false))
+	_confirmation_dialog.confirmed.connect(func() -> void: _confirmed.emit(true))
+	_confirmation_dialog.canceled.connect(func() -> void: _confirmed.emit(false))
 
-	_file_dialog.canceled.connect(func(): _path_selected.emit(false, ""))
-	_file_dialog.dir_selected.connect(func(dir): _path_selected.emit(true, dir))
-	_file_dialog.file_selected.connect(func(file): _path_selected.emit(true, file))
+	_file_dialog.canceled.connect(func() -> void: _path_selected.emit(false, ""))
+	_file_dialog.dir_selected.connect(func(dir: String) -> void: _path_selected.emit(true, dir))
+	_file_dialog.file_selected.connect(func(file: String) -> void: _path_selected.emit(true, file))
 
 	_preset_options.item_selected.connect(_on_preset_options_selected)
 	_save_btn.pressed.connect(_on_save_btn_pressed)
@@ -76,8 +76,8 @@ func _ready() -> void:
 	_add_desc_btn.pressed.connect(_on_add_desc_btn_pressed)
 	_add_meta_btn.pressed.connect(_on_add_meta_btn_pressed)
 	_output_select_btn.pressed.connect(_on_output_select_btn_pressed)
-	%GenerateModifierSeletBtn.pressed.connect(_on_generate_modifier_select_btn_pressed)
-	%ImportModifierSeletBtn.pressed.connect(_on_import_modifier_select_btn_pressed)
+	%GenerateModifierSelectBtn.pressed.connect(_on_generate_modifier_select_btn_pressed)
+	%ImportModifierSelectBtn.pressed.connect(_on_import_modifier_select_btn_pressed)
 
 	_gen_and_import_tab.visibility_changed.connect(_on_gen_and_import_tab_visibility_changed)
 
@@ -87,7 +87,7 @@ func _ready() -> void:
 	_preset_options.add_item(_Localize.translate("- None -"))
 	_preset_options.set_item_metadata(0, null)
 
-	_Localize.localiza_node(self)
+	_Localize.localize_node(self)
 	_on_settings_tools_updated()
 
 
@@ -126,14 +126,14 @@ func _refresh_preset_options(preset_name: String = "") -> void:
 	for i in range(dir.get_file_count()):
 		if dir.get_file_type(i) != &"Resource":
 			continue
-		var preset = _load(dir.get_file_path(i)) as _Preset
+		var preset := _load(dir.get_file_path(i)) as _Preset
 		if not is_instance_valid(preset):
 			continue
 
 		_preset_options.add_item(preset.name)
 		_preset_options.set_item_metadata(_preset_options.item_count - 1, preset)
 		if preset.name == preset_name:
-			idx == _preset_options.item_count - 1
+			idx = _preset_options.item_count - 1
 
 	if idx >= 0:
 		_on_preset_options_selected(idx)
@@ -149,9 +149,9 @@ func _save_preset() -> void:
 		return
 	var presets_dir := _settings.presets_dir
 	if not DirAccess.dir_exists_absolute(presets_dir):
-		var err := DirAccess.make_dir_recursive_absolute(presets_dir)
-		if err != OK:
-			_Log.error([_Localize.translate('创建预设路径"{presets_dir}"失败: ').format({presets_dir = presets_dir}), error_string(err)])
+		var make_dir_err := DirAccess.make_dir_recursive_absolute(presets_dir)
+		if make_dir_err != OK:
+			_Log.error([_Localize.translate('创建预设路径"{presets_dir}"失败: ').format({presets_dir = presets_dir}), error_string(make_dir_err)])
 			return
 
 	var preset := _Preset.new()
@@ -193,18 +193,18 @@ func _remove_and_queue_free_children(node: Node) -> void:
 
 func _load_preset(preset: _Preset) -> void:
 	_preset_name_line_edit.text = preset.name
-	_klass_name_line_edit.text = preset.data_class
+	_class_name_line_edit.text = preset.data_class
 	_script_line_edit.text = preset.data_class_script
 	%TableNameLineEdit.text = preset.table_name.strip_edges()
 	%SkipPrefixUnderscoreCheckBox.set_pressed_no_signal(preset.skip_prefix_underscore_properties)
-	_only_storage_check_box.set_pressed_no_signal(preset.only_strage_properties)
+	_only_storage_check_box.set_pressed_no_signal(preset.only_storage_properties)
 	_no_inheritance_check_box.set_pressed_no_signal(preset.no_inheritance)
 	_ascending_check_box.set_pressed_no_signal(preset.ascending_order)
 	_instantiation_line_edit.text = preset.instantiation
 	_priority_line_edit.text = ", ".join(preset.priority_properties)
 	%IgnoreLineEdit.text = ", ".join(preset.ignored_properties)
 	%MetaPriorityLineEdit.text = ", ".join(preset.need_meta_properties)
-	_output_line_edit.text = preset.table_ouput_path
+	_output_line_edit.text = preset.table_output_path
 	%BackupCheckBox.set_pressed_no_signal(preset.auto_backup)
 	%MergeCheckBox.set_pressed_no_signal(preset.auto_merge)
 	_table_import_line_edit.text = preset.import_path
@@ -213,23 +213,23 @@ func _load_preset(preset: _Preset) -> void:
 	%GenerateModifierLineEdit.text = preset.generate_modifier_file
 	%ImportModifierLineEdit.text = preset.import_modifier_file
 
-	_remove_and_queue_free_children(_ap_contianer)
-	for ap in preset.additional_properties:
-		var ape = _ap_edit_scene.instantiate() as _AdditionalPropertyEdit
+	_remove_and_queue_free_children(_ap_container)
+	for ap: Dictionary in preset.additional_properties:
+		var ape := _ap_edit_scene.instantiate() as _AdditionalPropertyEdit
 		ape.setup(ap.get("name", ""), ap.get("type", TYPE_BOOL), ap.get("setter", ""))
 		ape.delete_request.connect(_on_additional_property_delete_request.bind(ape))
-		_ap_contianer.add_child(ape)
+		_ap_container.add_child(ape)
 
 	_remove_and_queue_free_children(_desc_container)
-	for f in preset.descriptions:
-		var pde = _pd_edit_scene.instantiate() as _PropertyDescriptionEdit
+	for f: String in preset.descriptions:
+		var pde := _pd_edit_scene.instantiate() as _PropertyDescriptionEdit
 		pde.setup(f, preset.descriptions[f])
 		pde.delete_request.connect(_on_property_description_delete_request.bind(pde))
 		_desc_container.add_child(pde)
 
 	_remove_and_queue_free_children(_meta_container)
-	for m in preset.metas:
-		var me = _meta_edit_scene.instantiate() as _MetaEdit
+	for m: String in preset.meta_list:
+		var me := _meta_edit_scene.instantiate() as _MetaEdit
 		me.setup(m)
 		me.delete_request.connect(_on_meta_edit_delete_request.bind(me))
 		_meta_container.add_child(me)
@@ -247,32 +247,32 @@ func _load_preset(preset: _Preset) -> void:
 
 func _set_to_preset(preset: _Preset) -> void:
 	preset.name = _preset_name_line_edit.text
-	preset.data_class = _klass_name_line_edit.text
+	preset.data_class = _class_name_line_edit.text
 	preset.data_class_script = _script_line_edit.text
 	preset.table_name = %TableNameLineEdit.text.strip_edges()
 	preset.skip_prefix_underscore_properties = %SkipPrefixUnderscoreCheckBox.button_pressed
-	preset.only_strage_properties = _only_storage_check_box.button_pressed
+	preset.only_storage_properties = _only_storage_check_box.button_pressed
 	preset.no_inheritance = _no_inheritance_check_box.button_pressed
 	preset.ascending_order = _ascending_check_box.button_pressed
 	preset.instantiation = _instantiation_line_edit.text
-	preset.priority_properties = Array(_priority_line_edit.text.split(",", false)).map(func(text: String): return text.strip_edges())
-	preset.ignored_properties = Array(%IgnoreLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
-	preset.table_ouput_path = _output_line_edit.text
-	preset.need_meta_properties = Array(%MetaPriorityLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
+	preset.priority_properties = Array(_priority_line_edit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
+	preset.ignored_properties = Array(%IgnoreLineEdit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
+	preset.table_output_path = _output_line_edit.text
+	preset.need_meta_properties = Array(%MetaPriorityLineEdit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
 	preset.auto_backup = %BackupCheckBox.button_pressed
 	preset.auto_merge = %MergeCheckBox.button_pressed
 	preset.import_path = _table_import_line_edit.text
-	preset.table_tool_options = Array(%TableOptionsLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
-	preset.import_tool_options = Array(%ImportOptionsLineEdit.text.split(",", false)).map(func(text: String): return text.strip_edges())
+	preset.table_tool_options = Array(%TableOptionsLineEdit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
+	preset.import_tool_options = Array(%ImportOptionsLineEdit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
 	preset.generate_modifier_file = %GenerateModifierLineEdit.text
 	preset.import_modifier_file = %ImportModifierLineEdit.text
 
 	preset.additional_properties.clear()
-	for ape in _ap_contianer.get_children():
+	for ape in _ap_container.get_children():
 		ape = ape as _AdditionalPropertyEdit
 		if not is_instance_valid(ape):
 			continue
-		var ap := {}  # _Preset._AdditionalProperty.new()
+		var ap := {} # _Preset._AdditionalProperty.new()
 		ap["name"] = ape.get_property_name()
 		ap["type"] = ape.get_type()
 		ap["setter"] = ape.get_setter()
@@ -288,14 +288,14 @@ func _set_to_preset(preset: _Preset) -> void:
 			continue
 		preset.descriptions[pde.get_property_name()] = pde.get_description()
 
-	preset.metas.clear()
+	preset.meta_list.clear()
 	for me in _meta_container.get_children():
 		me = me as _MetaEdit
 		if not is_instance_valid(me):
 			continue
-		preset.metas.push_back(me.get_meta_text())
+		preset.meta_list.push_back(me.get_meta_text())
 
-	var m = _table_tool_options.get_selected_metadata()
+	var m: Variant = _table_tool_options.get_selected_metadata()
 	if typeof(m) == TYPE_STRING:
 		preset.table_tool_script_file = m
 	else:
@@ -338,7 +338,7 @@ func _on_delete_btn_pressed() -> void:
 	if not await _confirmed:
 		return
 
-	var preset = _preset_options.get_item_metadata(_preset_options.selected) as _Preset
+	var preset := _preset_options.get_item_metadata(_preset_options.selected) as _Preset
 	if not is_instance_valid(preset):
 		_Log.error([_Localize.translate("Bug，请提交issue并提供复现步骤")])
 		return
@@ -347,62 +347,62 @@ func _on_delete_btn_pressed() -> void:
 
 
 func _on_script_select_btn_pressed() -> void:
-	var path = _script_line_edit.text
+	var path := _script_line_edit.text
 	_pop_file_dialog(_Localize.translate("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
-	var result = await _path_selected as Array
+	var result := await _path_selected as Array
 	if not result[0]:
 		return
 	_script_line_edit.text = result[1]
 
 
 func _on_generate_modifier_select_btn_pressed() -> void:
-	var path = %GenerateModifierLineEdit.text
+	var path := %GenerateModifierLineEdit.text as String
 	_pop_file_dialog(_Localize.translate("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
-	var result = await _path_selected as Array
+	var result := await _path_selected as Array
 	if not result[0]:
 		return
 	%GenerateModifierLineEdit.text = result[1]
 
 
 func _on_import_modifier_select_btn_pressed() -> void:
-	var path = %ImportModifierLineEdit.text
+	var path := %ImportModifierLineEdit.text as String
 	_pop_file_dialog(_Localize.translate("选择脚本"), FileDialog.FILE_MODE_OPEN_FILE, _get_script_filters(), path)
-	var result = await _path_selected as Array
+	var result := await _path_selected as Array
 	if not result[0]:
 		return
 	%ImportModifierLineEdit.text = result[1]
 
 
 func _on_add_additional_property_btn_pressed() -> void:
-	var ape = _ap_edit_scene.instantiate()
+	var ape := _ap_edit_scene.instantiate() as _AdditionalPropertyEdit
 	ape.delete_request.connect(_on_additional_property_delete_request.bind(ape))
-	_ap_contianer.add_child(ape)
+	_ap_container.add_child(ape)
 
 
 func _on_add_desc_btn_pressed() -> void:
-	var pde = _pd_edit_scene.instantiate()
+	var pde := _pd_edit_scene.instantiate() as _PropertyDescriptionEdit
 	pde.delete_request.connect(_on_property_description_delete_request.bind(pde))
 	_desc_container.add_child(pde)
 
 
 func _on_add_meta_btn_pressed() -> void:
-	var me = _meta_edit_scene.instantiate()
+	var me := _meta_edit_scene.instantiate() as _MetaEdit
 	me.delete_request.connect(_on_meta_edit_delete_request.bind(me))
 	_meta_container.add_child(me)
 
 
 func _on_output_select_btn_pressed() -> void:
-	var path = _output_line_edit.text
+	var path := _output_line_edit.text as String
 	# "*.csv;CSV表格"
 	_pop_file_dialog(_Localize.translate("输出文件"), FileDialog.FILE_MODE_OPEN_FILE, [], path)
-	var result = await _path_selected as Array
+	var result := await _path_selected as Array
 	if not result[0]:
 		return
 	_output_line_edit.text = result[1]
 
 
 func _on_additional_property_delete_request(ape: _AdditionalPropertyEdit) -> void:
-	_ap_contianer.remove_child(ape)
+	_ap_container.remove_child(ape)
 	ape.queue_free()
 
 
@@ -417,11 +417,11 @@ func _on_meta_edit_delete_request(me: _MetaEdit) -> void:
 
 
 func _on_settings_tools_updated() -> void:
-	var selecting_table_tool = _table_tool_options.get_selected_metadata()
+	var selecting_table_tool: Variant = _table_tool_options.get_selected_metadata()
 	_table_tool_options.clear()
 	var table_tools := _settings.table_tools
 	var table_option_idx := -1
-	for n in table_tools:
+	for n: String in table_tools:
 		_table_tool_options.add_item("%s: %s" % [_Localize.translate(n), table_tools[n]])
 		_table_tool_options.set_item_metadata(_table_tool_options.item_count - 1, table_tools[n])
 		if selecting_table_tool == table_tools[n]:
@@ -429,11 +429,11 @@ func _on_settings_tools_updated() -> void:
 	if table_option_idx >= 0:
 		_table_tool_options.select(table_option_idx)
 
-	var selecting_import_tool = _import_tool_options.get_selected_metadata()
+	var selecting_import_tool: Variant = _import_tool_options.get_selected_metadata()
 	_import_tool_options.clear()
 	var import_option_idx := -1
 	var import_tools := _settings.import_tools
-	for n in import_tools:
+	for n: String in import_tools:
 		_import_tool_options.add_item("%s: %s" % [_Localize.translate(n), import_tools[n]])
 		_import_tool_options.set_item_metadata(_import_tool_options.item_count - 1, import_tools[n])
 		if selecting_import_tool == import_tools[n]:
@@ -452,7 +452,7 @@ func _on_gen_and_import_tab_visibility_changed() -> void:
 		for i in range(dir.get_file_count()):
 			if dir.get_file_type(i) != &"Resource":
 				continue
-			var preset = _load(dir.get_file_path(i)) as _Preset
+			var preset := _load(dir.get_file_path(i)) as _Preset
 			if not is_instance_valid(preset):
 				continue
 
@@ -470,7 +470,7 @@ func _on_gen_and_import_tab_visibility_changed() -> void:
 
 #--------------------------------------
 func _load(path: String) -> Resource:
-	var ret = ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
+	var ret := ResourceLoader.load(path, "", ResourceLoader.CACHE_MODE_IGNORE)
 	if is_instance_valid(ret) and ret.resource_path.is_empty():
 		# 兼容 4.2
 		ret.take_over_path(path)

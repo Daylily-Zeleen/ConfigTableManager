@@ -8,7 +8,7 @@ signal delete_request
 
 
 func _ready() -> void:
-	delete_btn.pressed.connect(func(): delete_request.emit())
+	delete_btn.pressed.connect(func() -> void: delete_request.emit())
 
 
 func setup(meta: String) -> void:

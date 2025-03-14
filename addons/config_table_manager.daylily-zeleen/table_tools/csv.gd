@@ -39,24 +39,24 @@ func _get_parse_error() -> Error:
 func _parse_table_file(csv_file: String, options: PackedStringArray) -> Error:
 	for op in options:
 		if op == "arr_dict_with_brackets":
-			arr_dict_with_brackets == true
+			arr_dict_with_brackets = true
 
-	var fa = FileAccess.open(csv_file, FileAccess.READ)
+	var fa := FileAccess.open(csv_file, FileAccess.READ)
 	if not is_instance_valid(fa):
 		_Log.error([_Localize.translate("无法读取csv文件: "), csv_file, " - ", error_string(FileAccess.get_open_error())])
 		_last_parse_error = FileAccess.get_open_error()
 		return _last_parse_error
 
 	_header = _TableHeader.new()
-	var metas := fa.get_csv_line(CSV_DELIM)
+	var meta_list := fa.get_csv_line(CSV_DELIM)
 	var descs := fa.get_csv_line(CSV_DELIM)
 	var fields := fa.get_csv_line(CSV_DELIM)
 	var types := fa.get_csv_line(CSV_DELIM)
 
 	# 移除尾随空项（由其他软件产生）
-	for i in range(metas.size() - 1, -1, -1):
-		if metas[i].is_empty():
-			metas.remove_at(i)
+	for i in range(meta_list.size() - 1, -1, -1):
+		if meta_list[i].is_empty():
+			meta_list.remove_at(i)
 		else:
 			break
 
@@ -66,12 +66,12 @@ func _parse_table_file(csv_file: String, options: PackedStringArray) -> Error:
 		else:
 			break
 
-	if metas.size() == 1 and metas[0] == "PlaceHolder Metas":
-		metas.clear()
+	if meta_list.size() == 1 and meta_list[0] in ["PlaceHolder Meta List", "PlaceHolder Metas"]: # 兼容旧格式
+		meta_list.clear()
 	if descs.size() == 1 and descs[0] == "PlaceHolder Descriptions":
 		descs.clear()
 
-	_header.metas = metas
+	_header.meta_list = meta_list
 	_header.descriptions = descs
 	_header.fields = fields
 	_header.types = types
@@ -123,7 +123,7 @@ func _parse_table_file(csv_file: String, options: PackedStringArray) -> Error:
 				# 跳过空数据，避免在此生成默认值
 				continue
 
-			var value := parse_value(row[i], type)
+			var value: Variant = parse_value(row[i], type)
 
 			if typeof(value) == TYPE_NIL:
 				_header = null
@@ -146,14 +146,14 @@ func _get_table_file_extension() -> String:
 func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], options: PackedStringArray) -> Error:
 	for op in options:
 		if op == "arr_dict_with_brackets":
-			arr_dict_with_brackets == true
+			arr_dict_with_brackets = true
 
 	if not is_instance_valid(header):
 		_Log.error([_Localize.translate("生成表格失败: "), error_string(ERR_INVALID_PARAMETER)])
 		return ERR_INVALID_PARAMETER
 
 	# 生成用于跳过导入的.import
-	var f = FileAccess.open(save_path + ".import", FileAccess.WRITE)
+	var f := FileAccess.open(save_path + ".import", FileAccess.WRITE)
 	if not is_instance_valid(f):
 		_Log.error([_Localize.translate("生成表格失败,无法生成:"), save_path + ".import", " - ", error_string(FileAccess.get_open_error())])
 		return FAILED
@@ -174,13 +174,13 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 		return FileAccess.get_open_error()
 
 	# 确保非空行
-	var metas = header.metas.duplicate()
-	var descs = header.descriptions.duplicate()
-	if metas.size() == 0:
-		metas.push_back("PlaceHolder Metas")
+	var meta_list := header.meta_list.duplicate()
+	var descs := header.descriptions.duplicate()
+	if meta_list.size() == 0:
+		meta_list.push_back("PlaceHolder Meta List")
 	if descs.size() <= 0:
 		descs.push_back("PlaceHolder Descriptions")
-	fa.store_csv_line(metas, CSV_DELIM)
+	fa.store_csv_line(meta_list, CSV_DELIM)
 	fa.store_csv_line(descs, CSV_DELIM)
 	fa.store_csv_line(header.fields, CSV_DELIM)
 	fa.store_csv_line(header.types, CSV_DELIM)
@@ -250,7 +250,7 @@ func _parse_value(text: String, type_id: int) -> Variant:
 			var value_text := text
 			if not text.begins_with("[") and not text.ends_with("]"):
 				value_text = "[%s]" % text
-			var arr = JSON.parse_string(value_text)
+			var arr: Variant = JSON.parse_string(value_text)
 			if typeof(arr) != TYPE_ARRAY:
 				_Log.error([_Localize.translate("非法值文本: "), text])
 				return null
@@ -261,7 +261,7 @@ func _parse_value(text: String, type_id: int) -> Variant:
 			var value_text := text
 			if not text.begins_with("{") and not text.ends_with("}"):
 				value_text = "{%s}" % text
-			var dict = JSON.parse_string(value_text)
+			var dict: Variant = JSON.parse_string(value_text)
 			if typeof(dict) != TYPE_DICTIONARY:
 				_Log.error([_Localize.translate("非法值文本: "), text])
 				return null
@@ -278,8 +278,8 @@ func _get_data() -> Array[Dictionary]:
 
 
 # --------------
-func _is_empty_csv_row(row: PackedStringArray, fileds_count: int) -> bool:
-	for i in range(min(row.size(), fileds_count)):
+func _is_empty_csv_row(row: PackedStringArray, fields_count: int) -> bool:
+	for i in range(min(row.size(), fields_count)):
 		if not row[i].strip_edges().is_empty():
 			return false
 	return true

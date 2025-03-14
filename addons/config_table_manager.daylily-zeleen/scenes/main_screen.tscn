@@ -230,7 +230,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "res://tables/{table_name}.csv"
 
-[node name="OutputSeletBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer2"]
+[node name="OutputSelectBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer2"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "选择"
@@ -283,7 +283,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "使用修改器在表格生成流程中修改数据，修改器应扩展自 res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
 
-[node name="GenerateModifierSeletBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer3"]
+[node name="GenerateModifierSelectBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/表格选项/GridContainer3"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "选择"
@@ -374,7 +374,7 @@ layout_mode = 2
 size_flags_horizontal = 3
 placeholder_text = "使用修改器在表格导入流程中修改数据，修改器应扩展自 res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
 
-[node name="ImportModifierSeletBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer3"]
+[node name="ImportModifierSelectBtn" type="Button" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/导入选项/GridContainer3"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "选择"
@@ -397,7 +397,7 @@ text = "+"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="APContaner" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/附加字段/ScrollContainer"]
+[node name="APContainer" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/附加字段/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -421,7 +421,7 @@ text = "+"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="DescContaner" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/字段描述/ScrollContainer"]
+[node name="DescContainer" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/字段描述/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -445,7 +445,7 @@ text = "+"
 layout_mode = 2
 size_flags_vertical = 3
 
-[node name="MetaContaner" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/自定义元数据/ScrollContainer"]
+[node name="MetaContainer" type="VBoxContainer" parent="TabContainer/预设管理/MarginContainer/VBoxContainer/ScrollContainer2/VBoxContainer/PanelContainer/TabContainer/自定义元数据/ScrollContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3

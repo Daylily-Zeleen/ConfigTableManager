@@ -56,7 +56,7 @@ func setup(presets: Array[_Preset]) -> void:
 		item.free()
 
 	for p in presets:
-		var item = _tree.get_root().create_child() as TreeItem
+		var item := _tree.get_root().create_child() as TreeItem
 		item.set_cell_mode(0, TreeItem.CELL_MODE_CHECK)
 		item.set_cell_mode(1, TreeItem.CELL_MODE_CHECK)
 		item.set_text(2, "%s (%s)" % [p.name, p.resource_path])
@@ -85,7 +85,7 @@ func _on_tree_item_edited() -> void:
 	for item in _tree.get_root().get_children():
 		if not item.is_checked(0) and not item.is_checked(1):
 			continue
-		var preset_file = item.get_metadata(2) as String
+		var preset_file := item.get_metadata(2) as String
 		if not presets.has(preset_file):
 			presets[preset_file] = {}
 		if item.is_checked(0):
@@ -115,13 +115,13 @@ func _load_archive() -> void:
 		printerr("BUG, open file failed: ", error_string(FileAccess.get_open_error()))
 		return
 
-	var presets = f.get_var()
+	var presets: Variant = f.get_var()
 	if typeof(presets) != TYPE_DICTIONARY:
 		printerr("BUG, Parse error")
 		return
 
 	for item in _tree.get_root().get_children():
-		var preset_file = item.get_metadata(2) as String
+		var preset_file := item.get_metadata(2) as String
 
 		if not presets.has(preset_file):
 			continue
@@ -130,7 +130,7 @@ func _load_archive() -> void:
 		item.set_checked(1, presets[preset_file].get("exclude", false))
 
 
-func _execute(select_only) -> void:
+func _execute(select_only: bool) -> void:
 	for item in _tree.get_root().get_children():
 		if select_only and not item.is_checked(0):
 			# 仅选中项
@@ -139,7 +139,7 @@ func _execute(select_only) -> void:
 			# 排除
 			continue
 		var path := item.get_metadata(2) as String
-		var preset = ResourceLoader.load(path, "Resource", ResourceLoader.CACHE_MODE_IGNORE) as _Preset
+		var preset := ResourceLoader.load(path, "Resource", ResourceLoader.CACHE_MODE_IGNORE) as _Preset
 		if not is_instance_valid(preset):
 			_Log.error([_Localize.translate("表格预设不存在: "), path])
 			continue

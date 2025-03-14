@@ -1,8 +1,8 @@
 extends Node
 
-func _ready():
-	var data_table = DataTable.new()
-	var internal_data_table = preload("res://tables/imported/internal_data_table.gd").new()
+func _ready() -> void:
+	var data_table := DataTable.new()
+	var internal_data_table := preload("res://tables/imported/internal_data_table.gd").new() as RefCounted
 
 	print("== DataTable 所有数据:")
 	print(data_table.get_data())
@@ -17,5 +17,5 @@ func _ready():
 	print("")
 
 	print("== InternalDataTable 查找 id 为 0 的数据（find）:")
-	print(internal_data_table.find(func(d): return d.id == 0))
+	print(internal_data_table.find(func(d: DataTable.DataClass.InternalData) -> bool: return d.id == 0))
 	print("")

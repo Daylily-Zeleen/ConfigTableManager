@@ -19,7 +19,7 @@ func _get_parse_error() -> Error:
 	return ERR_PARSE_ERROR
 
 
-func _parse_table_file(table_file: String, options: PackedStringArray) -> Error:
+func _parse_table_file(_table_file: String, _options: PackedStringArray) -> Error:
 	assert(false, "unimplemented")
 	_Log.error(["Unimplemented: _parse_table_file"])
 	return ERR_PARSE_ERROR
@@ -31,19 +31,19 @@ func _get_table_file_extension() -> String:
 	return ""
 
 
-func _generate_table_file(save_path: String, table_header: _TableHeader, data_rows: Array[PackedStringArray], options: PackedStringArray) -> Error:
+func _generate_table_file(_save_path: String, _table_header: _TableHeader, _data_rows: Array[PackedStringArray], _options: PackedStringArray) -> Error:
 	assert(false, "unimplemented")
 	_Log.error(["Unimplemented: _generate_table_file"])
 	return FAILED
 
 
-func _to_value_text(value: Variant) -> String:
+func _to_value_text(_value: Variant) -> String:
 	assert(false, "unimplemented")
 	_Log.error(["Unimplemented: _to_value_text"])
 	return ""
 
 
-func _parse_value(text: String, type_id: int) -> Variant:
+func _parse_value(_text: String, _type_id: int) -> Variant:
 	assert(false, "unimplemented")
 	_Log.error(["Unimplemented: _parse_value"])
 	return null
@@ -92,8 +92,8 @@ func to_data_rows(data: Array[Dictionary], fields: PackedStringArray, types: Pac
 		var r: PackedStringArray = []
 		r.resize(types.size())
 		for i in range(fields.size()):
-			var f = fields[i].strip_edges()
-			var t = types[i]
+			var f := fields[i].strip_edges()
+			var t := types[i]
 			if not f in d:
 				continue
 

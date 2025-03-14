@@ -17,8 +17,8 @@ func _ready() -> void:
 		if t in [TYPE_NIL, TYPE_OBJECT, TYPE_CALLABLE, TYPE_RID, TYPE_SIGNAL]:
 			continue
 		type_options.add_item(type_string(t).trim_prefix("Packed"), t)
-	delete_btn.pressed.connect(func(): delete_request.emit())
-	_Localize.localiza_node(self)
+	delete_btn.pressed.connect(func() -> void: delete_request.emit())
+	_Localize.localize_node(self)
 
 
 func setup(prop_name: String, type: int, setter: String) -> void:

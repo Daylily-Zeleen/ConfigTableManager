@@ -7,15 +7,15 @@ const _Log = preload("../scripts/log.gd")
 const _Localize = preload("../localization/localize.gd")
 
 func _import(
-	import_path: String,
-	table_name: String,
-	header: _TableHeader,
-	data_class_name: String,
-	data_class_script: String,
-	instantiation: String,
-	custom_setters: Dictionary,
-	data_rows: Array[Dictionary],
-	options:PackedStringArray
+	_import_path: String,
+	_table_name: String,
+	_header: _TableHeader,
+	_data_class_name: String,
+	_data_class_script: String,
+	_instantiation: String,
+	_custom_setters: Dictionary,
+	_data_rows: Array[Dictionary],
+	_options:PackedStringArray
 ) -> Error:
 	assert(false, "Unimplemented")
 	_Log.error(["Unimplemented: _import"])

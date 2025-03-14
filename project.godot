@@ -14,6 +14,29 @@ config/name="Config Table Manager"
 run/main_scene="res://data_test.tscn"
 config/features=PackedStringArray("4.2")
 
+[debug]
+
+gdscript/warnings/exclude_addons=false
+gdscript/warnings/unassigned_variable=2
+gdscript/warnings/unassigned_variable_op_assign=2
+gdscript/warnings/unused_variable=2
+gdscript/warnings/unused_local_constant=2
+gdscript/warnings/unused_private_class_variable=2
+gdscript/warnings/unused_parameter=2
+gdscript/warnings/unused_signal=2
+gdscript/warnings/shadowed_variable=2
+gdscript/warnings/shadowed_variable_base_class=2
+gdscript/warnings/shadowed_global_identifier=2
+gdscript/warnings/unreachable_pattern=2
+gdscript/warnings/standalone_ternary=2
+gdscript/warnings/incompatible_ternary=2
+gdscript/warnings/untyped_declaration=1
+gdscript/warnings/unsafe_void_return=2
+gdscript/warnings/confusable_identifier=2
+gdscript/warnings/confusable_local_declaration=2
+gdscript/warnings/confusable_local_usage=2
+gdscript/warnings/confusable_capture_reassignment=2
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/config_table_manager.daylily-zeleen/plugin.cfg")

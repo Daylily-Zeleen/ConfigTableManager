@@ -16,7 +16,7 @@ func _import(
 	data_rows: Array[Dictionary],
 	options: PackedStringArray
 ) -> Error:
-	var fa = FileAccess.open(import_path, FileAccess.WRITE)
+	var fa := FileAccess.open(import_path, FileAccess.WRITE)
 	if not is_instance_valid(fa):
 		_Log.error([_Localize.translate("导表失败: "), error_string(FileAccess.get_open_error())])
 		return FileAccess.get_open_error()
@@ -26,57 +26,57 @@ func _import(
 		fa.store_line("")
 
 	# TABLE_META_LIST
-	var metas_text := ""
-	for m in header.metas:
-		if not metas_text.is_empty():
-			metas_text += ", "
-		metas_text += '"%s"' % m
-	fa.store_line("const TABLE_META_LIST:PackedStringArray = [%s]" % metas_text)
+	var meta_list_text := ""
+	for m in header.meta_list:
+		if not meta_list_text.is_empty():
+			meta_list_text += ", "
+		meta_list_text += '"%s"' % m
+	fa.store_line("const TABLE_META_LIST:PackedStringArray = [%s]" % meta_list_text)
 	fa.store_line("")
 
 	# DataClass
 	var property_list: Array[Dictionary]
-	var property_defaul_values: Dictionary
+	var property_default_values: Dictionary = {}
 	var data_class := ""
 	if not data_class_script.is_empty():
-		var internal_class = "" if data_class_name.is_empty() else ".%s" % data_class_name
+		var internal_class := "" if data_class_name.is_empty() else ".%s" % data_class_name
 		fa.store_line('const DataClass = preload("%s")%s' % [data_class_script, internal_class])
 		fa.store_line("")
 		data_class = "DataClass"
 
 		# 获取属性列表
-		var script = ResourceLoader.load(data_class_script, "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+		var script := ResourceLoader.load(data_class_script, "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
 		if not data_class_name.is_empty():
-			var internal = data_class_name.split(".", false)
+			var internal := data_class_name.split(".", false)
 			while not internal.is_empty():
 				script = script.get_script_constant_map()[internal[0]]
 				internal.remove_at(0)
-		var base = script
+		var base := script
 		while true:
 			property_list.append_array(base.get_script_property_list())
 			if not is_instance_valid(base.get_base_script()):
 				property_list.append_array(ClassDB.class_get_property_list(base.get_instance_base_type()))
-				var tmp_obj = ClassDB.instantiate(base.get_instance_base_type()) as Object
+				var tmp_obj := ClassDB.instantiate(base.get_instance_base_type()) as Object
 				for p in property_list:
-					var n = p["name"]
+					var n := p["name"] as String
 					if n in tmp_obj:
-						property_defaul_values[n] = tmp_obj.get(n)
+						property_default_values[n] = tmp_obj.get(n)
 				break
 			base = base.get_base_script()
 
 		for p in property_list:
-			var n = p["name"]
-			if n in property_defaul_values:
+			var n := p["name"] as String
+			if n in property_default_values:
 				continue
-			property_defaul_values[n] = script.get_property_default_value(n)
+			property_default_values[n] = script.get_property_default_value(n)
 	else:
 		data_class = data_class_name
 		property_list = ClassDB.class_get_property_list(data_class_name)
-		var tmp_obj = ClassDB.instantiate(data_class_name) as Object
+		var tmp_obj := ClassDB.instantiate(data_class_name) as Object
 		for p in property_list:
-			var n = p["name"]
+			var n := p["name"] as String
 			if n in tmp_obj:
-				property_defaul_values[n] = tmp_obj.get(n)
+				property_default_values[n] = tmp_obj.get(n)
 
 	# get_data
 	fa.store_line("func get_data() -> Array[%s]:" % data_class)
@@ -121,7 +121,7 @@ func _import(
 	# 过滤meta字段
 	var fields := header.fields.duplicate()
 	var types := Array(header.types).map(to_type_id) as PackedByteArray
-	var idx = 0
+	var idx := 0
 	while idx < fields.size():
 		if is_meta_filed(fields[idx]):
 			fields.remove_at(idx)
@@ -133,20 +133,20 @@ func _import(
 	instantiation = instantiation.strip_edges()
 	var args := (
 		(
-			Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String): return a.strip_edges().trim_prefix("{").trim_suffix("}"))
+			Array(instantiation.split("(", false, 1)[1].split(")", false, 1)[0].split(",")).map(func(a: String) -> String: return a.strip_edges().trim_prefix("{").trim_suffix("}"))
 			as PackedStringArray
 		)
 		if not instantiation.ends_with("()")
 		else PackedStringArray()
 	)
-	var fields_with_type = fields.duplicate()
+	var fields_with_type := fields.duplicate()
 	for i in range(fields_with_type.size()):
 		fields_with_type[i] = "%s: %s" % [fields_with_type[i], type_string(types[i])]
 	fa.store_line("func _make_data(%s) -> %s:" % [", ".join(fields_with_type), data_class])
 	fa.store_line("\tvar ret = %s.%s(%s)" % [data_class, instantiation.split("(")[0], ", ".join(args)])
-	var valid_properties := property_list.map(func(d): return d["name"]) as PackedStringArray
+	var valid_properties := property_list.map(func(d: Dictionary) -> String: return d["name"]) as PackedStringArray
 	var hinted_fields: PackedStringArray = []
-	for f in Array(fields).filter(func(f: String): return not args.has(f)):
+	for f: String in Array(fields).filter(func(f: String) -> bool: return not args.has(f)):
 		if custom_setters.has(f):
 			fa.store_line("\tret.%s(%s)" % [custom_setters[f], f])
 		elif valid_properties.has(f):
@@ -162,11 +162,11 @@ func _import(
 	# 数据行
 	fa.store_line("var _data:Array[%s] = [" % data_class)
 	for row in data_rows:
-		var args_text_list: PackedStringArray
+		var args_text_list := PackedStringArray()
 		for i in range(fields.size()):
-			var f = fields[i]
-			var t = types[i]
-			args_text_list.push_back(_get_value_text(row, f, t, property_defaul_values))
+			var f := fields[i]
+			var t := types[i]
+			args_text_list.push_back(_get_value_text(row, f, t, property_default_values))
 		fa.store_line("\t_make_data(%s)," % [", ".join(args_text_list)])
 	fa.store_line("]")
 	fa.store_line("")
@@ -180,69 +180,69 @@ func _get_import_file_extension() -> String:
 
 
 func _get_value_text(row: Dictionary, field: String, type_id: int, default_values: Dictionary) -> String:
-	var value = row.get(field, default_values.get(field, null))
+	var value: Variant = row.get(field, default_values.get(field, null))
 
 	var default := typeof(value) == TYPE_NIL
-	var convertd_value = type_convert(value, type_id)
-	return __get_value_text(convertd_value, default)
+	var converted_value: Variant = type_convert(value, type_id)
+	return __get_value_text(converted_value, default)
 
 
-func __get_value_text(convertd_value, default := false) -> String:
-	var type_id = typeof(convertd_value)
+func __get_value_text(converted_value: Variant, default := false) -> String:
+	var type_id: Variant = typeof(converted_value)
 	var type := type_string(type_id)
 	match type_id:
 		TYPE_NIL:
 			return "null"
 		TYPE_BOOL:
-			return str(false) if default else str(convertd_value)
+			return str(false) if default else str(converted_value)
 		TYPE_INT:
-			return str(0) if default else str(convertd_value)
+			return str(0) if default else str(converted_value)
 		TYPE_FLOAT:
-			return str(0.0) if default else str(convertd_value)
+			return str(0.0) if default else str(converted_value)
 		TYPE_STRING:
-			return '""' if default else '"%s"' % convertd_value
+			return '""' if default else '"%s"' % converted_value
 		TYPE_VECTOR2, TYPE_VECTOR2I:
-			return (type + "()") if default else (type + "(%s, %s)" % [convertd_value.x, convertd_value.y])
+			return (type + "()") if default else (type + "(%s, %s)" % [converted_value.x, converted_value.y])
 		TYPE_VECTOR3, TYPE_VECTOR3I:
-			return (type + "()") if default else (type + "(%s, %s, %s)" % [convertd_value.x, convertd_value.y, convertd_value.z])
+			return (type + "()") if default else (type + "(%s, %s, %s)" % [converted_value.x, converted_value.y, converted_value.z])
 		TYPE_RECT2, TYPE_RECT2I:
 			if default:
 				return type + "()"
 			else:
-				return type + "(%s, %s, %s, %s)" % [convertd_value.position.x, convertd_value.position.y, convertd_value.size.x, convertd_value.size.y]
+				return type + "(%s, %s, %s, %s)" % [converted_value.position.x, converted_value.position.y, converted_value.size.x, converted_value.size.y]
 		TYPE_TRANSFORM2D:
 			if default:
 				return type + "()"
 			else:
-				var tran = convertd_value as Transform2D
+				var tran := converted_value as Transform2D
 				return type + "(Vector2(%s, %s), Vector2(%s, %s), Vector2(%s, %s))" % [tran.x.x, tran.x.y, tran.y.x, tran.y.y, tran.origin.x, tran.origin.y]
 		TYPE_VECTOR4, TYPE_VECTOR4I:
 			if default:
 				return type + "()"
 			else:
-				return type + "(%s, %s, %s, %s)" % [convertd_value.x, convertd_value.y, convertd_value.z, convertd_value.w]
+				return type + "(%s, %s, %s, %s)" % [converted_value.x, converted_value.y, converted_value.z, converted_value.w]
 		TYPE_PLANE:
 			if default:
 				return type + "()"
 			else:
-				var plane = convertd_value as Plane
+				var plane := converted_value as Plane
 				return type + "(Vector3(%s, %s, %s), %s)" % [plane.normal.x, plane.normal.y, plane.normal.z, plane.d]
 		TYPE_QUATERNION:
 			if default:
 				return type + "()"
 			else:
-				return type + "(%s, %s, %s, %s)" % [convertd_value.x, convertd_value.y, convertd_value.z, convertd_value.w]
+				return type + "(%s, %s, %s, %s)" % [converted_value.x, converted_value.y, converted_value.z, converted_value.w]
 		TYPE_AABB:
 			if default:
 				return type + "()"
 			else:
-				var aabb = convertd_value as AABB
+				var aabb := converted_value as AABB
 				return type + "(Vector3(%s, %s, %s), Vector3(%s, %s, %s))" % [aabb.position.x, aabb.position.y, aabb.position.z, aabb.size.x, aabb.size.y, aabb.size.z]
 		TYPE_BASIS:
 			if default:
 				return type + "()"
 			else:
-				var basis = convertd_value as Basis
+				var basis := converted_value as Basis
 				return (
 					type
 					+ (
@@ -254,9 +254,9 @@ func __get_value_text(convertd_value, default := false) -> String:
 			if default:
 				return type + "()"
 			else:
-				var trans = convertd_value as Transform3D
-				var basis = trans.basis
-				var origin = trans.origin
+				var trans := converted_value as Transform3D
+				var basis := trans.basis
+				var origin := trans.origin
 				return (
 					type
 					+ (
@@ -268,7 +268,7 @@ func __get_value_text(convertd_value, default := false) -> String:
 			if default:
 				return type + "()"
 			else:
-				var proj = convertd_value as Projection
+				var proj := converted_value as Projection
 				return (
 					type
 					+ (
@@ -297,24 +297,24 @@ func __get_value_text(convertd_value, default := false) -> String:
 			if default:
 				return type + "()"
 			else:
-				var color = convertd_value as Color
+				var color := converted_value as Color
 				return type + "(%s, %s, %s, %s)" % [color.r, color.g, color.b, color.a]
 		TYPE_STRING_NAME:
-			return '&""' if default else '&"%s"' % String(convertd_value)
+			return '&""' if default else '&"%s"' % String(converted_value)
 		TYPE_NODE_PATH:
-			return '^""' if default else '^"%s"' % String(convertd_value)
+			return '^""' if default else '^"%s"' % String(converted_value)
 		TYPE_DICTIONARY:
-			var elems: PackedStringArray = []
-			for k in convertd_value:
-				var v = convertd_value[k]
-				elems.push_back("%s: %s" % [__get_value_text(k), __get_value_text(v)])
-			return "{}" if default else "{%s}" % ", ".join(elems)
+			var elements: PackedStringArray = []
+			for k: Variant in converted_value:
+				var v: Variant = converted_value[k]
+				elements.push_back("%s: %s" % [__get_value_text(k), __get_value_text(v)])
+			return "{}" if default else "{%s}" % ", ".join(elements)
 		_:
 			if type_id >= TYPE_ARRAY and type_id < TYPE_MAX:
-				var elems: PackedStringArray = []
-				for e in convertd_value:
-					elems.push_back(__get_value_text(e))
-				return ("%s([])" % type) if default else ("%s([%s])" % [type, ", ".join(elems)])
+				var elements: PackedStringArray = []
+				for e: Variant in converted_value:
+					elements.push_back(__get_value_text(e))
+				return ("%s([])" % type) if default else ("%s([%s])" % [type, ", ".join(elements)])
 
-	_Log.error([_Localize.translate("转换失败，不支持的类型: "), type, " - ", convertd_value])
+	_Log.error([_Localize.translate("转换失败，不支持的类型: "), type, " - ", converted_value])
 	return ""
