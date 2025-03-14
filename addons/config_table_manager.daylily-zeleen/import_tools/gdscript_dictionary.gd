@@ -26,6 +26,11 @@ func _import(
 		_Log.error([table_name, " ", _Localize.translate("导表失败: "), _Localize.translate("未指定作为key的数据类属性，请使用 key=prop_name 作为选项参数进行指定。")])
 		return ERR_INVALID_PARAMETER
 
+	var can_use_typed_dictionary := false
+	var version_info := Engine.get_version_info()
+	if version_info.major > 4 or (version_info.major == 4 and version_info.minor >= 4): # 4.4 later
+		can_use_typed_dictionary = true
+
 	var fa := FileAccess.open(import_path, FileAccess.WRITE)
 	if not is_instance_valid(fa):
 		_Log.error([_Localize.translate("导表失败: "), error_string(FileAccess.get_open_error())])
@@ -113,8 +118,12 @@ func _import(
 
 	var priority_key_type_id: int = types[fields.find(priority_key)]
 
+	var dictionary_type_text := "Dictionary"
+	if can_use_typed_dictionary:
+		dictionary_type_text = "Dictionary[%s, DataClass]" % type_string(priority_key_type_id)
+
 	# get_data
-	fa.store_line(member_prefix + "func get_data() -> Dictionary:")
+	fa.store_line(member_prefix + "func get_data() -> %s:" % dictionary_type_text)
 	fa.store_line("\treturn _data")
 	fa.store_line("")
 	fa.store_line("")
@@ -199,7 +208,7 @@ func _import(
 	fa.store_line("")
 
 	# 数据行
-	fa.store_line(member_prefix + "var _data:Dictionary = {}")
+	fa.store_line(member_prefix + "var _data: %s = {}" % dictionary_type_text)
 	fa.store_line("")
 	fa.store_line("")
 
