@@ -48,9 +48,9 @@ If you have any doubts, please clone or download this project in [Github page](h
 
 ## Internal Tools
 
-### 1. Table Tools
-
 **NOTE: You can refer tool's detail and available options by keeping mouse hover on the "Table Tool"/"Import Tool" options**.
+
+### 1. Table Tools
 
 |Table Tool|Description|
 |-|-|
