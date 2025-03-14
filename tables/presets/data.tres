@@ -11,7 +11,7 @@ data_class = ""
 data_class_script = "res://data_classes/data.gd"
 table_name = "DataTable"
 skip_prefix_underscore_properties = true
-only_strage_properties = false
+only_storage_properties = false
 no_inheritance = true
 ascending_order = true
 auto_backup = false
@@ -20,7 +20,7 @@ priority_properties = PackedStringArray("id", "name")
 ignored_properties = PackedStringArray("need_ignore")
 table_tool_options = PackedStringArray("sheet=Data")
 table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd"
-table_ouput_path = "res://tables/{table_name}.xlsx"
+table_output_path = "res://tables/{table_name}.xlsx"
 generate_modifier_file = "res://tables/modifier/data_generate_modifier.gd"
 instantiation = "new({id})"
 import_tool_options = PackedStringArray("generate_class_name")
@@ -39,5 +39,5 @@ additional_properties = Array[Dictionary]([{
 descriptions = {
 "id": "ID 字段"
 }
-metas = PackedStringArray("测试元数据")
+meta_list = PackedStringArray("测试元数据")
 need_meta_properties = PackedStringArray("arr")
