@@ -1,6 +1,7 @@
-## csv 表格工具
-## 可选参数：
-##  arr_dict_with_brackets 可选。如果使用，生成表格时所有的数组与字典类型将加上方/花括号。
+"""csv 表格工具
+可选参数：
+    arr_dict_with_brackets=true/false 生成表格时是否为所有的数组与字典类型将加上方/花括号, 默认为 false
+"""
 @tool
 extends "table_tool.gd"
 
@@ -37,9 +38,8 @@ func _get_parse_error() -> Error:
 
 
 func _parse_table_file(csv_file: String, options: PackedStringArray) -> Error:
-	for op in options:
-		if op == "arr_dict_with_brackets":
-			arr_dict_with_brackets = true
+	var option_pairs := parse_options(options)
+	arr_dict_with_brackets = option_pairs.get("arr_dict_with_brackets", "false").to_lower() == "true"
 
 	var fa := FileAccess.open(csv_file, FileAccess.READ)
 	if not is_instance_valid(fa):
@@ -144,9 +144,8 @@ func _get_table_file_extension() -> String:
 
 
 func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Array[PackedStringArray], options: PackedStringArray) -> Error:
-	for op in options:
-		if op == "arr_dict_with_brackets":
-			arr_dict_with_brackets = true
+	var option_pairs := parse_options(options)
+	arr_dict_with_brackets = option_pairs.get("arr_dict_with_brackets", "false").to_lower() == "true"
 
 	if not is_instance_valid(header):
 		_Log.error([_Localize.translate("生成表格失败: "), error_string(ERR_INVALID_PARAMETER)])
@@ -275,6 +274,13 @@ func _get_header() -> _TableHeader:
 
 func _get_data() -> Array[Dictionary]:
 	return _data
+
+
+func _get_tooltip_text() -> String:
+	return """csv 表格工具
+可选参数：
+    arr_dict_with_brackets=true/false 生成表格时是否为所有的数组与字典类型将加上方/花括号, 默认为 false
+"""
 
 
 # --------------

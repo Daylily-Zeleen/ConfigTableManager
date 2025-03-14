@@ -1,9 +1,11 @@
-## Excel(xlsx) 表格工具
-## Options:
-## sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表，则该参数必须指定。
-## parse_sheet_must_exists 可选,如果加入该选项，指定工作表不存在时将发生解析错误。默认允许不存在。
-## arr_dict_with_brackets 可选。如果使用，生成表格时所有的数组与字典类型将加上方/花括号。
-## colorize_header=true 是否对生成的表头单元格被赋予颜色，默认true
+"""Excel(xlsx) 表格工具
+必要参数:
+    sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表,则该参数必须指定。
+可选参数:
+    parse_sheet_must_exists=true/false 为true时如果指定工作表不存在时将发生解析错误。默认 false
+    arr_dict_with_brackets=true/false 为true时生成表格时所有的数组与字典类型将加上方/花括号。默认为 false
+    colorize_header=true 是否对生成的表头单元格被赋予颜色。默认 true
+"""
 @tool
 extends "csv.gd"
 
@@ -22,14 +24,11 @@ var _tmp_json_path: String = ProjectSettings.globalize_path(EditorInterface.get_
 func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 	var sheet_name: String = ""
 	var parse_sheet_must_exists := false
-	for option in options:
-		if option.begins_with("sheet="):
-			sheet_name = option.trim_prefix("sheet=")
-			sheet_name = sheet_name.strip_edges()
-		if option == "parse_sheet_must_exists":
-			parse_sheet_must_exists = true
-		if option == "arr_dict_with_brackets":
-			arr_dict_with_brackets = true
+
+	var option_pairs := parse_options(options)
+	sheet_name = option_pairs.get("sheet", "")
+	parse_sheet_must_exists = option_pairs.get("parse_sheet_must_exists", "false") == "true"
+	arr_dict_with_brackets = option_pairs.get("arr_dict_with_brackets", "false") == "true"
 
 	if sheet_name.is_empty():
 		_Log.error([_Localize.translate("解析xlsx文件: "), xlsx_file, " - ", _Localize.translate("必须使用 sheet=your_sheet_name 选项指定工作表。")])
@@ -166,14 +165,11 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 	save_path = ProjectSettings.globalize_path(save_path)
 	var sheet_name: String = ""
 	var colorize_header := true
-	for option in options:
-		if option.begins_with("sheet="):
-			sheet_name = option.trim_prefix("sheet=")
-			sheet_name = sheet_name.strip_edges()
-		if option == "arr_dict_with_brackets":
-			arr_dict_with_brackets = true
-		if option.begins_with("colorize_header="):
-			colorize_header = "t" in option.trim_prefix("colorize_header=").to_lower()
+
+	var option_pairs := parse_options(options)
+	sheet_name = option_pairs.get("sheet", "")
+	arr_dict_with_brackets = option_pairs.get("arr_dict_with_brackets", "false") == "true"
+	colorize_header = option_pairs.get("colorize_header", "true") == "true"
 
 	if sheet_name.is_empty():
 		_Log.error([_Localize.translate("解析xlsx文件: "), save_path, " - ", _Localize.translate("必须使用 sheet=your_sheet_name 选项指定工作表。")])
@@ -245,6 +241,17 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 		return _last_parse_error
 
 	return OK
+
+
+func _get_tooltip_text() -> String:
+	return """Excel(xlsx) 表格工具
+必要参数:
+    sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表,则该参数必须指定。
+可选参数:
+    parse_sheet_must_exists=true/false 为true时如果指定工作表不存在时将发生解析错误。默认 false
+    arr_dict_with_brackets=true/false 为true时生成表格时所有的数组与字典类型将加上方/花括号。默认为 false
+    colorize_header=true 是否对生成的表头单元格被赋予颜色。默认 true
+"""
 
 
 # -----------------

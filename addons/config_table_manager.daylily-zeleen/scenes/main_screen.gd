@@ -81,6 +81,7 @@ func _ready() -> void:
 
 	_gen_and_import_tab.visibility_changed.connect(_on_gen_and_import_tab_visibility_changed)
 
+	_table_tool_options.item_selected.connect(_on_table_tool_options_item_selected)
 	_import_tool_options.item_selected.connect(_on_import_tool_options_item_selected)
 
 	_preset_options.pressed.connect(_on_preset_options_pressed)
@@ -424,29 +425,41 @@ func _on_settings_tools_updated() -> void:
 	_table_tool_options.clear()
 	var table_tools := _settings.table_tools
 	var table_option_idx := -1
-	for n: String in table_tools:
-		_table_tool_options.add_item("%s: %s" % [_Localize.translate(n), table_tools[n]])
-		_table_tool_options.set_item_metadata(_table_tool_options.item_count - 1, table_tools[n])
-		if selecting_table_tool == table_tools[n]:
+	for tool_name: String in table_tools:
+		var tool_path := table_tools[tool_name] as String
+		var tool_script := load(tool_path) as Script
+		_table_tool_options.add_item("%s: %s" % [_Localize.translate(tool_name), tool_path])
+		_table_tool_options.set_item_metadata(_table_tool_options.item_count - 1, tool_path)
+		_table_tool_options.set_item_tooltip(_table_tool_options.item_count - 1, tool_script.new().get_tooltip_text())
+		if selecting_table_tool == tool_path:
 			table_option_idx = _table_tool_options.item_count - 1
 	if table_option_idx >= 0:
 		_table_tool_options.select(table_option_idx)
+		_table_tool_options.item_selected.emit(table_option_idx)
 
 	var selecting_import_tool: Variant = _import_tool_options.get_selected_metadata()
 	_import_tool_options.clear()
 	var import_option_idx := -1
 	var import_tools := _settings.import_tools
 	for tool_name: String in import_tools:
-		var script_path := import_tools[tool_name] as String
-		var tool_script := load(script_path) as Script
-		_import_tool_options.add_item("%s: %s" % [_Localize.translate(tool_name), script_path])
-		_import_tool_options.set_item_metadata(_import_tool_options.item_count - 1, script_path)
+		var tool_path := import_tools[tool_name] as String
+		var tool_script := load(tool_path) as Script
+		_import_tool_options.add_item("%s: %s" % [_Localize.translate(tool_name), tool_path])
+		_import_tool_options.set_item_metadata(_import_tool_options.item_count - 1, tool_path)
 		_import_tool_options.set_item_tooltip(_import_tool_options.item_count - 1, tool_script.new().get_tooltip_text())
-		if selecting_import_tool == script_path:
+		if selecting_import_tool == tool_path:
 			import_option_idx = _import_tool_options.item_count - 1
 	if import_option_idx >= 0:
 		_import_tool_options.select(import_option_idx)
 		_import_tool_options.item_selected.emit(import_option_idx)
+
+
+func _on_table_tool_options_item_selected(idx: int) -> void:
+	var meta :Variant = _table_tool_options.get_item_metadata(idx)
+	if meta == null or not meta is String:
+		return
+	var script := load(meta) as Script
+	_table_tool_options.tooltip_text = script.new().get_tooltip_text()
 
 
 func _on_import_tool_options_item_selected(idx: int) -> void:

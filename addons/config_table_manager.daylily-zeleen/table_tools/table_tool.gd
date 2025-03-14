@@ -63,6 +63,9 @@ func _get_data() -> Array[Dictionary]:
 	return []
 
 
+func _get_tooltip_text() -> String:
+	return ""
+
 # -----------
 func is_meta_filed(field_name: String) -> bool:
 	return field_name.begins_with("#")
@@ -137,3 +140,28 @@ func get_header() -> _TableHeader:
 
 func get_data() -> Array[Dictionary]:
 	return _get_data()
+
+
+#region Tools
+func get_tooltip_text() -> String:
+	return _get_tooltip_text()
+
+
+func get_kv_option(option: String) -> Dictionary:
+	var splits := option.split("=", false)
+	assert(splits.size() == 2, "\"%s\" is not a valid key-value option text." % option)
+	var ret := {}
+	ret[splits[0].strip_edges()] = splits[1].strip_edges()
+	return ret
+
+
+func parse_options(options: PackedStringArray) -> Dictionary:
+	var ret := {}
+	for op in options:
+		if "=" in op:
+			ret.merge(get_kv_option(op))
+		else:
+			ret[op.strip_edges()] = null
+	return ret
+
+#endregion Tools
