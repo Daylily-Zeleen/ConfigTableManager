@@ -50,17 +50,19 @@ If you have any doubts, please clone or download this project in [Github page](h
 
 ### 1. Table Tools
 
-|Table Tool|Description|Options|Options Description|
-|-|-|-|-|
-|CSV("," delimiter)|Parse and generate ".csv" table file which use "," as delimiter.|arr_dict_with_brackets|arr_dict_with_brackets：Optional. If specified，add square/curly braces to array and dictionary type values during generation.|
-|Excel(xlsx)|Parse and generate ".xlsx" file. Only overwrite specific worksheet.|sheet=your_sheet_name；parse_sheet_must_exists；arr_dict_with_brackets；colorize_header=true|sheet:**Required**. Specify the preset should operate which worksheet; parse_sheet_must_exists: Optional. If specified, if there have not the target worksheet during parsing, it will happen parse error. default is false; arr_dict_with_brackets：Optional. If specified, add square/curly braces to array and dictionary type values during generation; colorize_header：Optional. if `true`, colorize table header when generating. default is `true`.|
+**NOTE: You can refer tool's detail and available options by keeping mouse hover on the "Table Tool"/"Import Tool" options**.
+
+|Table Tool|Description|
+|-|-|
+|CSV("," delimiter)|Parse and generate ".csv" table file which use "," as delimiter.|
+|Excel(xlsx)|Parse and generate ".xlsx" file. Only overwrite specific worksheet.|
 
 ### 2. Import Tools
 
-|Import Tool|Description|Options|Options Description|
-|-|-|-|-|
-|GDScript(TypedArray Style)|Import table as GDScript, hold an Array of data objects. It is work fine with the situation of having not many data.|generate_class_name|generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
-|GDScript(Dictionary Style)|Import table as GDScript, hold a Dictionary of data objects. Better search performance when dealing with larger quantities.|key=prop_name; generate_class_name|key: **Required**. To specify the property to be the Dictionary key. The the value of key property should not empty or duplicate;generate_class_name: Optional. If specified, and the `Table Name` is a valid identifier, use the `Table Name` to generate the global class name for the generated script (through `class_name` keyword).|
+|Import Tool|Description|
+|-|-|
+|GDScript(TypedArray Style)|Import table as GDScript, hold an Array of data objects. It is work fine with the situation of having not many data.|
+|GDScript(Dictionary Style)|Import table as GDScript, hold a Dictionary of data objects. Better search performance when dealing with larger quantities.|
 
 ## Custom Tools
 
