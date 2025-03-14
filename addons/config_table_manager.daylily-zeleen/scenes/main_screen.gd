@@ -45,6 +45,9 @@ const _MetaEdit = preload("meta_edit.gd")
 @onready var _desc_container: VBoxContainer = %DescContainer
 @onready var _meta_container: VBoxContainer = %MetaContainer
 
+@onready var _table_tool_option_line_edit: LineEdit = %TableOptionsLineEdit
+@onready var _import_tool_option_line_edit: LineEdit = %ImportOptionsLineEdit
+
 @onready var _table_tool_options: OptionButton = %TableToolOptions
 @onready var _import_tool_options: OptionButton = %ImportToolOptions
 
@@ -211,8 +214,8 @@ func _load_preset(preset: _Preset) -> void:
 	%BackupCheckBox.set_pressed_no_signal(preset.auto_backup)
 	%MergeCheckBox.set_pressed_no_signal(preset.auto_merge)
 	_table_import_line_edit.text = preset.import_path
-	%TableOptionsLineEdit.text = ", ".join(preset.table_tool_options)
-	%ImportOptionsLineEdit.text = ", ".join(preset.import_tool_options)
+	_table_tool_option_line_edit.text = ", ".join(preset.table_tool_options)
+	_import_tool_option_line_edit.text = ", ".join(preset.import_tool_options)
 	%GenerateModifierLineEdit.text = preset.generate_modifier_file
 	%ImportModifierLineEdit.text = preset.import_modifier_file
 
@@ -266,8 +269,8 @@ func _set_to_preset(preset: _Preset) -> void:
 	preset.auto_backup = %BackupCheckBox.button_pressed
 	preset.auto_merge = %MergeCheckBox.button_pressed
 	preset.import_path = _table_import_line_edit.text
-	preset.table_tool_options = Array(%TableOptionsLineEdit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
-	preset.import_tool_options = Array(%ImportOptionsLineEdit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
+	preset.table_tool_options = Array(_table_tool_option_line_edit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
+	preset.import_tool_options = Array(_import_tool_option_line_edit.text.split(",", false)).map(func(text: String) -> String: return text.strip_edges())
 	preset.generate_modifier_file = %GenerateModifierLineEdit.text
 	preset.import_modifier_file = %ImportModifierLineEdit.text
 
@@ -455,19 +458,27 @@ func _on_settings_tools_updated() -> void:
 
 
 func _on_table_tool_options_item_selected(idx: int) -> void:
-	var meta :Variant = _table_tool_options.get_item_metadata(idx)
+	var tooltip := ""
+	var meta: Variant = _table_tool_options.get_item_metadata(idx)
 	if meta == null or not meta is String:
-		return
-	var script := load(meta) as Script
-	_table_tool_options.tooltip_text = script.new().get_tooltip_text()
+		tooltip = ""
+	else:
+		var script := load(meta) as Script
+		tooltip = script.new().get_tooltip_text()
+	_table_tool_options.tooltip_text = tooltip
+	_table_tool_option_line_edit.tooltip_text = tooltip
 
 
 func _on_import_tool_options_item_selected(idx: int) -> void:
-	var meta :Variant = _import_tool_options.get_item_metadata(idx)
+	var tooltip := ""
+	var meta: Variant = _import_tool_options.get_item_metadata(idx)
 	if meta == null or not meta is String:
-		return
-	var script := load(meta) as Script
-	_import_tool_options.tooltip_text = script.new().get_tooltip_text()
+		tooltip = ""
+	else:
+		var script := load(meta) as Script
+		tooltip = script.new().get_tooltip_text()
+	_import_tool_options.tooltip_text = tooltip
+	_import_tool_option_line_edit.tooltip_text = tooltip
 
 
 func _on_gen_and_import_tab_visibility_changed() -> void:
