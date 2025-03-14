@@ -15,7 +15,7 @@ func _import(
 	_instantiation: String,
 	_custom_setters: Dictionary,
 	_data_rows: Array[Dictionary],
-	_options:PackedStringArray
+	_options: PackedStringArray
 ) -> Error:
 	assert(false, "Unimplemented")
 	_Log.error(["Unimplemented: _import"])
@@ -27,6 +27,9 @@ func _get_import_file_extension() -> String:
 	_Log.error(["Unimplemented: _get_import_file_extension"])
 	return ""
 
+
+func _get_tooltip_text() -> String:
+	return ""
 
 #-----------------------
 func is_meta_filed(field_name: String) -> bool:
@@ -50,10 +53,35 @@ func import(
 	instantiation: String,
 	custom_setters: Dictionary,
 	data_rows: Array[Dictionary],
-	options:PackedStringArray
+	options: PackedStringArray
 ) -> Error:
 	return _import(import_path, table_name, header, data_class_name, data_class_script, instantiation, custom_setters, data_rows, options)
 
 
 func get_import_file_extension() -> String:
 	return _get_import_file_extension()
+
+
+#region Tools
+func get_tooltip_text() -> String:
+	return _get_tooltip_text()
+
+
+func get_kv_option(option: String) -> Dictionary:
+	var splits := option.split("=", false)
+	assert(splits.size() == 2, "\"%s\" is not a valid key-value option text." % option)
+	var ret := {}
+	ret[splits[0].strip_edges()] = splits[1].strip_edges()
+	return ret
+
+
+func parse_options(options: PackedStringArray) -> Dictionary:
+	var ret := {}
+	for op in options:
+		if "=" in op:
+			ret.merge(get_kv_option(op))
+		else:
+			ret[op.strip_edges()] = null
+	return ret
+
+#endregion Tools

@@ -1,7 +1,9 @@
-## 字典形式的 GDScript 导入
-## Options:
+## 字典形式的 GDScript 导入，适合表格条目较多的情况
+## Required Options:
 ##	key=prop_name - 必选，指定用于查找的数据类属性,该属性的值在所有数据中不能重复,也不能留空
+## Options:
 ##	generate_class_name - 如果 table_name 非空且是合法的标识符，将使用 table_name 生成全局类名
+##	pure_static=true/false - 是否以纯静态成员的形式进行生成, 默认为 true
 @tool
 extends "gdscript_default.gd"
 
@@ -17,11 +19,9 @@ func _import(
 	data_rows: Array[Dictionary],
 	options: PackedStringArray
 ) -> Error:
-	var priority_key := ""
-	for option in options:
-		if option.begins_with("key="):
-			priority_key = option.trim_prefix("key=").strip_edges()
+	var option_pairs := parse_options(options)
 
+	var priority_key := option_pairs.get("key", "") as String
 	if priority_key.is_empty():
 		_Log.error([table_name, " ", _Localize.translate("导表失败: "), _Localize.translate("未指定作为key的数据类属性，请使用 key=prop_name 作为选项参数进行指定。")])
 		return ERR_INVALID_PARAMETER
@@ -31,7 +31,12 @@ func _import(
 		_Log.error([_Localize.translate("导表失败: "), error_string(FileAccess.get_open_error())])
 		return FileAccess.get_open_error()
 
-	if TextServerManager.get_primary_interface().is_valid_identifier(table_name) and options.has("generate_class_name"):
+	var pure_static := (option_pairs.get("pure_static", "true") as String).to_lower() == "true"
+	var member_prefix := "static " if pure_static else ""
+	if pure_static:
+		fa.store_line("@static_unload")
+
+	if TextServerManager.get_primary_interface().is_valid_identifier(table_name) and option_pairs.has("generate_class_name"):
 		fa.store_line("class_name %s" % table_name)
 		fa.store_line("")
 
@@ -109,19 +114,19 @@ func _import(
 	var priority_key_type_id: int = types[fields.find(priority_key)]
 
 	# get_data
-	fa.store_line("func get_data() -> Dictionary:")
+	fa.store_line(member_prefix + "func get_data() -> Dictionary:")
 	fa.store_line("\treturn _data")
 	fa.store_line("")
 	fa.store_line("")
 
 	# get_record
-	fa.store_line("func get_record(key: %s) -> %s:" % [type_string(priority_key_type_id), data_class])
+	fa.store_line(member_prefix + "func get_record(key: %s) -> %s:" % [type_string(priority_key_type_id), data_class])
 	fa.store_line("\treturn _data.get(key, null)")
 	fa.store_line("")
 	fa.store_line("")
 
 	# find_by_property
-	fa.store_line("func find_by_property(prop_name: StringName, target_value: Variant) -> %s:" % data_class)
+	fa.store_line(member_prefix + "func find_by_property(prop_name: StringName, target_value: Variant) -> %s:" % data_class)
 	fa.store_line("\tfor d: DataClass in _data.values():")
 	fa.store_line("\t\tif d.get(prop_name) == target_value:")
 	fa.store_line("\t\t\treturn d")
@@ -130,7 +135,7 @@ func _import(
 	fa.store_line("")
 
 	# find_by_getter
-	fa.store_line("func find_by_getter(getter_name: StringName, target_value: Variant) -> %s:" % data_class)
+	fa.store_line(member_prefix + "func find_by_getter(getter_name: StringName, target_value: Variant) -> %s:" % data_class)
 	fa.store_line("\tfor d: DataClass in _data.values():")
 	fa.store_line("\t\tif d.call(getter_name) == target_value:")
 	fa.store_line("\t\t\treturn d")
@@ -139,7 +144,7 @@ func _import(
 	fa.store_line("")
 
 	# find
-	fa.store_line("func find(indicate: Callable) -> %s:" % data_class)
+	fa.store_line(member_prefix + "func find(indicate: Callable) -> %s:" % data_class)
 	fa.store_line("\tfor d: DataClass in _data.values():")
 	fa.store_line("\t\tif indicate.call(d):")
 	fa.store_line("\t\t\treturn d")
@@ -148,7 +153,7 @@ func _import(
 	fa.store_line("")
 
 	# filter
-	fa.store_line("func filter(indicate: Callable) -> Array[%s]:" % data_class)
+	fa.store_line(member_prefix + "func filter(indicate: Callable) -> Array[%s]:" % data_class)
 	fa.store_line("\treturn Array(_data.values().filter(indicate), TYPE_OBJECT, (DataClass as Script).get_instance_base_type(), DataClass)")
 	fa.store_line("")
 	fa.store_line("")
@@ -176,7 +181,7 @@ func _import(
 	var fields_with_type := fields.duplicate()
 	for i in range(fields_with_type.size()):
 		fields_with_type[i] = "%s: %s" % [fields_with_type[i], type_string(types[i])]
-	fa.store_line("func _make_data(%s) -> %s:" % [", ".join(fields_with_type), data_class])
+	fa.store_line(member_prefix + "func _make_data(%s) -> %s:" % [", ".join(fields_with_type), data_class])
 	fa.store_line("\tvar ret := %s.%s(%s)" % [data_class, instantiation.split("(")[0], ", ".join(args)])
 	var valid_properties := property_list.map(func(d: Dictionary) -> String: return d["name"]) as PackedStringArray
 	var hinted_fields: PackedStringArray = []
@@ -194,11 +199,11 @@ func _import(
 	fa.store_line("")
 
 	# 数据行
-	fa.store_line("var _data:Dictionary = {}")
+	fa.store_line(member_prefix + "var _data:Dictionary = {}")
 	fa.store_line("")
 	fa.store_line("")
 
-	fa.store_line("func _init() -> void:")
+	fa.store_line(member_prefix + "func _init() -> void:")
 	for row in data_rows:
 		var args_text_list := PackedStringArray()
 		for i in range(fields.size()):
@@ -213,3 +218,13 @@ func _import(
 	fa.close()
 
 	return OK
+
+
+func _get_tooltip_text() -> String:
+	return """字典形式的 GDScript 导入，适合表格条目较多的情况
+必选参数:
+	key=prop_name - 必选，指定用于查找的数据类属性,该属性的值在所有数据中不能重复,也不能留空
+可选参数:
+	generate_class_name - 如果 table_name 非空且是合法的标识符，将使用 table_name 生成全局类名
+	pure_static=true/false - 是否以纯静态成员的形式进行生成, 默认为 true
+"""
