@@ -12,6 +12,7 @@ const _Localize = preload("../localization/localize.gd")
 const _DEFAULT_GENERATE_MODIFIER_FILE := "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
 const _DEFAULT_IMPORT_MODIFIER_FILE := "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
 
+@export_group("Editor Tool")
 # 触发生成
 @export var trigger_generate_table: bool = false:
 	set(v):
@@ -23,10 +24,16 @@ const _DEFAULT_IMPORT_MODIFIER_FILE := "res://addons/config_table_manager.daylil
 		if v:
 			import_table()
 
+@export_group("Basic")
 @export var name: String
 # 数据类
 @export var data_class: String
-@export_file() var data_class_script: String
+var data_class_script: String:
+	set(v):
+		_data_class_script = _get_script_by_path(v)
+	get:
+		return _get_script_file_path(_data_class_script)
+@export var _data_class_script: Script # 为保兼容性，仅作为保存用的脚本引用
 @export var table_name: String
 
 # 表格生成选项
@@ -42,22 +49,49 @@ const _DEFAULT_IMPORT_MODIFIER_FILE := "res://addons/config_table_manager.daylil
 @export var ignored_properties: PackedStringArray:
 	get:
 		return _strip_str_arr_elements_edges(ignored_properties)
+
+@export_group("Table")
 @export var table_tool_options: PackedStringArray:
 	get:
 		return _strip_str_arr_elements_edges(table_tool_options)
-@export_file() var table_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
+# Deprecated
+var table_tool_script_file: String:
+	set(v):
+		table_tool_script = _get_script_by_path(v)
+	get:
+		return _get_script_file_path(table_tool_script)
+@export var table_tool_script: Script = preload("res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd")
 @export_file() var table_output_path: String = "res://tables/{table_name}.csv"
-@export_file() var generate_modifier_file: String = _DEFAULT_GENERATE_MODIFIER_FILE
+# Deprecated
+var generate_modifier_file: String:
+	set(v):
+		generate_modifier = _get_script_by_path(v)
+	get:
+		return _get_script_file_path(generate_modifier)
+@export var generate_modifier: Script = preload(_DEFAULT_GENERATE_MODIFIER_FILE)
 
+@export_group("Import")
 # 表格导入选项
 @export var instantiation: String
 @export var import_tool_options: PackedStringArray:
 	get:
 		return _strip_str_arr_elements_edges(import_tool_options)
-@export_file() var import_tool_script_file: String = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+var import_tool_script_file: String:
+	set(v):
+		import_tool_script = _get_script_by_path(v)
+	get:
+		return _get_script_file_path(import_tool_script)
+@export var import_tool_script: Script = preload("res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd")
 @export_file() var import_path: String = "res://tables/imported/{table_name}.gd"
-@export_file() var import_modifier_file: String = _DEFAULT_IMPORT_MODIFIER_FILE
+# Deprecated
+var import_modifier_file: String:
+	set(v):
+		import_modifier = _get_script_by_path(v)
+	get:
+		return _get_script_file_path(import_modifier)
+@export var import_modifier: Script = preload(_DEFAULT_IMPORT_MODIFIER_FILE)
 
+@export_group("Addtional")
 # 附加
 @export var additional_properties: Array[Dictionary]
 @export var descriptions: Dictionary
@@ -105,14 +139,8 @@ func generate_table(enable_modifier: bool = true, func_modify_data: Callable = C
 	var instantiation_args := Array([] if instantiation.is_empty() or instantiation.ends_with("()") else Array(instantiation.trim_suffix(")").split("(")).back().split(",", false)).map(
 		func(a: String) -> String: return a.strip_edges().trim_prefix("{").trim_suffix("}")
 	) as PackedStringArray
-	var script: Script
 
-	if not data_class_script.is_empty():
-		if not ResourceLoader.exists(data_class_script, &"Script"):
-			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("非法脚本文件"), " - ", data_class_script])
-			return ERR_INVALID_PARAMETER
-		script = ResourceLoader.load(data_class_script, &"Script", ResourceLoader.CACHE_MODE_IGNORE)
-
+	var script: Script = _data_class_script
 	var property_list: Array[Dictionary]
 
 	if is_instance_valid(script):
@@ -147,16 +175,21 @@ func generate_table(enable_modifier: bool = true, func_modify_data: Callable = C
 		property_list = property_list.filter(func(p: Dictionary) -> bool: return p["usage"] & PROPERTY_USAGE_STORAGE)
 
 	# 表格工具实例化
-	if not ResourceLoader.exists(table_tool_script_file, &"Script"):
-		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("表格工具脚本不存在: "), table_tool_script_file])
+	if not is_instance_valid(table_tool_script):
+		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("表格工具脚本不存在: "), table_tool_script.resource_path])
 		return ERR_INVALID_PARAMETER
-	var table_tool_script := ResourceLoader.load(table_tool_script_file, &"Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+
+	if table_tool_script.reload() != OK:
+		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("表格工具脚本不存在: "), table_tool_script.resource_path])
+		return ERR_INVALID_PARAMETER
+
 	if not table_tool_script.can_instantiate():
-		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("表格工具无法被实例化: "), table_tool_script_file])
+		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("表格工具无法被实例化: "), table_tool_script.resource_path])
 		return ERR_INVALID_PARAMETER
+
 	var table_tool := table_tool_script.new() as _TableTool
 	if not is_instance_valid(table_tool):
-		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("脚本不是继承自合法的表格工具: "), table_tool_script_file])
+		_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("脚本不是继承自合法的表格工具: "), table_tool_script.resource_path])
 		_Log.error(["\t- ", _Localize.translate("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd"])
 		return ERR_INVALID_PARAMETER
 
@@ -243,18 +276,20 @@ func generate_table(enable_modifier: bool = true, func_modify_data: Callable = C
 	var modified_meta_list := meta_list.duplicate()
 	var modified_desc := descriptions.duplicate()
 	if enable_modifier:
-		if generate_modifier_file.is_empty():
-			generate_modifier_file = _DEFAULT_GENERATE_MODIFIER_FILE
-		if not ResourceLoader.exists(generate_modifier_file, "Script"):
-			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("无效的生成修改器脚本: "), generate_modifier_file])
+		if not is_instance_valid(generate_modifier):
+			generate_modifier = ResourceLoader.load(_DEFAULT_GENERATE_MODIFIER_FILE, "Script", ResourceLoader.CACHE_MODE_IGNORE)
+
+		if generate_modifier.reload(false) != OK:
+			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("无效的生成修改器脚本: "), generate_modifier.resource_path])
 			return ERR_INVALID_PARAMETER
-		var modifier_script := ResourceLoader.load(generate_modifier_file, "Script", ResourceLoader.CACHE_MODE_IGNORE)
-		if not modifier_script.can_instantiate():
-			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("生成修改器无法被实例化: "), generate_modifier_file])
+
+		if not generate_modifier.can_instantiate():
+			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("生成修改器无法被实例化: "), generate_modifier.resource_path])
 			return ERR_INVALID_PARAMETER
-		var modifier := modifier_script.new() as _GenerateModifier
+
+		var modifier := generate_modifier.new() as _GenerateModifier
 		if not is_instance_valid(modifier):
-			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("脚本不是继承自合法的合法的生成修改器: "), generate_modifier_file])
+			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("脚本不是继承自合法的合法的生成修改器: "), generate_modifier.resource_path])
 			_Log.error(["\t- ", _Localize.translate("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"])
 			return ERR_INVALID_PARAMETER
 
@@ -304,16 +339,21 @@ func generate_table(enable_modifier: bool = true, func_modify_data: Callable = C
 ## enable_modifier: 是否启用修改器
 func import_table(enable_modifier: bool = true) -> Error:
 	# 表格工具
-	if not ResourceLoader.exists(table_tool_script_file, &"Script"):
-		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("表格工具脚本不存在："), table_tool_script_file])
+	if not is_instance_valid(table_tool_script):
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("表格工具脚本不存在："), table_tool_script.resource_path])
 		return ERR_INVALID_PARAMETER
-	var table_tool_script := ResourceLoader.load(table_tool_script_file, &"Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
+
+	if table_tool_script.reload(false) != OK:
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("表格工具脚本不存在："), table_tool_script.resource_path])
+		return ERR_INVALID_PARAMETER
+
 	if not table_tool_script.can_instantiate():
-		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("表格工具无法被实例化："), table_tool_script_file])
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("表格工具无法被实例化："), table_tool_script.resource_path])
 		return ERR_INVALID_PARAMETER
+
 	var table_tool := table_tool_script.new() as _TableTool
 	if not is_instance_valid(table_tool):
-		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("脚本不是继承自合法的表格工具："), table_tool_script_file])
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("脚本不是继承自合法的表格工具："), table_tool_script.resource_path])
 		_Log.error(["\t- ", _Localize.translate("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/table_tools/table_tool.gd"])
 		return ERR_INVALID_PARAMETER
 
@@ -332,13 +372,12 @@ func import_table(enable_modifier: bool = true) -> Error:
 		return err
 
 	# 导入工具
-	if not ResourceLoader.exists(import_tool_script_file, &"Script"):
-		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定导入工具不存在："), import_tool_script_file])
+	if not is_instance_valid(import_tool_script):
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定导入工具不存在："), import_tool_script.resource_path])
 		return ERR_INVALID_PARAMETER
 
-	var import_tool_script := ResourceLoader.load(import_tool_script_file, "Script", ResourceLoader.CACHE_MODE_IGNORE) as Script
 	if not import_tool_script.can_instantiate():
-		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定导入工具无法实例化："), import_tool_script_file])
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定导入工具无法实例化："), import_tool_script.resource_path])
 		return ERR_INVALID_PARAMETER
 
 	var header := table_tool.get_header()
@@ -357,18 +396,20 @@ func import_table(enable_modifier: bool = true) -> Error:
 	var modified_data := table_tool.get_data().duplicate(true)
 	var modified_options := import_tool_options.duplicate()
 	if enable_modifier:
-		if import_modifier_file.is_empty():
-			import_modifier_file = _DEFAULT_IMPORT_MODIFIER_FILE
-		if not ResourceLoader.exists(import_modifier_file, "Script"):
-			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("无效的导入修改器脚本: "), import_modifier_file])
+		if not is_instance_valid(import_modifier):
+			import_modifier = ResourceLoader.load(_DEFAULT_IMPORT_MODIFIER_FILE, "Script", ResourceLoader.CACHE_MODE_IGNORE)
+
+		if import_modifier.reload(false) != OK:
+			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("无效的导入修改器脚本: "), import_modifier.resource_path])
 			return ERR_INVALID_PARAMETER
-		var modifier_script := ResourceLoader.load(import_modifier_file, "Script", ResourceLoader.CACHE_MODE_IGNORE)
-		if not modifier_script.can_instantiate():
-			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("导入修改器无法被实例化: "), import_modifier_file])
+
+		if not import_modifier.can_instantiate():
+			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("导入修改器无法被实例化: "), import_modifier.resource_path])
 			return ERR_INVALID_PARAMETER
-		var modifier := modifier_script.new() as _ImportModifier
+
+		var modifier := import_modifier.new() as _ImportModifier
 		if not is_instance_valid(modifier):
-			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("脚本不是继承自合法的合法的导入修改器: "), import_modifier_file])
+			_Log.error([name, " - ", _Localize.translate("导入表格失败："), _Localize.translate("脚本不是继承自合法的合法的导入修改器: "), import_modifier.resource_path])
 			_Log.error(["\t- ", _Localize.translate("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"])
 			return ERR_INVALID_PARAMETER
 
@@ -384,14 +425,7 @@ func import_table(enable_modifier: bool = true) -> Error:
 	if inst.is_empty():
 		inst = "new()"
 
-	var script: Script
-
-	if not data_class_script.is_empty():
-		if not ResourceLoader.exists(data_class_script, &"Script"):
-			_Log.error([name, " - ", _Localize.translate("生成表格失败："), _Localize.translate("非法脚本文件"), " - ", data_class_script])
-			return ERR_INVALID_PARAMETER
-		script = ResourceLoader.load(data_class_script, &"Script", ResourceLoader.CACHE_MODE_IGNORE)
-
+	var script: Script = _data_class_script
 	if is_instance_valid(script):
 		if not data_class.is_empty():
 			# 脚本内部类
@@ -421,7 +455,7 @@ func import_table(enable_modifier: bool = true) -> Error:
 
 	var import_tool := import_tool_script.new() as _ImportTool
 	if not is_instance_valid(import_tool):
-		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定脚本不是继承自导入工具："), import_tool_script_file])
+		_Log.error([name, " - ", _Localize.translate("导入失败:"), _Localize.translate("指定脚本不是继承自导入工具："), import_tool_script.resource_path])
 		_Log.error(["\t- ", _Localize.translate("请查阅: "), "res://addons/config_table_manager.daylily-zeleen/import_tools/import_tool.gd"])
 		return ERR_INVALID_PARAMETER
 
@@ -447,6 +481,18 @@ func import_table(enable_modifier: bool = true) -> Error:
 
 
 #---------------------
+func _get_script_by_path(path: String) -> Script:
+	if FileAccess.file_exists(path) and ResourceLoader.exists(path, &"Script"):
+		return load(path)
+	return null
+
+
+func _get_script_file_path(script: Script) -> String:
+	if is_instance_valid(script):
+		return script.resource_path
+	return ""
+
+
 func _strip_str_arr_elements_edges(str_arr: PackedStringArray) -> PackedStringArray:
 	for i in range(str_arr.size()):
 		str_arr[i] = str_arr[i].strip_edges()

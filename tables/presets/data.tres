@@ -1,6 +1,10 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://cm0xsl28k7g5b"]
+[gd_resource type="Resource" load_steps=6 format=3 uid="uid://cm0xsl28k7g5b"]
 
+[ext_resource type="Script" path="res://tables/modifier/data_generate_modifier.gd" id="1_6wg30"]
 [ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scripts/preset.gd" id="1_hbjie"]
+[ext_resource type="Script" path="res://tables/modifier/data_import_modifier.gd" id="2_hrcn7"]
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd" id="3_e0c2b"]
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd" id="5_5q3bb"]
 
 [resource]
 script = ExtResource("1_hbjie")
@@ -8,7 +12,6 @@ trigger_generate_table = false
 trigger_import_table = false
 name = "data"
 data_class = ""
-data_class_script = "res://data_classes/data.gd"
 table_name = "DataTable"
 skip_prefix_underscore_properties = true
 only_storage_properties = false
@@ -19,14 +22,14 @@ auto_merge = true
 priority_properties = PackedStringArray("id", "name")
 ignored_properties = PackedStringArray("need_ignore")
 table_tool_options = PackedStringArray("sheet=Data")
-table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/xlsx.gd"
+table_tool_script = ExtResource("5_5q3bb")
 table_output_path = "res://tables/{table_name}.xlsx"
-generate_modifier_file = "res://tables/modifier/data_generate_modifier.gd"
+generate_modifier = ExtResource("1_6wg30")
 instantiation = "new({id})"
 import_tool_options = PackedStringArray("generate_class_name", "pure_static=true")
-import_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd"
+import_tool_script = ExtResource("3_e0c2b")
 import_path = "res://tables/imported/{table_name}.gd"
-import_modifier_file = "res://tables/modifier/data_import_modifier.gd"
+import_modifier = ExtResource("2_hrcn7")
 additional_properties = Array[Dictionary]([{
 "name": "id",
 "setter": "",

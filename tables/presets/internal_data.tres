@@ -1,6 +1,11 @@
-[gd_resource type="Resource" load_steps=2 format=3 uid="uid://co8mpqjyyljc2"]
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://co8mpqjyyljc2"]
 
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd" id="1_74tho"]
+[ext_resource type="Script" path="res://data_classes/data.gd" id="1_jhmlq"]
 [ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scripts/preset.gd" id="1_vcodd"]
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd" id="2_o3kvs"]
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd" id="3_etbkh"]
+[ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd" id="5_f10mj"]
 
 [resource]
 script = ExtResource("1_vcodd")
@@ -8,7 +13,7 @@ trigger_generate_table = false
 trigger_import_table = false
 name = "internal_data"
 data_class = "InternalData"
-data_class_script = "res://data_classes/data.gd"
+_data_class_script = ExtResource("1_jhmlq")
 table_name = "InternalDataTable"
 skip_prefix_underscore_properties = true
 only_storage_properties = false
@@ -19,14 +24,14 @@ auto_merge = true
 priority_properties = PackedStringArray("id", "name")
 ignored_properties = PackedStringArray()
 table_tool_options = PackedStringArray()
-table_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/table_tools/csv.gd"
+table_tool_script = ExtResource("5_f10mj")
 table_output_path = "res://tables/{table_name}.csv"
-generate_modifier_file = "res://addons/config_table_manager.daylily-zeleen/scripts/generate_modifier.gd"
+generate_modifier = ExtResource("1_74tho")
 instantiation = "create({id}, {name})"
 import_tool_options = PackedStringArray("key=id", "pure_static=true")
-import_tool_script_file = "res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_dictionary.gd"
+import_tool_script = ExtResource("3_etbkh")
 import_path = "res://tables/imported/{table_name}.gd"
-import_modifier_file = "res://addons/config_table_manager.daylily-zeleen/scripts/import_modifier.gd"
+import_modifier = ExtResource("2_o3kvs")
 additional_properties = Array[Dictionary]([])
 descriptions = {}
 meta_list = PackedStringArray()
