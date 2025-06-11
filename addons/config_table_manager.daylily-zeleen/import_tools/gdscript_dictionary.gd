@@ -120,7 +120,7 @@ func _import(
 
 	var dictionary_type_text := "Dictionary"
 	if can_use_typed_dictionary:
-		dictionary_type_text = "Dictionary[%s, DataClass]" % type_string(priority_key_type_id)
+		dictionary_type_text = "Dictionary[%s, %s]" % [type_string(priority_key_type_id), data_class]
 
 	# get_data
 	fa.store_line(member_prefix + "func get_data() -> %s:" % dictionary_type_text)
@@ -136,7 +136,7 @@ func _import(
 
 	# find_by_property
 	fa.store_line(member_prefix + "func find_by_property(prop_name: StringName, target_value: Variant) -> %s:" % data_class)
-	fa.store_line("\tfor d: DataClass in _data.values():")
+	fa.store_line("\tfor d: %s in _data.values():" % data_class)
 	fa.store_line("\t\tif d.get(prop_name) == target_value:")
 	fa.store_line("\t\t\treturn d")
 	fa.store_line("\treturn null")
@@ -145,7 +145,7 @@ func _import(
 
 	# find_by_getter
 	fa.store_line(member_prefix + "func find_by_getter(getter_name: StringName, target_value: Variant) -> %s:" % data_class)
-	fa.store_line("\tfor d: DataClass in _data.values():")
+	fa.store_line("\tfor d: %s in _data.values():" % data_class)
 	fa.store_line("\t\tif d.call(getter_name) == target_value:")
 	fa.store_line("\t\t\treturn d")
 	fa.store_line("\treturn null")
@@ -154,7 +154,7 @@ func _import(
 
 	# find
 	fa.store_line(member_prefix + "func find(indicate: Callable) -> %s:" % data_class)
-	fa.store_line("\tfor d: DataClass in _data.values():")
+	fa.store_line("\tfor d: %s in _data.values():" % data_class)
 	fa.store_line("\t\tif indicate.call(d):")
 	fa.store_line("\t\t\treturn d")
 	fa.store_line("\treturn null")
@@ -163,7 +163,10 @@ func _import(
 
 	# filter
 	fa.store_line(member_prefix + "func filter(indicate: Callable) -> Array[%s]:" % data_class)
-	fa.store_line("\treturn Array(_data.values().filter(indicate), TYPE_OBJECT, (DataClass as Script).get_instance_base_type(), DataClass)")
+	if data_class == "DataClass":
+		fa.store_line("\treturn Array(_data.values().filter(indicate), TYPE_OBJECT, (DataClass as Script).get_instance_base_type(), DataClass)")
+	else:
+		fa.store_line("\treturn Array(_data.values().filter(indicate), TYPE_OBJECT, &\"%s\", null)" % data_class)
 	fa.store_line("")
 	fa.store_line("")
 
