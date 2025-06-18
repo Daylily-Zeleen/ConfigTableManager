@@ -215,7 +215,10 @@ func _import(
 	fa.store_line("")
 	fa.store_line("")
 
-	fa.store_line(member_prefix + "func _init() -> void:")
+	if member_prefix.is_empty():
+		fa.store_line(member_prefix + "func _init() -> void:")
+	else:
+		fa.store_line(member_prefix + "func _static_init() -> void:")
 	for row in data_rows:
 		var args_text_list := PackedStringArray()
 		for i in range(fields.size()):

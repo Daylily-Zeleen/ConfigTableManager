@@ -51,6 +51,6 @@ static var _data:Array[DataClass] = [
 ]
 
 
-static func _init() -> void:
+static func _static_init() -> void:
 	_data.make_read_only()
 

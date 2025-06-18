@@ -1,6 +1,7 @@
-[gd_resource type="Resource" load_steps=6 format=3 uid="uid://cm0xsl28k7g5b"]
+[gd_resource type="Resource" load_steps=7 format=3 uid="uid://cm0xsl28k7g5b"]
 
 [ext_resource type="Script" path="res://tables/modifier/data_generate_modifier.gd" id="1_6wg30"]
+[ext_resource type="Script" path="res://data_classes/data.gd" id="1_7p8uv"]
 [ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/scripts/preset.gd" id="1_hbjie"]
 [ext_resource type="Script" path="res://tables/modifier/data_import_modifier.gd" id="2_hrcn7"]
 [ext_resource type="Script" path="res://addons/config_table_manager.daylily-zeleen/import_tools/gdscript_default.gd" id="3_e0c2b"]
@@ -12,6 +13,7 @@ trigger_generate_table = false
 trigger_import_table = false
 name = "data"
 data_class = ""
+_data_class_script = ExtResource("1_7p8uv")
 table_name = "DataTable"
 skip_prefix_underscore_properties = true
 only_storage_properties = false

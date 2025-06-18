@@ -182,7 +182,10 @@ func _import(
 	fa.store_line("")
 
 	# 构造，使数据只读
-	fa.store_line(member_prefix + "func _init() -> void:")
+	if member_prefix.is_empty():
+		fa.store_line(member_prefix + "func _init() -> void:")
+	else:
+		fa.store_line(member_prefix + "func _static_init() -> void:")
 	fa.store_line("\t_data.make_read_only()")
 	fa.store_line("")
 	fa.close()

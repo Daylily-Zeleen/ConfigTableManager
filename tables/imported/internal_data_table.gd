@@ -47,7 +47,7 @@ static func _make_data(id: int, name: String, str_arr: PackedStringArray, desc: 
 static var _data: Dictionary = {}
 
 
-static func _init() -> void:
+static func _static_init() -> void:
 	_data[0] = _make_data(0, "test", PackedStringArray(["asd", "qweqwe"]), "啊吧啊吧")
 	_data.make_read_only()
 
