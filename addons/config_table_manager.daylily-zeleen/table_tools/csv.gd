@@ -1,6 +1,6 @@
 """csv 表格工具
 可选参数：
-    arr_dict_with_brackets=true/false 生成表格时是否为所有的数组与字典类型将加上方/花括号, 默认为 false
+ - arr_dict_with_brackets=true/false 生成表格时是否为所有的数组与字典类型将加上方/花括号, 默认为 false
 """
 @tool
 extends "table_tool.gd"
@@ -279,7 +279,7 @@ func _get_data() -> Array[Dictionary]:
 func _get_tooltip_text() -> String:
 	return """csv 表格工具
 可选参数：
-    arr_dict_with_brackets=true/false 生成表格时是否为所有的数组与字典类型将加上方/花括号, 默认为 false
+ - arr_dict_with_brackets=true/false 生成表格时是否为所有的数组与字典类型将加上方/花括号, 默认为 false
 """
 
 

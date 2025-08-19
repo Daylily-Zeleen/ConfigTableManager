@@ -1,10 +1,10 @@
 """Excel(xlsx) 表格工具
 必要参数:
-    sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表,则该参数必须指定。
+ - sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表,则该参数必须指定。
 可选参数:
-    parse_sheet_must_exists=true/false 为true时如果指定工作表不存在时将发生解析错误。默认 false
-    arr_dict_with_brackets=true/false 为true时生成表格时所有的数组与字典类型将加上方/花括号。默认为 false
-    colorize_header=true 是否对生成的表头单元格被赋予颜色。默认 true
+ - parse_sheet_must_exists=true/false 为true时如果指定工作表不存在时将发生解析错误。默认 false
+ - arr_dict_with_brackets=true/false 为true时生成表格时所有的数组与字典类型将加上方/花括号。默认为 false
+ - colorize_header=true 是否对生成的表头单元格被赋予颜色。默认 true
 """
 @tool
 extends "csv.gd"
@@ -41,7 +41,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		return _last_parse_error
 
 	var output := []
-	var err := OS.execute("python", ['"%s"' % _py_tool_path, "--dump_json", '"%s"' % ProjectSettings.globalize_path(xlsx_file), '"%s"' % _tmp_json_path], output, true)
+	var err := OS.execute("python", [_py_tool_path, "--dump_json", ProjectSettings.globalize_path(xlsx_file), _tmp_json_path], output, true)
 	if err != OK:
 		_Log.error([_Localize.translate("无法解析xlsx文件: "), xlsx_file, " - ", "\n".join(output)])
 		_last_parse_error = FAILED
@@ -234,7 +234,7 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 	fa.close()
 
 	var output := []
-	var err := OS.execute("python", ['"%s"' % _py_tool_path, "--override_xlsx", '"%s"' % _tmp_json_path, '"%s"' % ProjectSettings.globalize_path(save_path)], output, true)
+	var err := OS.execute("python", [_py_tool_path, "--override_xlsx", _tmp_json_path, ProjectSettings.globalize_path(save_path)], output, true)
 	if err != OK:
 		_Log.error([_Localize.translate("无法覆盖xlsx文件: "), save_path, " - ", "\n".join(output)])
 		_last_parse_error = FAILED
@@ -246,11 +246,11 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 func _get_tooltip_text() -> String:
 	return """Excel(xlsx) 表格工具
 必要参数:
-    sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表,则该参数必须指定。
+ - sheet=your_sheet_name 指定要解析的工作表,如果xlsx中存在多个工作表,则该参数必须指定。
 可选参数:
-    parse_sheet_must_exists=true/false 为true时如果指定工作表不存在时将发生解析错误。默认 false
-    arr_dict_with_brackets=true/false 为true时生成表格时所有的数组与字典类型将加上方/花括号。默认为 false
-    colorize_header=true 是否对生成的表头单元格被赋予颜色。默认 true
+ - parse_sheet_must_exists=true/false 为true时如果指定工作表不存在时将发生解析错误。默认 false
+ - arr_dict_with_brackets=true/false 为true时生成表格时所有的数组与字典类型将加上方/花括号。默认为 false
+ - colorize_header=true 是否对生成的表头单元格被赋予颜色。默认 true
 """
 
 
@@ -313,4 +313,4 @@ func _to_str_arr(row: Array) -> PackedStringArray:
 
 
 func _to_row(str_arr: Array) -> Array[Dictionary]:
-	return Array(str_arr.map(func(e: String) -> Dictionary: return {value = e}), TYPE_DICTIONARY, &"", null)
+	return Array(str_arr.map(func(e: Variant) -> Dictionary: return {value = e}), TYPE_DICTIONARY, &"", null)

@@ -239,8 +239,8 @@ func _import(
 func _get_tooltip_text() -> String:
 	return """字典形式的 GDScript 导入，适合表格条目较多的情况
 必选参数:
-    key=prop_name - 必选，指定用于查找的数据类属性,该属性的值在所有数据中不能重复,也不能留空
+ - key=prop_name - 必选，指定用于查找的数据类属性,该属性的值在所有数据中不能重复,也不能留空
 可选参数:
-    generate_class_name - 如果 table_name 非空且是合法的标识符，将使用 table_name 生成全局类名
-    pure_static=true/false - 是否以纯静态成员的形式进行生成, 默认为 true
+ - generate_class_name - 如果 table_name 非空且是合法的标识符，将使用 table_name 生成全局类名
+ - pure_static=true/false - 是否以纯静态成员的形式进行生成, 默认为 true
 """

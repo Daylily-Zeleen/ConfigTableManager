@@ -341,6 +341,6 @@ func __get_value_text(converted_value: Variant, default := false) -> String:
 func _get_tooltip_text() -> String:
 	return """默认的 GDScript 导入 (TypedArray) 适合表格条目较少的情况。
 可选配置参数:
-    generate_class_name - 如果 table_name 非空且是合法的标识符，将使用 table_name 生成全局类名
-    pure_static=true/false - 是否以纯静态成员的形式进行生成, 默认为 true
+ - generate_class_name - 如果 table_name 非空且是合法的标识符，将使用 table_name 生成全局类名
+ - pure_static=true/false - 是否以纯静态成员的形式进行生成, 默认为 true
 """
