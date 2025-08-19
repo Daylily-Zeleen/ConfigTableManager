@@ -41,7 +41,7 @@ func _parse_table_file(xlsx_file: String, options: PackedStringArray) -> Error:
 		return _last_parse_error
 
 	var output := []
-	var err := OS.execute("python", ['"%s"' % _py_tool_path, "--dump_json", '"%s"' % ProjectSettings.globalize_path(xlsx_file), '"%s"' % _tmp_json_path], output, true)
+	var err := OS.execute("python", [_py_tool_path, "--dump_json", ProjectSettings.globalize_path(xlsx_file), _tmp_json_path], output, true)
 	if err != OK:
 		_Log.error([_Localize.translate("无法解析xlsx文件: "), xlsx_file, " - ", "\n".join(output)])
 		_last_parse_error = FAILED
@@ -234,7 +234,7 @@ func _generate_table_file(save_path: String, header: _TableHeader, data_rows: Ar
 	fa.close()
 
 	var output := []
-	var err := OS.execute("python", ['"%s"' % _py_tool_path, "--override_xlsx", '"%s"' % _tmp_json_path, '"%s"' % ProjectSettings.globalize_path(save_path)], output, true)
+	var err := OS.execute("python", [_py_tool_path, "--override_xlsx", _tmp_json_path, save_path], output, true)
 	if err != OK:
 		_Log.error([_Localize.translate("无法覆盖xlsx文件: "), save_path, " - ", "\n".join(output)])
 		_last_parse_error = FAILED
